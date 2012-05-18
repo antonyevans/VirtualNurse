@@ -7,6 +7,11 @@ package com.senstore.alice.utils;
 public class Constants {
 
 	public static String TAG = "Alice";
+	
+	public static String REGISTRY_CONTEXT="context";
+
+	// Do not forget to add the trailing '/'
+	public static String SERVER_URL = "http://sharp-waterfall-5241.herokuapp.com/";
 
 	public static String SECURITY_HASH = "foobar";
 

@@ -12,7 +12,10 @@ import android.telephony.TelephonyManager;
  */
 public class Utils {
 
-	public static String getDeviceID(Context mContext) {
+	private static Context mContext = (Context) Registry.instance().get(
+			Constants.REGISTRY_CONTEXT);
+
+	public static String getDeviceID() {
 		TelephonyManager tManager = (TelephonyManager) mContext
 				.getSystemService(Context.TELEPHONY_SERVICE);
 		String uid = tManager.getDeviceId();

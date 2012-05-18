@@ -9,6 +9,9 @@ package com.senstore.alice.models;
  */
 public class Diagnosis {
 
+	private String id=null;
+	
+	
 	/**
 	 * 
 	 {"chat_length":2,"created_at":"2012-05-18T12:34:44Z","guide":null,"id":
