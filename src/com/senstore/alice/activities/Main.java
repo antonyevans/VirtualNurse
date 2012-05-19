@@ -16,7 +16,7 @@ import com.senstore.alice.utils.Registry;
 
 public class Main extends Activity {
 
-	//2 minutes(120000)
+	//2 minutes(120000)	
 	//5 minutes(300000)
 	//10 minutes(600000)
 	//30 minutes(1800000)
