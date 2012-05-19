@@ -16,10 +16,10 @@ import com.senstore.alice.utils.Registry;
 
 public class Main extends Activity {
 
-	//2 minutes(120000)	
-	//5 minutes(300000)
-	//10 minutes(600000)
-	//30 minutes(1800000)
+	// 2 minutes(120000)
+	// 5 minutes(300000)
+	// 10 minutes(600000)
+	// 30 minutes(1800000)
 	private static final int PERIOD = 120000; // 2 minutes
 	private PendingIntent pi = null;
 	private AlarmManager mgr = null;
@@ -34,6 +34,16 @@ public class Main extends Activity {
 
 		setContentView(R.layout.main);
 
+		initLocationService();
+
+		// Check if the app has been run before.
+		if (isFirstRun()) {
+			// Start a background Task, to register the current user/device
+		}// else proceed with the normal app flow
+
+	}
+
+	private void initLocationService() {
 		mgr = (AlarmManager) getSystemService(ALARM_SERVICE);
 		Intent i = new Intent(this, LocationPoller.class);
 		i.putExtra(LocationPoller.EXTRA_INTENT, new Intent(this,
@@ -46,9 +56,20 @@ public class Main extends Activity {
 		Log.i(Constants.TAG, "Location polling every 2 minutes begun");
 	}
 
+	private void setNotFirstRun() {
+		// Save the state with shared preferences
+		getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit()
+				.putBoolean("firstRun", false).commit();
+	}
+
+	private boolean isFirstRun() {
+		return getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean(
+				"firstRun", true);
+	}
+
 	@Override
 	protected void onPause() {
-		 mgr.cancel(pi);
+		mgr.cancel(pi);
 		super.onPause();
 	}
 
@@ -59,7 +80,7 @@ public class Main extends Activity {
 
 	@Override
 	protected void onDestroy() {
-		 mgr.cancel(pi);
+		mgr.cancel(pi);
 		super.onDestroy();
 	}
 }
