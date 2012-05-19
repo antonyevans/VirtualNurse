@@ -23,6 +23,7 @@ import android.util.Log;
 
 import com.commonsware.cwac.locpoll.LocationPoller;
 import com.senstore.alice.utils.Constants;
+import com.senstore.alice.utils.Registry;
 
 public class LocationReceiver extends BroadcastReceiver {
 	@Override
@@ -42,11 +43,14 @@ public class LocationReceiver extends BroadcastReceiver {
 			}
 		} else {
 			msg = loc.toString();
+			//Store our location in the registry
+			Registry.instance().put(Constants.REGISTRY_LOCATION, msg);
 		}
 
 		if (msg == null) {
 			msg = "Invalid broadcast received!";
 		}
 		Log.i(Constants.TAG, msg);
+
 	}
 }

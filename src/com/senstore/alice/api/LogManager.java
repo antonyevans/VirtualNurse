@@ -9,6 +9,7 @@ import com.senstore.alice.http.RestClient;
 import com.senstore.alice.http.RestClient.RequestMethod;
 import com.senstore.alice.models.ActionLog;
 import com.senstore.alice.utils.Constants;
+import com.senstore.alice.utils.Registry;
 import com.senstore.alice.utils.Utils;
 
 /**
@@ -35,7 +36,8 @@ public class LogManager {
 		RestClient req = new RestClient(absoluteURL);
 		req.addParam("user_ID", Utils.getPhoneNumber());
 		req.addParam("log_type", Integer.toString(Constants.LOG_REGISTER));
-		req.addParam("location", "");
+		req.addParam("location",
+				Registry.instance().get(Constants.REGISTRY_LOCATION).toString());
 		req.addParam("security", Constants.SECURITY_HASH);
 
 		try {
@@ -67,7 +69,8 @@ public class LogManager {
 		RestClient req = new RestClient(absoluteURL);
 		req.addParam("user_ID", Utils.getPhoneNumber());
 		req.addParam("log_type", Integer.toString(Constants.LOG_LOCATION));
-		req.addParam("location", "");
+		req.addParam("location",
+				Registry.instance().get(Constants.REGISTRY_LOCATION).toString());
 		req.addParam("security", Constants.SECURITY_HASH);
 
 		try {
@@ -99,7 +102,8 @@ public class LogManager {
 		RestClient req = new RestClient(absoluteURL);
 		req.addParam("user_ID", Utils.getPhoneNumber());
 		req.addParam("log_type", Integer.toString(Constants.LOG_CALL_DOCTOR));
-		req.addParam("location", "");
+		req.addParam("location",
+				Registry.instance().get(Constants.REGISTRY_LOCATION).toString());
 		req.addParam("security", Constants.SECURITY_HASH);
 
 		try {
@@ -131,7 +135,8 @@ public class LogManager {
 		RestClient req = new RestClient(absoluteURL);
 		req.addParam("user_ID", Utils.getPhoneNumber());
 		req.addParam("log_type", Constants.LOG_CALL_DOCTOR_ACCEPT);
-		req.addParam("location", "");
+		req.addParam("location",
+				Registry.instance().get(Constants.REGISTRY_LOCATION).toString());
 		req.addParam("security", Constants.SECURITY_HASH);
 
 		try {
@@ -163,7 +168,8 @@ public class LogManager {
 		RestClient req = new RestClient(absoluteURL);
 		req.addParam("user_ID", Utils.getPhoneNumber());
 		req.addParam("log_type", Constants.LOG_CALL_DOCTOR_REJECT);
-		req.addParam("location", "");
+		req.addParam("location",
+				Registry.instance().get(Constants.REGISTRY_LOCATION).toString());
 		req.addParam("security", Constants.SECURITY_HASH);
 
 		try {
