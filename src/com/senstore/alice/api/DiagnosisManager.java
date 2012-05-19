@@ -1,5 +1,5 @@
 /**
- * 
+ * This is the diagnoses API Handler, handling the requests and responses.
  */
 package com.senstore.alice.api;
 

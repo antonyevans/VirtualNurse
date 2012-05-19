@@ -1,5 +1,5 @@
 /**
- * 
+ * This is the Logging API Handler, with functions to handle API calls and responses
  */
 package com.senstore.alice.api;
 
@@ -29,9 +29,9 @@ public class LogManager {
 	 */
 	public ActionLog register() {
 
-		String absoluteURL = Constants.SERVER_URL + "log.xml";
+		String absoluteURL = Constants.SERVER_URL + "log.json";
 		RestClient req = new RestClient(absoluteURL);
-		req.addParam("user_id", Utils.getDeviceID());
+		req.addParam("user_id", Utils.getPhoneNumber());
 		req.addParam("log_type", Integer.toString(Constants.LOG_REGISTER));
 		req.addParam("location", "");
 		req.addParam("security", Constants.SECURITY_HASH);
@@ -58,9 +58,9 @@ public class LogManager {
 	 * Log this device's location and @return {@link ActionLog} object
 	 */
 	public ActionLog location() {
-		String absoluteURL = Constants.SERVER_URL + "log.xml";
+		String absoluteURL = Constants.SERVER_URL + "log.json";
 		RestClient req = new RestClient(absoluteURL);
-		req.addParam("user_id", Utils.getDeviceID());
+		req.addParam("user_id", Utils.getPhoneNumber());
 		req.addParam("log_type", Integer.toString(Constants.LOG_LOCATION));
 		req.addParam("location", "");
 		req.addParam("security", Constants.SECURITY_HASH);
@@ -87,9 +87,9 @@ public class LogManager {
 	 * Log the call doctor action and @return {@link ActionLog} object
 	 */
 	public ActionLog callDoctor() {
-		String absoluteURL = Constants.SERVER_URL + "log.xml";
+		String absoluteURL = Constants.SERVER_URL + "log.json";
 		RestClient req = new RestClient(absoluteURL);
-		req.addParam("user_id", Utils.getDeviceID());
+		req.addParam("user_id", Utils.getPhoneNumber());
 		req.addParam("log_type", Integer.toString(Constants.LOG_CALL_DOCTOR));
 		req.addParam("location", "");
 		req.addParam("security", Constants.SECURITY_HASH);
@@ -116,9 +116,9 @@ public class LogManager {
 	 * Log the accepted call doctor action and @return {@link ActionLog} object
 	 */
 	public ActionLog acceptCallDoctor() {
-		String absoluteURL = Constants.SERVER_URL + "log.xml";
+		String absoluteURL = Constants.SERVER_URL + "log.json";
 		RestClient req = new RestClient(absoluteURL);
-		req.addParam("user_id", Utils.getDeviceID());
+		req.addParam("user_id", Utils.getPhoneNumber());
 		req.addParam("log_type", Constants.LOG_CALL_DOCTOR_ACCEPT);
 		req.addParam("location", "");
 		req.addParam("security", Constants.SECURITY_HASH);
@@ -145,9 +145,9 @@ public class LogManager {
 	 * Log the rejected call doctor action and @return {@link ActionLog} object
 	 */
 	public ActionLog rejectCallDoctor() {
-		String absoluteURL = Constants.SERVER_URL + "log.xml";
+		String absoluteURL = Constants.SERVER_URL + "log.json";
 		RestClient req = new RestClient(absoluteURL);
-		req.addParam("user_id", Utils.getDeviceID());
+		req.addParam("user_id", Utils.getPhoneNumber());
 		req.addParam("log_type", Constants.LOG_CALL_DOCTOR_REJECT);
 		req.addParam("location", "");
 		req.addParam("security", Constants.SECURITY_HASH);
