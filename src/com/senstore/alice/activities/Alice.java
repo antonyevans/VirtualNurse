@@ -14,7 +14,7 @@ import com.senstore.alice.R;
 import com.senstore.alice.utils.Constants;
 import com.senstore.alice.utils.Registry;
 
-public class Main extends Activity {
+public class Alice extends Activity {
 
 	// 2 minutes(120000)
 	// 5 minutes(300000)

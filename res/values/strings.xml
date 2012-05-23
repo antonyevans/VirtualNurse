@@ -1,7 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="hello">Hello World, AliceActivity!</string>
+    <string name="hello">Alice</string>
     <string name="app_name">Alice</string>
+
+    <!-- API tester resources -->
+    <string name="api_test_desc">This is a utility to test the various ALICE API endpoints, and decision trees and workflows.</string>
+    <string name="api_test_logger">Logging API</string>
+    <string name="api_test_logger_desc">Test the various logging API calls</string>
+    <string name="api_test_logger_register">Register</string>
+    <string name="api_test_logger_location">Location</string>
+    <string name="api_test_logger_callDoctor">Call Doctor</string>
+    <string name="api_test_logger_callDoctorAccept">Accept</string>
+    <string name="api_test_logger_callDoctorReject">Reject</string>
+    
+    
+    <string name="api_test_diagnosis">Diagnosis API</string>
+    <string name="api_test_diagnosis_desc">Test the various diagnosis API calls</string>
 
 </resources>

@@ -21,7 +21,9 @@ public class Utils {
 				.getSystemService(Context.TELEPHONY_SERVICE);
 		String uid = tManager.getLine1Number();
 
-		if (uid != null) {
+		boolean hasText = !"".equals(uid);
+
+		if (uid != null && hasText) {
 			userNumber = uid;
 		} else {
 			// Since it returned null, Generate a random number/value

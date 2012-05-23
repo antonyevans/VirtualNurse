@@ -15,13 +15,13 @@ import com.senstore.alice.utils.Utils;
  * @author Muniu Kariuki - muniu@bityarn.co.ke
  * 
  */
-public class DiagnosisManager {
+public class DiagnosisRESTHandler {
 	private Diagnosis diagnosis = null;
 
 	/**
 	 * 
 	 */
-	public DiagnosisManager() {
+	public DiagnosisRESTHandler() {
 
 	}
 
@@ -32,16 +32,17 @@ public class DiagnosisManager {
 	 *            that is either selection text on screen, or voice input
 	 * @param input_source
 	 *            that is either "voice" or "touch"
+	 * @param chat_length
 	 * @return {@link Diagnosis} object
 	 */
-	public Diagnosis diagnose(String input_text, String input_source) {
+	public Diagnosis diagnose(String input_text, String input_source,
+			String chat_length) {
 
 		String absoluteURL = Constants.SERVER_URL + "harvard.json";
 		RestClient req = new RestClient(absoluteURL);
 		req.addParam("user_ID", Utils.getPhoneNumber());
 		req.addParam("user_text", input_text);
-		req.addParam("chat_length",
-				Integer.toString(Constants.CHAT_LENGTH_DEFAULT));
+		req.addParam("chat_length", chat_length);
 		req.addParam("select_type", input_source);
 		req.addParam("security", Constants.SECURITY_HASH);
 

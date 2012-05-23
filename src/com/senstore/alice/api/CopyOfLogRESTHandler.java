@@ -16,14 +16,14 @@ import com.senstore.alice.utils.Utils;
  * @author Muniu Kariuki - muniu@bityarn.co.ke
  * 
  */
-public class LogManager {
+public class CopyOfLogRESTHandler {
 
 	private ActionLog log = null;
 
 	/**
 	 * 
 	 */
-	public LogManager() {
+	public CopyOfLogRESTHandler() {
 
 	}
 

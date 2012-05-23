@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/api_test_logger_desc" />
+
+    <Button
+        android:id="@+id/log_register"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/api_test_logger_register" />
+
+    <Button
+        android:id="@+id/log_location"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/api_test_logger_location" />
+
+    <Button
+        android:id="@+id/log_calldoctor"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/api_test_logger_callDoctor" />
+
+    <Button
+        android:id="@+id/log_calldoctor_accept"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/api_test_logger_callDoctorAccept" />
+
+    <Button
+        android:id="@+id/log_calldoctor_reject"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/api_test_logger_callDoctorReject" />
+
+</LinearLayout>
