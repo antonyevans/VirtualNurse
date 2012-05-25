@@ -23,13 +23,40 @@ public class DiagnosisParser {
 
 	/**
 	 * 
-	 * @param chat_length
-	 *            : 0, created_at: "2012-05-19T09:31:10Z", guide: "1", id: 245,
-	 *            input: "test", option1: "Yes", option2: "No", option3: null,
-	 *            option4: null, option5: null, reply:
-	 *            "Breast lumps guide selected, is this right?", response_type:
-	 *            "1", secret_hash: null, select_type: "voice", updated_at:
-	 *            "2012-05-19T09:31:10Z", user_id: "1234"
+	 * @param { created_at: "2012-05-25T05:20:15Z", current_query:
+	 *        "birthcontrol_oct3", guide: "birthControlForWomen", id: 329,
+	 *        input: "birthcontrol_oct3", last_query: "start", reply: "
+	 *        <p>
+	 *        Welcome to our Health Decision Guide on birth control for women.
+	 *        </p>
+	 *        <p>
+	 *        Whether you are currently sexually active or have never been
+	 *        sexually active, this guide will help you learn about the types of
+	 *        birth control likely to fit your needs.
+	 *        </p>
+	 *        <p>
+	 *        Although the guide is designed for women, we encourage men to
+	 *        review our guide and discuss what they learn with their female
+	 *        partners.
+	 *        </p>
+	 *        <p>
+	 *        This guide is not meant to replace a visit with a health
+	 *        professional.
+	 *        </p>
+	 *        <p>
+	 *        <b>Are you already sexually active? That is, have you had sexual
+	 *        intercourse?</b>
+	 *        </p>
+	 *        <p>
+	 *        <InternalLink href="yesihavehadsexualintercourse.">Yes, I have had
+	 *        sexual intercourse.</InternalLink>
+	 *        </p>
+	 *        <p>
+	 *        <InternalLink href="noihavenothadsexualintercourse.">No, I have
+	 *        not had sexual intercourse.</InternalLink>
+	 *        </p>
+	 *        ", response_type: "2", secret_hash: null, select_type: "touch",
+	 *        updated_at: "2012-05-25T05:20:15Z", user_id: "1234" }
 	 * @return {@link Diagnosis} object
 	 */
 	public Diagnosis parse(String jsonStr) {

@@ -26,24 +26,26 @@ public class DiagnosisRESTHandler {
 	}
 
 	/**
-	 * Build a server request with
 	 * 
-	 * @param input_text
-	 *            that is either selection text on screen, or voice input
-	 * @param input_source
-	 *            that is either "voice" or "touch"
-	 * @param chat_length
-	 * @return {@link Diagnosis} object
+	 * http://sharp-waterfall-5241.herokuapp.com/harvard.json?guide=
+	 * birthControlForWomen
+	 * &input=birthcontrol_oct3&user_id=1234&select_type=touch
+	 * &last_query=start&security=foobar
+	 * 
+	 * 
 	 */
-	public Diagnosis diagnose(String input_text, String input_source,
-			String chat_length) {
+	public Diagnosis touchDiagnosis(String guide, String input_text) {
 
 		String absoluteURL = Constants.SERVER_URL + "harvard.json";
 		RestClient req = new RestClient(absoluteURL);
-		req.addParam("user_ID", Utils.getPhoneNumber());
+		req.addParam("user_id", Utils.getPhoneNumber());
 		req.addParam("user_text", input_text);
-		req.addParam("chat_length", chat_length);
-		req.addParam("select_type", input_source);
+
+		//req.addParam("last_query", "start");
+
+		req.addParam("guide", guide);
+		req.addParam("input", input_text);
+		req.addParam("select_type", Constants.DIAGNOSIS_TOUCH);
 		req.addParam("security", Constants.SECURITY_HASH);
 
 		try {
