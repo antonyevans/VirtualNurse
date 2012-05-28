@@ -174,6 +174,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 	@Override
 	public void onTaskPostExecute(Object obj) {
 		removeDialog(DIAGNOSIS_DIALOG);
+		//TODO: Mimano, display after return
 	}
 
 	@Override
