@@ -2,7 +2,9 @@ package com.senstore.alice.activities;
 
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.Dialog;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -16,11 +18,14 @@ import android.util.Log;
 import com.commonsware.cwac.locpoll.LocationPoller;
 import com.commonsware.cwac.locpoll.LocationReceiver;
 import com.senstore.alice.R;
+import com.senstore.alice.api.HarvardGuide;
+import com.senstore.alice.listeners.AsyncTasksListener;
 import com.senstore.alice.services.BackgroundLogger;
+import com.senstore.alice.tasks.DiagnosisAsyncTask;
 import com.senstore.alice.utils.Constants;
 import com.senstore.alice.utils.Registry;
 
-public class Alice extends Activity {
+public class Alice extends Activity implements AsyncTasksListener {
 
 	// 2 minutes(120000)
 	// 5 minutes(300000)
@@ -29,7 +34,14 @@ public class Alice extends Activity {
 	private static final int PERIOD = 120000; // 2 minutes
 	private PendingIntent pi = null;
 	private AlarmManager mgr = null;
-	ResponseReceiver receiver;
+	private ResponseReceiver receiver;
+
+	private static final int DIAGNOSIS_DIALOG = 0;
+	private ProgressDialog mProgressDialog;
+
+	final AsyncTasksListener listener = this;
+
+	private DiagnosisAsyncTask diagnosisTask;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -40,6 +52,9 @@ public class Alice extends Activity {
 				getApplicationContext());
 
 		setContentView(R.layout.main);
+
+		// TODO Harvard Guide
+		createHarvardGuideWidget();
 
 		// Register the Background Logger Broadcast Receiver
 		initLogBroadcastReceiver();
@@ -54,6 +69,20 @@ public class Alice extends Activity {
 
 		}// else proceed with the normal app flow
 
+	}
+
+	/**
+	 * Loop through the Harvard Guide enum, to fetch the guides and their
+	 * respective properties
+	 * 
+	 * @Mimano This is where you put in your buttons/list in a scroll view
+	 */
+	private void createHarvardGuideWidget() {
+
+		for (HarvardGuide hg : HarvardGuide.values()) {
+
+			Log.i(Constants.TAG, hg.officialName() + " :: " + hg.guideName());
+		}
 	}
 
 	private void initLogBroadcastReceiver() {
@@ -100,6 +129,53 @@ public class Alice extends Activity {
 
 	}
 
+	/**
+	 * Creates an instance of {@link DiagnosisAsyncTask}, and sets the
+	 * {@link AsyncTasksListener}
+	 * 
+	 * @param health_guide
+	 *            and
+	 * @param input_text
+	 *            and then executes the request
+	 */
+	private void doDiagnosis(String health_guide, String input_text) {
+		diagnosisTask = new DiagnosisAsyncTask();
+		diagnosisTask.setListener(listener);
+		diagnosisTask.setHealth_guide(health_guide);
+		diagnosisTask.setInput_text(input_text);
+		diagnosisTask.execute();
+	}
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		switch (id) {
+		case DIAGNOSIS_DIALOG:
+			mProgressDialog = new ProgressDialog(this);
+			mProgressDialog.setTitle(getString(R.string.app_name));
+			mProgressDialog.setMessage("Working...");
+			mProgressDialog.setIndeterminate(true);
+			mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			mProgressDialog.setCancelable(false);
+			return mProgressDialog;
+		}
+		return null;
+	}
+
+	@Override
+	public void onTaskPreExecute() {
+		showDialog(DIAGNOSIS_DIALOG);
+	}
+
+	@Override
+	public void onTaskProgress(CharSequence message) {
+		mProgressDialog.setMessage(message);
+	}
+
+	@Override
+	public void onTaskPostExecute(Object obj) {
+		removeDialog(DIAGNOSIS_DIALOG);
+	}
+
 	@Override
 	protected void onPause() {
 		mgr.cancel(pi);
@@ -135,4 +211,5 @@ public class Alice extends Activity {
 
 		}
 	}
+
 }
