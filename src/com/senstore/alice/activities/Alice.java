@@ -20,6 +20,7 @@ import com.commonsware.cwac.locpoll.LocationReceiver;
 import com.senstore.alice.R;
 import com.senstore.alice.api.HarvardGuide;
 import com.senstore.alice.listeners.AsyncTasksListener;
+import com.senstore.alice.models.Diagnosis;
 import com.senstore.alice.services.BackgroundLogger;
 import com.senstore.alice.tasks.DiagnosisAsyncTask;
 import com.senstore.alice.utils.Constants;
@@ -174,7 +175,34 @@ public class Alice extends Activity implements AsyncTasksListener {
 	@Override
 	public void onTaskPostExecute(Object obj) {
 		removeDialog(DIAGNOSIS_DIALOG);
-		//TODO: Mimano, display after return
+
+		Diagnosis result = (Diagnosis) obj;
+
+		if (result != null) {
+			int responseType = Integer.parseInt(result.getResponse_type());
+
+			switch (responseType) {
+			case 1:
+				//TODO Response Type 1 - Show Confirm Dialog
+				break;
+			case 2:
+				//TODO Response Type 2 - Show Options Dialog
+				break;
+			case 3:
+				//TODO Response Type 3 - EMERGENCY - Map with nearest hospital/doctor
+				break;
+			case 4:
+				//TODO Response Type 4 - CALL DOCTOR - Text with button to call doctor.
+				break;
+			case 5:
+				//TODO Response Type 5 - INFORMATION - Text
+				break;
+
+			default:
+				break;
+			}
+		}
+
 	}
 
 	@Override
