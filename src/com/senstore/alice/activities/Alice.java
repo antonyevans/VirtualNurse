@@ -3,6 +3,7 @@ package com.senstore.alice.activities;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -10,7 +11,9 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import com.commonsware.cwac.locpoll.LocationPoller;
+import com.commonsware.cwac.locpoll.LocationReceiver;
 import com.senstore.alice.R;
+import com.senstore.alice.services.BackgroundLogger;
 import com.senstore.alice.utils.Constants;
 import com.senstore.alice.utils.Registry;
 
@@ -39,6 +42,8 @@ public class Alice extends Activity {
 		// Check if the app has been run before.
 		if (isFirstRun()) {
 			// Start a background Task, to register the current user/device
+			doLog(Integer.toString(Constants.LOG_REGISTER));
+
 		}// else proceed with the normal app flow
 
 	}
@@ -65,6 +70,18 @@ public class Alice extends Activity {
 	private boolean isFirstRun() {
 		return getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean(
 				"firstRun", true);
+	}
+
+	/**
+	 * Creates an {@link Intent} that identifies the {@link BackgroundLogger}
+	 * {@link Service} and puts a string extra on it.
+	 * 
+	 * @param log_type
+	 */
+	private void doLog(String log_type) {
+		Intent msgIntent = new Intent(this, BackgroundLogger.class);
+		msgIntent.putExtra(Constants.LOG_SERVICE_TYPE, log_type);
+		startService(msgIntent);
 	}
 
 	@Override

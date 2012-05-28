@@ -12,7 +12,7 @@
   limitations under the License.
  */
 
-package com.senstore.alice.activities;
+package com.commonsware.cwac.locpoll;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -21,7 +21,6 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.commonsware.cwac.locpoll.LocationPoller;
 import com.senstore.alice.utils.Constants;
 import com.senstore.alice.utils.Registry;
 

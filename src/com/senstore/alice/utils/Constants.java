@@ -8,6 +8,9 @@ public class Constants {
 
 	public static String TAG = "Alice";
 	
+	public static String LOG_SERVICE_NAME = "AliceBackgroundLogService";
+	public static String LOG_SERVICE_TYPE = "log_type";
+	
 	public static String REGISTRY_CONTEXT="context";
 	public static String REGISTRY_LOCATION="deviceLocation";
 

@@ -4,8 +4,8 @@
 package com.senstore.alice.test;
 
 import com.commonsware.cwac.locpoll.LocationPoller;
+import com.commonsware.cwac.locpoll.LocationReceiver;
 import com.senstore.alice.R;
-import com.senstore.alice.activities.LocationReceiver;
 import com.senstore.alice.utils.Constants;
 import com.senstore.alice.utils.Registry;
 
