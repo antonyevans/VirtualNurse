@@ -50,7 +50,7 @@ public class BackgroundLogger extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		
+
 		Log.i(Constants.TAG, "onHandleIntent() called");
 
 		msg = intent.getStringExtra(Constants.LOG_SERVICE_IN_MSG);
@@ -67,20 +67,44 @@ public class BackgroundLogger extends IntentService {
 			broadcastIntent.setAction(Constants.ACTION_RESP);
 			broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
 			broadcastIntent
-					.putExtra(Constants.LOG_SERVICE_OUT_MSG, log.getId());
+					.putExtra(Constants.LOG_SERVICE_OUT_MSG, log.getLogType());
 			sendBroadcast(broadcastIntent);
 			break;
 		case LOCATION:
-			handler.log(msg);
+			Log.i(Constants.TAG, "onHandleIntent() LOCATION");
+			ActionLog logloc = handler.log(msg);
+			Intent locIntent = new Intent();
+			locIntent.setAction(Constants.ACTION_RESP);
+			locIntent.addCategory(Intent.CATEGORY_DEFAULT);
+			locIntent.putExtra(Constants.LOG_SERVICE_OUT_MSG, logloc.getLogType());
+			sendBroadcast(locIntent);
 			break;
 		case CALL_DOCTOR:
-			handler.log(msg);
+			Log.i(Constants.TAG, "onHandleIntent() CALL_DOCTOR");
+			ActionLog logcd = handler.log(msg);
+			Intent cdIntent = new Intent();
+			cdIntent.setAction(Constants.ACTION_RESP);
+			cdIntent.addCategory(Intent.CATEGORY_DEFAULT);
+			cdIntent.putExtra(Constants.LOG_SERVICE_OUT_MSG, logcd.getLogType());
+			sendBroadcast(cdIntent);
 			break;
 		case CALL_DOCTOR_ACCEPT:
-			handler.log(msg);
+			Log.i(Constants.TAG, "onHandleIntent() CALL_DOCTOR_ACCEPT");
+			ActionLog logcda = handler.log(msg);
+			Intent cdaIntent = new Intent();
+			cdaIntent.setAction(Constants.ACTION_RESP);
+			cdaIntent.addCategory(Intent.CATEGORY_DEFAULT);
+			cdaIntent.putExtra(Constants.LOG_SERVICE_OUT_MSG, logcda.getLogType());
+			sendBroadcast(cdaIntent);
 			break;
 		case CALL_DOCTOR_REJECT:
-			handler.log(msg);
+			Log.i(Constants.TAG, "onHandleIntent() CALL_DOCTOR_REJECT");
+			ActionLog logcdr = handler.log(msg);
+			Intent cdrIntent = new Intent();
+			cdrIntent.setAction(Constants.ACTION_RESP);
+			cdrIntent.addCategory(Intent.CATEGORY_DEFAULT);
+			cdrIntent.putExtra(Constants.LOG_SERVICE_OUT_MSG, logcdr.getLogType());
+			sendBroadcast(cdrIntent);
 			break;
 		default:
 			break;

@@ -41,14 +41,11 @@ public class Alice extends Activity {
 
 		setContentView(R.layout.main);
 
-		
 		// Register the Background Logger Broadcast Receiver
 		initLogBroadcastReceiver();
-		
+
 		initLocationService();
 
-		
-		
 		// Check if the app has been run before.
 		if (isFirstRun()) {
 			Log.i(Constants.TAG, "isFirstRun()");
@@ -97,11 +94,10 @@ public class Alice extends Activity {
 	 * @param log_type
 	 */
 	private void doLog(String log_type) {
-		Log.i(Constants.TAG, "doLog() called");
 		Intent msgIntent = new Intent(this, BackgroundLogger.class);
 		msgIntent.putExtra(Constants.LOG_SERVICE_IN_MSG, log_type);
 		startService(msgIntent);
-		Log.i(Constants.TAG, "after doLog() called");
+
 	}
 
 	@Override
@@ -118,6 +114,7 @@ public class Alice extends Activity {
 	@Override
 	protected void onDestroy() {
 		mgr.cancel(pi);
+		unregisterReceiver(receiver);
 		super.onDestroy();
 	}
 
@@ -129,6 +126,12 @@ public class Alice extends Activity {
 			String text = intent.getStringExtra(Constants.LOG_SERVICE_OUT_MSG);
 
 			Log.i(Constants.TAG, "onReceive under ResponseReceiver " + text);
+			
+			//Check if Log Type is register, and if so, mark is first run to false
+			if(text.equalsIgnoreCase("1")){
+				setNotFirstRun();
+			}
+			
 		}
 	}
 }
