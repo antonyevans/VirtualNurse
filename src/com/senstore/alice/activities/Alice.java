@@ -20,7 +20,7 @@ import com.senstore.alice.services.BackgroundLogger;
 import com.senstore.alice.utils.Constants;
 import com.senstore.alice.utils.Registry;
 
-public class Alice extends Activity {
+public class Alice extends Activity{
 
 	// 2 minutes(120000)
 	// 5 minutes(300000)
@@ -126,12 +126,13 @@ public class Alice extends Activity {
 			String text = intent.getStringExtra(Constants.LOG_SERVICE_OUT_MSG);
 
 			Log.i(Constants.TAG, "onReceive under ResponseReceiver " + text);
-			
-			//Check if Log Type is register, and if so, mark is first run to false
-			if(text.equalsIgnoreCase("1")){
+
+			// Check if Log Type is register, and if so, mark is first run to
+			// false
+			if (text.equalsIgnoreCase("1")) {
 				setNotFirstRun();
 			}
-			
+
 		}
 	}
 }

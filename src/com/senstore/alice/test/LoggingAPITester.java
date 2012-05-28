@@ -16,8 +16,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.senstore.alice.R;
-import com.senstore.alice.activities.AsyncListener;
 import com.senstore.alice.api.LogRESTHandler;
+import com.senstore.alice.listeners.AsyncTasksListener;
 import com.senstore.alice.models.ActionLog;
 import com.senstore.alice.utils.Constants;
 
@@ -25,7 +25,7 @@ import com.senstore.alice.utils.Constants;
  * @author Muniu Kariuki - muniu@bityarn.co.ke
  * 
  */
-public class LoggingAPITester extends Activity implements AsyncListener {
+public class LoggingAPITester extends Activity implements AsyncTasksListener {
 	public static final int SYNC_DIALOG = 0;
 	private ProgressDialog mProgressDialog;
 	AsyncLogger logger;
@@ -35,7 +35,7 @@ public class LoggingAPITester extends Activity implements AsyncListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.api_test_logger);
 
-		final AsyncListener listener = this;
+		final AsyncTasksListener listener = this;
 
 		((Button) findViewById(R.id.log_register))
 				.setOnClickListener(new OnClickListener() {
@@ -146,7 +146,14 @@ public class LoggingAPITester extends Activity implements AsyncListener {
 	}
 
 	@Override
-	public void onTaskComplete(Object obj) {
+	public void onTaskPreExecute() {
+		showDialog(SYNC_DIALOG);
+
+	}
+
+	@Override
+	public void onTaskPostExecute(Object obj) {
+		removeDialog(SYNC_DIALOG);
 		ActionLog log = (ActionLog) obj;
 		if (log != null) {
 			showAlert(
@@ -164,9 +171,9 @@ public class LoggingAPITester extends Activity implements AsyncListener {
 	class AsyncLogger extends AsyncTask<Void, String, ActionLog> {
 		String log_type = null;
 		boolean isLocation = false;
-		AsyncListener listener = null;
+		AsyncTasksListener listener = null;
 
-		public void setListener(AsyncListener listener) {
+		public void setListener(AsyncTasksListener listener) {
 			this.listener = listener;
 		}
 
@@ -186,15 +193,13 @@ public class LoggingAPITester extends Activity implements AsyncListener {
 
 		@Override
 		protected void onPostExecute(ActionLog result) {
-			removeDialog(SYNC_DIALOG);
+			listener.onTaskPostExecute(result);
 			super.onPostExecute(result);
-			listener.onTaskComplete(result);
-			Log.i(Constants.TAG, "onPostExecute returning " + result);
 		}
 
 		@Override
 		protected void onPreExecute() {
-			showDialog(SYNC_DIALOG);
+			listener.onTaskPreExecute();
 			super.onPreExecute();
 
 		}
