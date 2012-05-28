@@ -222,6 +222,11 @@ public class Alice extends Activity implements AsyncTasksListener {
 		unregisterReceiver(receiver);
 		super.onDestroy();
 	}
+	
+	
+	
+	
+	
 
 	public class ResponseReceiver extends BroadcastReceiver {
 
