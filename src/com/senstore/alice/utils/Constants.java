@@ -9,7 +9,11 @@ public class Constants {
 	public static String TAG = "Alice";
 	
 	public static String LOG_SERVICE_NAME = "AliceBackgroundLogService";
-	public static String LOG_SERVICE_TYPE = "log_type";
+	public static String LOG_SERVICE_IN_MSG = "log_type";
+	public static String LOG_SERVICE_OUT_MSG = "log_result";
+	
+	public static final String ACTION_RESP =
+		      "com.senstore.alice.utils.intent.action.MESSAGE_PROCESSED";
 	
 	public static String REGISTRY_CONTEXT="context";
 	public static String REGISTRY_LOCATION="deviceLocation";

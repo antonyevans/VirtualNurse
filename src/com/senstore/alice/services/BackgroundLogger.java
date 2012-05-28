@@ -4,10 +4,12 @@
 package com.senstore.alice.services;
 
 import com.senstore.alice.api.LogRESTHandler;
+import com.senstore.alice.models.ActionLog;
 import com.senstore.alice.utils.Constants;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.util.Log;
 
 /**
  * @author Muniu Kariuki - muniu@bityarn.co.ke
@@ -48,8 +50,10 @@ public class BackgroundLogger extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
+		
+		Log.i(Constants.TAG, "onHandleIntent() called");
 
-		msg = intent.getStringExtra(Constants.LOG_SERVICE_TYPE);
+		msg = intent.getStringExtra(Constants.LOG_SERVICE_IN_MSG);
 		LogRESTHandler handler = new LogRESTHandler();
 
 		switch (identifyType(msg)) {
@@ -57,7 +61,14 @@ public class BackgroundLogger extends IntentService {
 			break;
 		}
 		case REGISTER:
-			handler.log(msg);
+			Log.i(Constants.TAG, "onHandleIntent() REGISTER");
+			ActionLog log = handler.log(msg);
+			Intent broadcastIntent = new Intent();
+			broadcastIntent.setAction(Constants.ACTION_RESP);
+			broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
+			broadcastIntent
+					.putExtra(Constants.LOG_SERVICE_OUT_MSG, log.getId());
+			sendBroadcast(broadcastIntent);
 			break;
 		case LOCATION:
 			handler.log(msg);

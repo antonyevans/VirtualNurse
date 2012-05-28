@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -26,6 +29,7 @@ public class Alice extends Activity {
 	private static final int PERIOD = 120000; // 2 minutes
 	private PendingIntent pi = null;
 	private AlarmManager mgr = null;
+	ResponseReceiver receiver;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -37,15 +41,32 @@ public class Alice extends Activity {
 
 		setContentView(R.layout.main);
 
+		doLog(Integer.toString(Constants.LOG_REGISTER));
+		
+		// Register the Background Logger Broadcast Receiver
+		initLogBroadcastReceiver();
+
+		
+		
 		initLocationService();
 
+		
+		
 		// Check if the app has been run before.
 		if (isFirstRun()) {
+			Log.i(Constants.TAG, "isFirstRun()");
 			// Start a background Task, to register the current user/device
-			doLog(Integer.toString(Constants.LOG_REGISTER));
+			//doLog(Integer.toString(Constants.LOG_REGISTER));
 
 		}// else proceed with the normal app flow
 
+	}
+
+	private void initLogBroadcastReceiver() {
+		IntentFilter filter = new IntentFilter(Constants.ACTION_RESP);
+		filter.addCategory(Intent.CATEGORY_DEFAULT);
+		receiver = new ResponseReceiver();
+		registerReceiver(receiver, filter);
 	}
 
 	private void initLocationService() {
@@ -79,8 +100,9 @@ public class Alice extends Activity {
 	 * @param log_type
 	 */
 	private void doLog(String log_type) {
+		Log.i(Constants.TAG, "doLog() called");
 		Intent msgIntent = new Intent(this, BackgroundLogger.class);
-		msgIntent.putExtra(Constants.LOG_SERVICE_TYPE, log_type);
+		msgIntent.putExtra(Constants.LOG_SERVICE_IN_MSG, log_type);
 		startService(msgIntent);
 	}
 
@@ -99,5 +121,16 @@ public class Alice extends Activity {
 	protected void onDestroy() {
 		mgr.cancel(pi);
 		super.onDestroy();
+	}
+
+	public class ResponseReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+
+			String text = intent.getStringExtra(Constants.LOG_SERVICE_OUT_MSG);
+
+			Log.i(Constants.TAG, "onReceive under ResponseReceiver " + text);
+		}
 	}
 }
