@@ -9,16 +9,12 @@ package com.senstore.alice.models;
  */
 public class Diagnosis {
 
-	private String chat_length = null;
 	private String created_at = null;
+	private String current_query = null;
 	private String guide = null;
 	private String id = null;
 	private String input = null;
-	private String option1 = null;
-	private String option2 = null;
-	private String option3 = null;
-	private String option4 = null;
-	private String option5 = null;
+	private String last_query = null;
 	private String reply = null;
 	private String response_type = null;
 	private String secret_hash = null;
@@ -30,20 +26,20 @@ public class Diagnosis {
 
 	}
 
-	public String getChat_length() {
-		return chat_length;
-	}
-
-	public void setChat_length(String chat_length) {
-		this.chat_length = chat_length;
-	}
-
 	public String getCreated_at() {
 		return created_at;
 	}
 
 	public void setCreated_at(String created_at) {
 		this.created_at = created_at;
+	}
+
+	public String getCurrent_query() {
+		return current_query;
+	}
+
+	public void setCurrent_query(String current_query) {
+		this.current_query = current_query;
 	}
 
 	public String getGuide() {
@@ -70,44 +66,12 @@ public class Diagnosis {
 		this.input = input;
 	}
 
-	public String getOption1() {
-		return option1;
+	public String getLast_query() {
+		return last_query;
 	}
 
-	public void setOption1(String option1) {
-		this.option1 = option1;
-	}
-
-	public String getOption2() {
-		return option2;
-	}
-
-	public void setOption2(String option2) {
-		this.option2 = option2;
-	}
-
-	public String getOption3() {
-		return option3;
-	}
-
-	public void setOption3(String option3) {
-		this.option3 = option3;
-	}
-
-	public String getOption4() {
-		return option4;
-	}
-
-	public void setOption4(String option4) {
-		this.option4 = option4;
-	}
-
-	public String getOption5() {
-		return option5;
-	}
-
-	public void setOption5(String option5) {
-		this.option5 = option5;
+	public void setLast_query(String last_query) {
+		this.last_query = last_query;
 	}
 
 	public String getReply() {

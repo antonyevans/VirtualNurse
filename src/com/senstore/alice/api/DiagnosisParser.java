@@ -67,16 +67,12 @@ public class DiagnosisParser {
 		try {
 			jsonObj = new JSONObject(jsonStr);
 
-			String chat_length = jsonObj.getString("chat_length");
 			String created_at = jsonObj.getString("created_at");
+			String current_query = jsonObj.getString("current_query");
 			String guide = jsonObj.getString("guide");
 			String id = jsonObj.getString("id");
 			String input = jsonObj.getString("input");
-			String option1 = jsonObj.getString("option1");
-			String option2 = jsonObj.getString("option2");
-			String option3 = jsonObj.getString("option3");
-			String option4 = jsonObj.getString("option4");
-			String option5 = jsonObj.getString("option5");
+			String last_query = jsonObj.getString("last_query");
 			String reply = jsonObj.getString("reply");
 			String response_type = jsonObj.getString("response_type");
 			String secret_hash = jsonObj.getString("secret_hash");
@@ -84,16 +80,12 @@ public class DiagnosisParser {
 			String updated_at = jsonObj.getString("updated_at");
 			String user_id = jsonObj.getString("user_id");
 
-			diag.setChat_length(chat_length);
 			diag.setCreated_at(created_at);
+			diag.setCurrent_query(current_query);
 			diag.setGuide(guide);
 			diag.setId(id);
 			diag.setInput(input);
-			diag.setOption1(option1);
-			diag.setOption2(option2);
-			diag.setOption3(option3);
-			diag.setOption4(option4);
-			diag.setOption5(option5);
+			diag.setLast_query(last_query);
 			diag.setReply(reply);
 			diag.setResponse_type(response_type);
 			diag.setSecret_hash(secret_hash);
