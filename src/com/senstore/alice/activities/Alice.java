@@ -41,12 +41,9 @@ public class Alice extends Activity {
 
 		setContentView(R.layout.main);
 
-		doLog(Integer.toString(Constants.LOG_REGISTER));
 		
 		// Register the Background Logger Broadcast Receiver
 		initLogBroadcastReceiver();
-
-		
 		
 		initLocationService();
 
@@ -56,7 +53,7 @@ public class Alice extends Activity {
 		if (isFirstRun()) {
 			Log.i(Constants.TAG, "isFirstRun()");
 			// Start a background Task, to register the current user/device
-			//doLog(Integer.toString(Constants.LOG_REGISTER));
+			doLog(Integer.toString(Constants.LOG_REGISTER));
 
 		}// else proceed with the normal app flow
 
@@ -104,6 +101,7 @@ public class Alice extends Activity {
 		Intent msgIntent = new Intent(this, BackgroundLogger.class);
 		msgIntent.putExtra(Constants.LOG_SERVICE_IN_MSG, log_type);
 		startService(msgIntent);
+		Log.i(Constants.TAG, "after doLog() called");
 	}
 
 	@Override
