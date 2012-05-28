@@ -14,6 +14,9 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
 import com.commonsware.cwac.locpoll.LocationPoller;
 import com.commonsware.cwac.locpoll.LocationReceiver;
@@ -69,6 +72,15 @@ public class Alice extends Activity implements AsyncTasksListener {
 			doLog(Integer.toString(Constants.LOG_REGISTER));
 
 		}// else proceed with the normal app flow
+
+		((Button) findViewById(R.id.test_diagnosis))
+				.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						doDiagnosis("birthControlForWomen", "birthcontrol_oct3");
+					}
+				});
 
 	}
 
@@ -181,26 +193,36 @@ public class Alice extends Activity implements AsyncTasksListener {
 		if (result != null) {
 			int responseType = Integer.parseInt(result.getResponse_type());
 
+			Log.i(Constants.TAG, "Response Type = " + responseType);
+
 			switch (responseType) {
 			case 1:
-				//TODO Response Type 1 - Show Confirm Dialog
+				// TODO Response Type 1 - Show Confirm Dialog
+
 				break;
 			case 2:
-				//TODO Response Type 2 - Show Options Dialog
+				// TODO Response Type 2 - Show Options Dialog
+
+				Log.i(Constants.TAG, result.getReply());
+
 				break;
 			case 3:
-				//TODO Response Type 3 - EMERGENCY - Map with nearest hospital/doctor
+				// TODO Response Type 3 - EMERGENCY - Map with nearest
+				// hospital/doctor
 				break;
 			case 4:
-				//TODO Response Type 4 - CALL DOCTOR - Text with button to call doctor.
+				// TODO Response Type 4 - CALL DOCTOR - Text with button to call
+				// doctor.
 				break;
 			case 5:
-				//TODO Response Type 5 - INFORMATION - Text
+				// TODO Response Type 5 - INFORMATION - Text
 				break;
 
 			default:
 				break;
 			}
+		} else {
+			Log.e(Constants.TAG, "onTaskPostExecute returned null");
 		}
 
 	}

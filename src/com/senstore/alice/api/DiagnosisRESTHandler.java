@@ -51,7 +51,7 @@ public class DiagnosisRESTHandler {
 		try {
 			req.execute(RequestMethod.GET);
 			int responseCode = req.getResponseCode();
-			if (responseCode == 200) {
+			if (responseCode == 201) {
 				String responseBody = req.getResponse();
 				Log.i(Constants.TAG, responseBody);
 
