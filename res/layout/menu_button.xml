@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+    
+    <Button
+				    android:id="@+id/btn_menu"
+				    android:layout_width="fill_parent"
+				    android:layout_height="35dp"
+				    android:text=""
+				    android:layout_marginLeft="10dp"
+		        	android:layout_marginRight="10dp"
+		        	android:layout_marginTop="10dp"
+		        	android:layout_marginBottom="10dp"
+				    android:background="@drawable/buttonbgb"
+				    android:gravity="center"
+				     />
+    
+
+</LinearLayout>

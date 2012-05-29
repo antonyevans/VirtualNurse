@@ -10,14 +10,24 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Adapter;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.ViewFlipper;
 
 import com.commonsware.cwac.locpoll.LocationPoller;
 import com.commonsware.cwac.locpoll.LocationReceiver;
 import com.senstore.alice.R;
+import com.senstore.alice.adapters.AliceChatAdapter;
 import com.senstore.alice.api.HarvardGuide;
 import com.senstore.alice.listeners.AsyncTasksListener;
 import com.senstore.alice.models.Diagnosis;
@@ -43,6 +53,17 @@ public class Alice extends Activity implements AsyncTasksListener {
 	final AsyncTasksListener listener = this;
 
 	private DiagnosisAsyncTask diagnosisTask;
+	
+	
+	private View chatview;
+	private ListView chatlist;
+	private ViewFlipper flipper;
+	
+	private AliceChatAdapter chatAdapter;
+	
+	private View menuView;
+	
+	private LayoutInflater inflater;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -53,9 +74,25 @@ public class Alice extends Activity implements AsyncTasksListener {
 				getApplicationContext());
 
 		setContentView(R.layout.main);
-
-		// TODO Harvard Guide
+		
+		inflater = getLayoutInflater();
+		
+		//inflate flipper to switch between menu and chat screen
+		flipper = (ViewFlipper)findViewById(R.id.alice_view_flipper);
+		
+		//inflate the view with the listview
+		chatview = inflater.inflate(R.layout.alice_chat_list_layout, null);
+		
+		//load listview
+		chatlist = (ListView)chatview.findViewById(R.id.alice_chat_list);
+		
+		chatAdapter = new AliceChatAdapter(this);
+		chatlist.setAdapter(chatAdapter);
+		
+		// Load the main menu
 		createHarvardGuideWidget();
+		
+		flipper.addView(menuView);
 
 		// Register the Background Logger Broadcast Receiver
 		initLogBroadcastReceiver();
@@ -79,9 +116,38 @@ public class Alice extends Activity implements AsyncTasksListener {
 	 * @Mimano This is where you put in your buttons/list in a scroll view
 	 */
 	private void createHarvardGuideWidget() {
+		//inflate main menu view
+		menuView = inflater.inflate(R.layout.alice_first_row, null);
+		//locate box for placing buttons
+		LinearLayout lightbox = (LinearLayout)menuView.findViewById(R.id.lightbox_button_layout);
+		
+		
 
 		for (HarvardGuide hg : HarvardGuide.values()) {
+			final String name = hg.officialName();
+			final String guide = hg.guideName();
+			final String start_input = hg.startInput();
+			
+			Button b = new Button(this);
+			
+			Drawable btnBg = getResources().getDrawable(R.drawable.buttonbgb);
+			
+			b.setBackgroundDrawable(btnBg);
+			
+			
+			b.setText(name);
 
+			b.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					doDiagnosis(guide, start_input);
+				}
+			});
+			
+			lightbox.addView(b);
+			
+			
 			Log.i(Constants.TAG, hg.officialName() + " :: " + hg.guideName());
 		}
 	}
@@ -177,6 +243,44 @@ public class Alice extends Activity implements AsyncTasksListener {
 		removeDialog(DIAGNOSIS_DIALOG);
 
 		Diagnosis result = (Diagnosis) obj;
+		
+		
+		if (result!=null) {
+			
+			//add diagnosis object to adapter
+			chatAdapter.addItem(result);
+			
+			//tell listeners that underlying data has changed. Refrash the view 
+			chatAdapter.notifyDataSetChanged();
+			
+			//identify the view on display currently
+			View currentView = flipper.getCurrentView();
+			
+			if (currentView.equals(menuView)) {
+				//identify the number of children in the flipper
+				int childCount = flipper.getChildCount();
+				if (childCount>1) {
+					flipper.showNext();
+				}else{
+					flipper.addView(chatview);
+					flipper.showNext();
+				}
+				
+				//perhaps scroll to the last item if layout does not handle this well
+				
+				
+			}else if (currentView.equals(chatview)) {
+				//TODO: Check if we really have to do nothing here
+				//perhaps scroll to the last item if layout does not handle this well
+				
+			}
+			
+			
+			
+			
+		}
+		
+		
 
 		if (result != null) {
 			int responseType = Integer.parseInt(result.getResponse_type());
@@ -258,5 +362,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 		}
 	}
+	
+	
 
 }

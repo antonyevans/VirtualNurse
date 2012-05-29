@@ -1,82 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" 
     android:background="@drawable/background">
-	<LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
-            
-    	<LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/bubble_text_layout"
-            android:layout_marginLeft="10dp"
-        	android:layout_marginRight="10dp"
-        	android:layout_marginTop="5dp"
-        	android:layout_marginBottom="5dp"
-        	android:background="@drawable/bubbleleft" >
-            
-        <TextView
+    
+    <ViewFlipper
+        android:id="@+id/alice_view_flipper"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/hello"
-        android:paddingLeft="15dp"
-        android:paddingRight="10dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-       	android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:textColor="@android:color/black"
-         />
+        android:layout_height="fill_parent" >
         
-        
-            
-        </LinearLayout>
-        
-    	
-    	
-    	<ScrollView
-		    android:id="@+id/buttons_scroll"
-		    android:layout_width="fill_parent"
-		    android:layout_height="wrap_content"
-		    android:layout_marginLeft="10dp"
-	        android:layout_marginRight="10dp"
-	       	android:layout_marginTop="10dp"
-	        android:layout_marginBottom="10dp"
-	        android:background="@drawable/lightbox"
-		     >
-			<LinearLayout
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:id="@+id/lightbox_button_layout"
-	            android:layout_marginLeft="10dp"
-	        	android:layout_marginRight="10dp"
-	        	android:layout_marginTop="10dp"
-	        	android:layout_marginBottom="10dp">
-	        	
-	    	    <TextView
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:text="@string/hello"
-		        android:paddingLeft="15dp"
-		        android:paddingRight="10dp"
-		        android:paddingTop="10dp"
-		        android:paddingBottom="10dp"
-		        
-		        android:textColor="@android:color/black"
-		         />
-	        
-	    	</LinearLayout>
-		</ScrollView>
+    </ViewFlipper>
     
-    
-    </LinearLayout>
-
 	
+	
+    
+       <LinearLayout 
+           android:layout_width="fill_parent"
+           android:layout_height="wrap_content"
+           android:layout_alignParentBottom="true"
+           android:background="@drawable/barbottom">
+           
+           
+           
+       </LinearLayout> 
+       
+       <ImageView
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:src="@drawable/micbtn"
+           android:layout_centerInParent="true"
+           android:layout_alignParentBottom="true" 
+           />
+       
+    
 
-</LinearLayout>
+</RelativeLayout>
