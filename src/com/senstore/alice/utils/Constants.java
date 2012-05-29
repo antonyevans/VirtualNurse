@@ -51,4 +51,7 @@ public class Constants {
 	public static int RESPONSE_EMERGENCY = 3;// Emergency(text+map)
 	public static int RESPONSE_CALLDOCTOR = 4;// Call doctor(text+button)
 	public static int RESPONSE_INFORMATION = 5;// Information(text)
+	
+	
+	public static  String INFLATOR_SERVICE = "inflator_service";
 }

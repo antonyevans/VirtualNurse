@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="hello">Alice</string>
+    <string name="hello">Hi, my name is Alice. You can click on the microphone to talk to me or select your primary complaint by clicking on the buttons below</string>
     <string name="app_name">Alice</string>
 
     <!-- API tester resources -->
