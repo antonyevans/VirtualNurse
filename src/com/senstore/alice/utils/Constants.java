@@ -21,7 +21,7 @@ public class Constants {
 	// Do not forget to add the trailing '/'
 	public static String SERVER_URL = "http://sharp-waterfall-5241.herokuapp.com/";
 
-	public static String SECURITY_HASH = "foobar";
+	public static String SECURITY_HASH = "701319fdb07288ca9f4bfae8b214b81d";
 
 	public static String TYPE_JSON = "json";
 	public static String TYPE_XML = "xml";

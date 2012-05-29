@@ -3,6 +3,8 @@
  */
 package com.senstore.alice.models;
 
+import java.util.HashMap;
+
 /**
  * @author Muniu Kariuki - muniu@bityarn.co.ke
  * 
@@ -16,6 +18,7 @@ public class Diagnosis {
 	private String input = null;
 	private String last_query = null;
 	private String reply = null;
+	private HashMap<String, String> reply_options = null;
 	private String response_type = null;
 	private String secret_hash = null;
 	private String select_type = null;
@@ -80,6 +83,14 @@ public class Diagnosis {
 
 	public void setReply(String reply) {
 		this.reply = reply;
+	}
+
+	public HashMap<String, String> getReply_options() {
+		return reply_options;
+	}
+
+	public void setReply_options(HashMap<String, String> reply_options) {
+		this.reply_options = reply_options;
 	}
 
 	public String getResponse_type() {
