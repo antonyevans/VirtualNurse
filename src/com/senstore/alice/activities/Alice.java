@@ -181,26 +181,39 @@ public class Alice extends Activity implements AsyncTasksListener {
 		if (result != null) {
 			int responseType = Integer.parseInt(result.getResponse_type());
 
+			Log.i(Constants.TAG, "Response Type = " + responseType);
+
 			switch (responseType) {
 			case 1:
-				//TODO Response Type 1 - Show Confirm Dialog
+				// TODO Response Type 1 - Show Confirm Dialog
+
 				break;
 			case 2:
-				//TODO Response Type 2 - Show Options Dialog
+				// TODO Response Type 2 - Show Options Dialog
+
+				String sanitized = android.text.Html
+						.fromHtml(result.getReply()).toString();
+
+				Log.i(Constants.TAG, sanitized);
+
 				break;
 			case 3:
-				//TODO Response Type 3 - EMERGENCY - Map with nearest hospital/doctor
+				// TODO Response Type 3 - EMERGENCY - Map with nearest
+				// hospital/doctor
 				break;
 			case 4:
-				//TODO Response Type 4 - CALL DOCTOR - Text with button to call doctor.
+				// TODO Response Type 4 - CALL DOCTOR - Text with button to call
+				// doctor.
 				break;
 			case 5:
-				//TODO Response Type 5 - INFORMATION - Text
+				// TODO Response Type 5 - INFORMATION - Text
 				break;
 
 			default:
 				break;
 			}
+		} else {
+			Log.e(Constants.TAG, "onTaskPostExecute returned null");
 		}
 
 	}
