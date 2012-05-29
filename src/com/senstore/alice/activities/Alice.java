@@ -85,6 +85,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 		
 		//load listview
 		chatlist = (ListView)chatview.findViewById(R.id.alice_chat_list);
+		chatlist.setFocusable(false);
 		
 		chatAdapter = new AliceChatAdapter(this);
 		chatlist.setAdapter(chatAdapter);
