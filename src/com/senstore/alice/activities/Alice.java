@@ -14,9 +14,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 
 import com.commonsware.cwac.locpoll.LocationPoller;
 import com.commonsware.cwac.locpoll.LocationReceiver;
@@ -72,15 +69,6 @@ public class Alice extends Activity implements AsyncTasksListener {
 			doLog(Integer.toString(Constants.LOG_REGISTER));
 
 		}// else proceed with the normal app flow
-
-		((Button) findViewById(R.id.test_diagnosis))
-				.setOnClickListener(new OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						doDiagnosis("birthControlForWomen", "birthcontrol_oct3");
-					}
-				});
 
 	}
 
@@ -203,7 +191,10 @@ public class Alice extends Activity implements AsyncTasksListener {
 			case 2:
 				// TODO Response Type 2 - Show Options Dialog
 
-				Log.i(Constants.TAG, result.getReply());
+				String sanitized = android.text.Html
+						.fromHtml(result.getReply()).toString();
+
+				Log.i(Constants.TAG, sanitized);
 
 				break;
 			case 3:
