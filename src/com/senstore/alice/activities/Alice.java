@@ -69,16 +69,15 @@ public class Alice extends Activity implements AsyncTasksListener {
 	final AsyncTasksListener listener = this;
 
 	private DiagnosisAsyncTask diagnosisTask;
-	
-	
+
 	private View chatview;
 	private ListView chatlist;
 	private ViewFlipper flipper;
-	
+
 	private AliceChatAdapter chatAdapter;
 	
 	private View menuView;
-	
+
 	private LayoutInflater inflater;
 
 	/** Called when the activity is first created. */
@@ -90,25 +89,31 @@ public class Alice extends Activity implements AsyncTasksListener {
 				getApplicationContext());
 
 		setContentView(R.layout.main);
-		
+
+		//
+		SavedState savedState = (SavedState) getLastNonConfigurationInstance();
+		if (savedState != null) {
+			flipper = savedState.flipper;
+		}
+
 		inflater = getLayoutInflater();
-		
-		//inflate flipper to switch between menu and chat screen
-		flipper = (ViewFlipper)findViewById(R.id.alice_view_flipper);
-		
-		//inflate the view with the listview
+
+		// inflate flipper to switch between menu and chat screen
+		flipper = (ViewFlipper) findViewById(R.id.alice_view_flipper);
+
+		// inflate the view with the listview
 		chatview = inflater.inflate(R.layout.alice_chat_list_layout, null);
-		
-		//load listview
-		chatlist = (ListView)chatview.findViewById(R.id.alice_chat_list);
+
+		// load listview
+		chatlist = (ListView) chatview.findViewById(R.id.alice_chat_list);
 		chatlist.setFocusable(false);
-		
+
 		chatAdapter = new AliceChatAdapter(this);
 		chatlist.setAdapter(chatAdapter);
-		
+
 		// Load the main menu
 		createHarvardGuideWidget();
-		
+
 		flipper.addView(menuView);
 
 		// Register the Background Logger Broadcast Receiver
@@ -133,25 +138,23 @@ public class Alice extends Activity implements AsyncTasksListener {
 	 * @Mimano This is where you put in your buttons/list in a scroll view
 	 */
 	private void createHarvardGuideWidget() {
-		//inflate main menu view
+		// inflate main menu view
 		menuView = inflater.inflate(R.layout.alice_first_row, null);
-		//locate box for placing buttons
-		LinearLayout lightbox = (LinearLayout)menuView.findViewById(R.id.lightbox_button_layout);
-		
-		
+		// locate box for placing buttons
+		LinearLayout lightbox = (LinearLayout) menuView
+				.findViewById(R.id.lightbox_button_layout);
 
 		for (HarvardGuide hg : HarvardGuide.values()) {
 			final String name = hg.officialName();
 			final String guide = hg.guideName();
 			final String start_input = hg.startInput();
-			
+
 			Button b = new Button(this);
-			
+
 			Drawable btnBg = getResources().getDrawable(R.drawable.buttonbgb);
-			
+
 			b.setBackgroundDrawable(btnBg);
-			
-			
+
 			b.setText(name);
 
 			b.setOnClickListener(new OnClickListener() {
@@ -161,10 +164,9 @@ public class Alice extends Activity implements AsyncTasksListener {
 					doDiagnosis(guide, start_input);
 				}
 			});
-			
+
 			lightbox.addView(b);
-			
-			
+
 			Log.i(Constants.TAG, hg.officialName() + " :: " + hg.guideName());
 		}
 	}
@@ -260,44 +262,39 @@ public class Alice extends Activity implements AsyncTasksListener {
 		removeDialog(DIAGNOSIS_DIALOG);
 
 		Diagnosis result = (Diagnosis) obj;
-		
-		
-		if (result!=null) {
-			
-			//add diagnosis object to adapter
+
+		if (result != null) {
+
+			// add diagnosis object to adapter
 			chatAdapter.addItem(result);
-			
-			//tell listeners that underlying data has changed. Refrash the view 
+
+			// tell listeners that underlying data has changed. Refrash the view
 			chatAdapter.notifyDataSetChanged();
-			
-			//identify the view on display currently
+
+			// identify the view on display currently
 			View currentView = flipper.getCurrentView();
-			
+
 			if (currentView.equals(menuView)) {
-				//identify the number of children in the flipper
+				// identify the number of children in the flipper
 				int childCount = flipper.getChildCount();
-				if (childCount>1) {
+				if (childCount > 1) {
 					flipper.showNext();
-				}else{
+				} else {
 					flipper.addView(chatview);
 					flipper.showNext();
 				}
-				
-				//perhaps scroll to the last item if layout does not handle this well
-				
-				
-			}else if (currentView.equals(chatview)) {
-				//TODO: Check if we really have to do nothing here
-				//perhaps scroll to the last item if layout does not handle this well
-				
+
+				// perhaps scroll to the last item if layout does not handle
+				// this well
+
+			} else if (currentView.equals(chatview)) {
+				// TODO: Check if we really have to do nothing here
+				// perhaps scroll to the last item if layout does not handle
+				// this well
+
 			}
-			
-			
-			
-			
+
 		}
-		
-		
 
 		if (result != null) {
 			int responseType = Integer.parseInt(result.getResponse_type());
@@ -340,6 +337,17 @@ public class Alice extends Activity implements AsyncTasksListener {
 	}
 
 	@Override
+	public Object onRetainNonConfigurationInstance() {
+
+		if (flipper != null) {
+			SavedState savedState = new SavedState();
+			savedState.flipper = flipper;
+		}
+
+		return super.onRetainNonConfigurationInstance();
+	}
+
+	@Override
 	protected void onPause() {
 		mgr.cancel(pi);
 		super.onPause();
@@ -356,11 +364,13 @@ public class Alice extends Activity implements AsyncTasksListener {
 		unregisterReceiver(receiver);
 		super.onDestroy();
 	}
-	
-	
-	
-	
-	
+
+	private class SavedState {
+		Object Context;
+		ViewFlipper flipper;
+		AsyncTasksListener listener;
+		LayoutInflater inflater;
+	}
 
 	public class ResponseReceiver extends BroadcastReceiver {
 
@@ -379,6 +389,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 		}
 	}
+<<<<<<< HEAD
 	
 	//custom adapter for the chat listview
 	public class AliceChatAdapter extends BaseAdapter{
@@ -563,5 +574,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 	}
 	
 	
+=======
+>>>>>>> 5a60cdbd9cb1f1e5c06b1fc43efbca46ebd84b36
 
 }
