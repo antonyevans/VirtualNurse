@@ -3,6 +3,9 @@
  */
 package com.senstore.alice.api;
 
+import java.util.HashMap;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -98,5 +101,32 @@ public class DiagnosisParser {
 		}
 
 		return diag;
+	}
+
+	private HashMap<String, String> getReplyOptions(JSONObject obj) {
+
+		HashMap<String, String> options = new HashMap<String, String>();
+
+		// Handle the reply options - text,link - K,V
+		JSONArray reply_options;
+		try {
+			reply_options = obj.getJSONArray("options");
+
+			// loop through the JSONArray and get all the items
+			for (int i = 0; i < reply_options.length(); i++) {
+
+				String text = reply_options.getJSONObject(i).getString("text")
+						.toString();
+				String link = reply_options.getJSONObject(i).getString("link")
+						.toString();
+
+				options.put(text, link);
+
+				Log.i(Constants.TAG, text + " - " + link);
+			}
+		} catch (JSONException e) {
+			Log.e(Constants.TAG, e.getMessage());
+		}
+		return options;
 	}
 }
