@@ -4,8 +4,10 @@
 package com.senstore.alice.test;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -103,6 +105,18 @@ public class DiagnosisAPITester extends Activity implements AsyncTasksListener {
 		diagnosisTask.execute();
 	}
 
+	private void showAlert(String title, String message) {
+		AlertDialog alert = new AlertDialog.Builder(this).create();
+		alert.setTitle(title);
+		alert.setMessage(message);
+		alert.setButton("OK", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				return;
+			}
+		});
+		alert.show();
+	}
+
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
@@ -136,33 +150,33 @@ public class DiagnosisAPITester extends Activity implements AsyncTasksListener {
 
 		if (result != null) {
 			int responseType = Integer.parseInt(result.getResponse_type());
-
+			String resultText=result.getReply();
 			Log.i(Constants.TAG, "Response Type = " + responseType);
 
 			switch (responseType) {
 			case 1:
 				// TODO Response Type 1 - Show Confirm Dialog
+				showAlert(getString(R.string.app_name), resultText);
 
 				break;
 			case 2:
 				// TODO Response Type 2 - Show Options Dialog
-
-				String sanitized = android.text.Html
-						.fromHtml(result.getReply()).toString();
-
-				Log.i(Constants.TAG, sanitized);
+				showAlert(getString(R.string.app_name), resultText);
 
 				break;
 			case 3:
 				// TODO Response Type 3 - EMERGENCY - Map with nearest
 				// hospital/doctor
+				showAlert(getString(R.string.app_name), resultText);
 				break;
 			case 4:
 				// TODO Response Type 4 - CALL DOCTOR - Text with button to call
 				// doctor.
+				showAlert(getString(R.string.app_name), resultText);
 				break;
 			case 5:
 				// TODO Response Type 5 - INFORMATION - Text
+				showAlert(getString(R.string.app_name), resultText);
 				break;
 
 			default:
