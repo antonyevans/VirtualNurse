@@ -15,5 +15,6 @@
     <string name="api_test_logger_callDoctorReject">Reject</string>
     <string name="api_test_diagnosis">Diagnosis API</string>
     <string name="api_test_diagnosis_desc">Test the various diagnosis API calls</string>
+    <string name="really_long_text">Hi, my name is Alice. You can click on the microphone to talk to me or select your primary complaint by clicking on the buttons below. Hi, my name is Alice. You can click on the microphone to talk to me or select your primary complaint by clicking on the buttons below. Hi, my name is Alice. You can click on the microphone to talk to me or select your primary complaint by clicking on the buttons below. Hi, my name is Alice. You can click on the microphone to talk to me or select your primary complaint by clicking on the buttons below. Hi, my name is Alice. You can click on the microphone to talk to me or select your primary complaint by clicking on the buttons below</string>
 
 </resources>
