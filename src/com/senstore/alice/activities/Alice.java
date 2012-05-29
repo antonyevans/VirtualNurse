@@ -389,7 +389,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 		}
 	}
-<<<<<<< HEAD
+
 	
 	//custom adapter for the chat listview
 	public class AliceChatAdapter extends BaseAdapter{
@@ -574,7 +574,6 @@ public class Alice extends Activity implements AsyncTasksListener {
 	}
 	
 	
-=======
->>>>>>> 5a60cdbd9cb1f1e5c06b1fc43efbca46ebd84b36
+
 
 }
