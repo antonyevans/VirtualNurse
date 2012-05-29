@@ -22,8 +22,6 @@ public class AliceChatAdapter extends BaseAdapter{
 		inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		listitems = new ArrayList<Diagnosis>();
 		
-		//add dummy Object for first row. Always displays the menu on opening alice
-		listitems.add(new Diagnosis());
 	}
 
 	@Override
@@ -48,49 +46,53 @@ public class AliceChatAdapter extends BaseAdapter{
 	public View getView(int position, View convertView, ViewGroup parent) {
 		//retrieve currently selected item
 		Diagnosis diagnosis = listitems.get(position);
-		
-		//retrive ID for discriminating the different views
-		int diagnosisType = Integer.parseInt(diagnosis.getResponse_type());
-		
-		//inflating test Ui
+		String type =diagnosis.getResponse_type();
 		View row=null;
 		
-		row = inflater.inflate(R.layout.view_test_flip_list, null);
-		TextView tv = (TextView)row.findViewById(R.id.diag_test);
-		
-		switch (diagnosisType) {
-		case 1:
-			// TODO Response Type 1 - Show Confirm Dialog
-			tv.setText("-->"+diagnosis.getCurrent_query() +"--"+diagnosis.getInput()+"--"+diagnosis.getReply()+"--"+diagnosis.getReply());
-			break;
-		case 2:
+		if (type!=null) {
+			//retrive ID for discriminating the different views
+			int diagnosisType = Integer.parseInt(type);
 			
-			// TODO Response Type 2 - Show Options Dialog
-			String sanitized = android.text.Html
-			.fromHtml(diagnosis.getReply()).toString();
-			tv.setText(sanitized+"-->"+diagnosis.getCurrent_query() +"--"+diagnosis.getInput()+"--"+diagnosis.getReply()+"--"+diagnosis.getReply());
-			break;
-		case 3:
-			// TODO Response Type 3 - EMERGENCY - Map with nearest
-			// hospital/doctor
+			//inflating test Ui
+			row = inflater.inflate(R.layout.view_test_flip_list, null);
+			TextView tv = (TextView)row.findViewById(R.id.diag_test);
 			
-			tv.setText("-->"+diagnosis.getCurrent_query() +"--"+diagnosis.getInput()+"--"+diagnosis.getReply()+"--"+diagnosis.getReply());
+			switch (diagnosisType) {
+			case 1:
+				// TODO Response Type 1 - Show Confirm Dialog
+				tv.setText("-->"+diagnosis.getCurrent_query() +"--"+diagnosis.getInput()+"--"+diagnosis.getReply()+"--"+diagnosis.getReply());
+				break;
+			case 2:
+				
+				// TODO Response Type 2 - Show Options Dialog
+				String sanitized = android.text.Html
+				.fromHtml(diagnosis.getReply()).toString();
+				tv.setText(sanitized+"-->"+diagnosis.getCurrent_query() +"--"+diagnosis.getInput()+"--"+diagnosis.getReply()+"--"+diagnosis.getReply());
+				break;
+			case 3:
+				// TODO Response Type 3 - EMERGENCY - Map with nearest
+				// hospital/doctor
+				
+				tv.setText("-->"+diagnosis.getCurrent_query() +"--"+diagnosis.getInput()+"--"+diagnosis.getReply()+"--"+diagnosis.getReply());
 
-			break;
-		case 4:
-			// TODO Response Type 4 - CALL DOCTOR - Text with button to call
-			// doctor.
-			tv.setText("-->"+diagnosis.getCurrent_query() +"--"+diagnosis.getInput()+"--"+diagnosis.getReply()+"--"+diagnosis.getReply());
+				break;
+			case 4:
+				// TODO Response Type 4 - CALL DOCTOR - Text with button to call
+				// doctor.
+				tv.setText("-->"+diagnosis.getCurrent_query() +"--"+diagnosis.getInput()+"--"+diagnosis.getReply()+"--"+diagnosis.getReply());
 
-			break;
-		case 5:
-			// TODO Response Type 5 - INFORMATION - Text
-			tv.setText("-->"+diagnosis.getCurrent_query() +"--"+diagnosis.getInput()+"--"+diagnosis.getReply()+"--"+diagnosis.getReply());
-			break;
+				break;
+			case 5:
+				// TODO Response Type 5 - INFORMATION - Text
+				tv.setText("-->"+diagnosis.getCurrent_query() +"--"+diagnosis.getInput()+"--"+diagnosis.getReply()+"--"+diagnosis.getReply());
+				break;
 
-		default:
-			break;
+			default:
+				break;
+			}
+			
 		}
+		
 		
 		
 		
