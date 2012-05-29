@@ -88,6 +88,7 @@ public class DiagnosisParser {
 			diag.setGuide(guide);
 			diag.setId(id);
 			diag.setInput(input);
+			diag.setReply_options(getReplyOptions(jsonObj));
 			diag.setLast_query(last_query);
 			diag.setReply(reply);
 			diag.setResponse_type(response_type);
