@@ -3,6 +3,9 @@
  */
 package com.senstore.alice.test;
 
+import java.util.HashMap;
+import java.util.Map.Entry;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -150,8 +153,7 @@ public class DiagnosisAPITester extends Activity implements AsyncTasksListener {
 
 		if (result != null) {
 			int responseType = Integer.parseInt(result.getResponse_type());
-			String resultText=result.getReply();
-			Log.i(Constants.TAG, "Response Type = " + responseType);
+			String resultText = result.getReply();
 
 			switch (responseType) {
 			case 1:
@@ -161,7 +163,8 @@ public class DiagnosisAPITester extends Activity implements AsyncTasksListener {
 				break;
 			case 2:
 				// TODO Response Type 2 - Show Options Dialog
-				showAlert(getString(R.string.app_name), resultText);
+				showAlert(getString(R.string.app_name), resultText + "\n"
+						+ printOptionsMap(result.getReply_options()));
 
 				break;
 			case 3:
@@ -187,4 +190,17 @@ public class DiagnosisAPITester extends Activity implements AsyncTasksListener {
 		}
 
 	}
+
+	private String printOptionsMap(HashMap<String, String> options) {
+		String option="";
+		for (Entry<String, String> entry : options.entrySet()) {
+			String key = entry.getKey();
+			String value = entry.getValue();
+
+			option += key + " - " + value + "\n";
+		}
+
+		return option;
+	}
+
 }
