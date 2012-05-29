@@ -1,5 +1,11 @@
 package com.senstore.alice.activities;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Dialog;
@@ -18,19 +24,29 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Adapter;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.commonsware.cwac.locpoll.LocationPoller;
 import com.commonsware.cwac.locpoll.LocationReceiver;
+import com.google.android.maps.GeoPoint;
+import com.google.android.maps.MapController;
+import com.google.android.maps.MapView;
+import com.google.android.maps.Overlay;
+import com.google.android.maps.OverlayItem;
 import com.senstore.alice.R;
-import com.senstore.alice.adapters.AliceChatAdapter;
 import com.senstore.alice.api.HarvardGuide;
 import com.senstore.alice.listeners.AsyncTasksListener;
 import com.senstore.alice.models.Diagnosis;
+import com.senstore.alice.overlays.AliceItemizedOverlay;
 import com.senstore.alice.services.BackgroundLogger;
 import com.senstore.alice.tasks.DiagnosisAsyncTask;
 import com.senstore.alice.utils.Constants;
@@ -206,7 +222,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 	 * @param input_text
 	 *            and then executes the request
 	 */
-	private void doDiagnosis(String health_guide, String input_text) {
+	public void doDiagnosis(String health_guide, String input_text) {
 		diagnosisTask = new DiagnosisAsyncTask();
 		diagnosisTask.setListener(listener);
 		diagnosisTask.setHealth_guide(health_guide);
@@ -362,6 +378,188 @@ public class Alice extends Activity implements AsyncTasksListener {
 			}
 
 		}
+	}
+	
+	//custom adapter for the chat listview
+	public class AliceChatAdapter extends BaseAdapter{
+		ArrayList<Diagnosis> listitems;
+		LayoutInflater inflater;
+		Context context;
+		
+		public AliceChatAdapter(Context context) {
+			this.context = context;
+			inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			listitems = new ArrayList<Diagnosis>();
+			
+		}
+
+		@Override
+		public int getCount() {
+			// TODO Auto-generated method stub
+			return listitems.size();
+		}
+
+		@Override
+		public Object getItem(int index) {
+			// TODO Auto-generated method stub
+			return listitems.get(index);
+		}
+
+		@Override
+		public long getItemId(int index) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			//retrieve currently selected item
+			Diagnosis diagnosis = listitems.get(position);
+			String type =diagnosis.getResponse_type();
+			View row=null;
+			
+			if (type!=null) {
+				//retrive ID for discriminating the different views
+				int diagnosisType = Integer.parseInt(type);
+				
+				
+				
+				switch (diagnosisType) {
+				case 1:
+					// TODO Response Type 1 - Show Confirm Dialog . This is ignored for now
+					break;
+				case 2:
+					
+					//Response Type 2 - Show Options Dialog
+					row = inflater.inflate(R.layout.diagnosis_options_chat, null);
+					
+					TextView optQuery = (TextView)row.findViewById(R.id.options_txt_query);
+					TextView optResp = (TextView)row.findViewById(R.id.options_txt_response);
+					
+					optQuery.setText(diagnosis.getCurrent_query().toString());
+					optResp.setText(diagnosis.getReply().toString());
+					
+					RadioGroup optGroup = (RadioGroup)row.findViewById(R.id.options_query_options);
+					
+					HashMap<String, String> respOpts = diagnosis.getReply_options();
+					
+					Iterator it = respOpts.entrySet().iterator();
+					
+					while (it.hasNext()) {
+						final Map.Entry<String, String> pairs = (Map.Entry<String, String>)it.next();
+						RadioButton rb = new RadioButton(this.context);
+						rb.setText(pairs.getKey());
+						rb.setOnClickListener(new View.OnClickListener() {
+							
+							@Override
+							public void onClick(View v) {
+								doDiagnosis(pairs.getKey(), pairs.getValue());
+							}
+						});
+						optGroup.addView(rb);
+						
+					}
+					
+					String sanitized = android.text.Html
+					.fromHtml(diagnosis.getReply()).toString();
+					break;
+				case 3:
+					// Response Type 3 - EMERGENCY - Map with nearest
+					// hospital/doctor
+					row = inflater.inflate(R.layout.diagnosis_map_chat, null);
+					
+					TextView mapQuery = (TextView)row.findViewById(R.id.map_txt_query);
+					TextView mapResp = (TextView)row.findViewById(R.id.map_txt_response);
+					
+					mapQuery.setText(diagnosis.getCurrent_query().toString());
+					mapResp.setText(diagnosis.getReply().toString());
+					
+					MapView mapView = (MapView)row.findViewById(R.id.mapview);
+					
+					mapView.setBuiltInZoomControls(true);
+
+					 List<Overlay> mapOverlays = mapView.getOverlays();
+					 Drawable drawable = context.getResources().getDrawable(R.drawable.hospital);
+					 AliceItemizedOverlay itemizedoverlay = new AliceItemizedOverlay(drawable,context);
+					 GeoPoint point = new GeoPoint((int)-1.297322,(int)36.792344);
+					 OverlayItem overlayitem = new OverlayItem(point, "Health Centre Location", "This is the nearest health centre");
+
+
+					 itemizedoverlay.addOverlay(overlayitem);
+
+					 mapOverlays.add(itemizedoverlay);
+					 
+					 MapController mapController = mapView.getController();
+					 
+
+					 mapController.animateTo(point); //attempt to center map
+					 
+					 mapController.setZoom(14);    // this needs some investigation to realise best zoom level
+					 
+					break;
+				case 4:
+					// TODO Response Type 4 - CALL DOCTOR - Text with button to call
+					// doctor.
+					row = inflater.inflate(R.layout.diagnosis_calldoc_chat, null);
+					
+					TextView callQuery = (TextView)row.findViewById(R.id.calldoc_txt_query);
+					TextView callResp = (TextView)row.findViewById(R.id.calldoc_txt_response);
+					
+					callQuery.setText(diagnosis.getCurrent_query().toString());
+					callResp.setText(diagnosis.getReply().toString());
+					
+					Button callBtn = (Button)row.findViewById(R.id.calldoc_btn);
+					
+					callBtn.setOnClickListener(new OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							// TODO Auto-generated method stub
+							Toast.makeText(context, "Calling Daktari now", Toast.LENGTH_SHORT);
+							
+						}
+					});
+					
+
+					break;
+				case 5:
+					// TODO Response Type 5 - INFORMATION - Text
+					row = inflater.inflate(R.layout.diagnosis_information_chat, null);
+					
+					TextView infoQuery = (TextView)row.findViewById(R.id.info_txt_query);
+					TextView infoResp = (TextView)row.findViewById(R.id.info_txt_response);
+					
+					infoQuery.setText(diagnosis.getCurrent_query().toString());
+					infoResp.setText(diagnosis.getReply().toString());
+					
+					break;
+
+				default:
+					break;
+				}
+				
+			}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			return row;
+		}
+		
+		public void resetAdapter() {
+			listitems = new ArrayList<Diagnosis>();
+			
+		}
+		
+		public void addItem(Diagnosis diagnosis) {
+			listitems.add(diagnosis);
+		}
+
 	}
 	
 	

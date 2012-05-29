@@ -55,6 +55,8 @@
         <receiver android:name="com.commonsware.cwac.locpoll.LocationPoller" />
 
         <service android:name="com.commonsware.cwac.locpoll.LocationPollerService" />
+        
+        <uses-library android:name="com.google.android.maps" />
     </application>
 
 </manifest>

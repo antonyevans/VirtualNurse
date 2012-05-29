@@ -1,7 +1,10 @@
 package com.senstore.alice.adapters;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.senstore.alice.R;
 import com.senstore.alice.models.Diagnosis;
@@ -11,14 +14,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
-public class AliceChatAdapter extends BaseAdapter{
+public class AliceChatAdapterOld extends BaseAdapter{
 	ArrayList<Diagnosis> listitems;
 	LayoutInflater inflater;
+	Context context;
 	
-	public AliceChatAdapter(Context context) {
-		
+	public AliceChatAdapterOld(Context context) {
+		this.context = context;
 		inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		listitems = new ArrayList<Diagnosis>();
 		
@@ -53,38 +59,61 @@ public class AliceChatAdapter extends BaseAdapter{
 			//retrive ID for discriminating the different views
 			int diagnosisType = Integer.parseInt(type);
 			
-			//inflating test Ui
-			row = inflater.inflate(R.layout.view_test_flip_list, null);
-			TextView tv = (TextView)row.findViewById(R.id.diag_test);
+			
 			
 			switch (diagnosisType) {
 			case 1:
-				// TODO Response Type 1 - Show Confirm Dialog
-				tv.setText("-->"+diagnosis.getCurrent_query() +"--"+diagnosis.getInput()+"--"+diagnosis.getReply()+"--"+diagnosis.getReply());
+				// TODO Response Type 1 - Show Confirm Dialog . This is ignored for now
 				break;
 			case 2:
 				
 				// TODO Response Type 2 - Show Options Dialog
+				row = inflater.inflate(R.layout.diagnosis_options_chat, null);
+				
+				TextView optQuery = (TextView)row.findViewById(R.id.options_text_query);
+				TextView optResp = (TextView)row.findViewById(R.id.options_text_response);
+				
+				optQuery.setText(diagnosis.getCurrent_query().toString());
+				optResp.setText(diagnosis.getReply().toString());
+				
+				RadioGroup optGroup = (RadioGroup)row.findViewById(R.id.options_query_options);
+				
+				HashMap<String, String> respOpts = diagnosis.getReply_options();
+				
+				Iterator it = respOpts.entrySet().iterator();
+				
+				while (it.hasNext()) {
+					Map.Entry<String, String> pairs = (Map.Entry<String, String>)it.next();
+					RadioButton rb = new RadioButton(this.context);
+					rb.setText(pairs.getValue());
+					rb.setOnClickListener(new View.OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							// TODO Auto-generated method stub
+							//maybe initiate connection to db here
+						}
+					});
+					optGroup.addView(rb);
+					
+				}
+				
 				String sanitized = android.text.Html
 				.fromHtml(diagnosis.getReply()).toString();
-				tv.setText(sanitized+"-->"+diagnosis.getCurrent_query() +"--"+diagnosis.getInput()+"--"+diagnosis.getReply()+"--"+diagnosis.getReply());
 				break;
 			case 3:
 				// TODO Response Type 3 - EMERGENCY - Map with nearest
 				// hospital/doctor
 				
-				tv.setText("-->"+diagnosis.getCurrent_query() +"--"+diagnosis.getInput()+"--"+diagnosis.getReply()+"--"+diagnosis.getReply());
 
 				break;
 			case 4:
 				// TODO Response Type 4 - CALL DOCTOR - Text with button to call
 				// doctor.
-				tv.setText("-->"+diagnosis.getCurrent_query() +"--"+diagnosis.getInput()+"--"+diagnosis.getReply()+"--"+diagnosis.getReply());
 
 				break;
 			case 5:
 				// TODO Response Type 5 - INFORMATION - Text
-				tv.setText("-->"+diagnosis.getCurrent_query() +"--"+diagnosis.getInput()+"--"+diagnosis.getReply()+"--"+diagnosis.getReply());
 				break;
 
 			default:
