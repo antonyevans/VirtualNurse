@@ -151,14 +151,16 @@ public class Alice extends Activity implements AsyncTasksListener {
 			final String start_input = hg.startInput();
 
 			Button b = new Button(this);
-			
-			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, 35);
-			params.setMargins(10, 10, 10,10 );
+
+			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+					LinearLayout.LayoutParams.FILL_PARENT,
+					LinearLayout.LayoutParams.WRAP_CONTENT);
+			params.setMargins(10, 10, 10, 10);
 			params.gravity = Gravity.CENTER;
-			params.height = 35;
+			// params.height = 35;
 			b.setLayoutParams(params);
 			b.setGravity(Gravity.CENTER);
-			
+
 			b.setPadding(10, 10, 10, 10);
 			Drawable btnBg = getResources().getDrawable(R.drawable.buttonbgb);
 
@@ -305,44 +307,6 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 		}
 
-		if (result != null) {
-			int responseType = Integer.parseInt(result.getResponse_type());
-
-			Log.i(Constants.TAG, "Response Type = " + responseType);
-
-			switch (responseType) {
-			case 1:
-				// TODO Response Type 1 - Show Confirm Dialog
-
-				break;
-			case 2:
-				// TODO Response Type 2 - Show Options Dialog
-
-				String sanitized = android.text.Html
-						.fromHtml(result.getReply()).toString();
-
-				Log.i(Constants.TAG, sanitized);
-
-				break;
-			case 3:
-				// TODO Response Type 3 - EMERGENCY - Map with nearest
-				// hospital/doctor
-				break;
-			case 4:
-				// TODO Response Type 4 - CALL DOCTOR - Text with button to call
-				// doctor.
-				break;
-			case 5:
-				// TODO Response Type 5 - INFORMATION - Text
-				break;
-
-			default:
-				break;
-			}
-		} else {
-			Log.e(Constants.TAG, "onTaskPostExecute returned null");
-		}
-
 	}
 
 	@Override
@@ -478,7 +442,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 							@Override
 							public void onClick(View v) {
-								doDiagnosis(diagnosis.getGuide(), pairs.getValue());
+								doDiagnosis(diagnosis.getGuide(),
+										pairs.getValue());
 							}
 						});
 						optGroup.addView(rb);
@@ -568,6 +533,21 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 					infoQuery.setText(diagnosis.getCurrent_query().toString());
 					infoResp.setText(diagnosis.getReply().toString());
+
+					break;
+					
+				case 6:
+					// TODO Response Type 6 - EXIT THE CURRENT GUIDE - Text
+					row = inflater.inflate(R.layout.diagnosis_information_chat,
+							null);
+
+					TextView infoQuery2 = (TextView) row
+							.findViewById(R.id.info_txt_query);
+					TextView infoResp2 = (TextView) row
+							.findViewById(R.id.info_txt_response);
+
+					infoQuery2.setText(diagnosis.getCurrent_query().toString());
+					infoResp2.setText(diagnosis.getReply().toString());
 
 					break;
 
