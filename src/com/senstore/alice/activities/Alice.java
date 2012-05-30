@@ -2,9 +2,8 @@ package com.senstore.alice.activities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.Map.Entry;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -90,12 +89,6 @@ public class Alice extends Activity implements AsyncTasksListener {
 				getApplicationContext());
 
 		setContentView(R.layout.main);
-
-		//
-		SavedState savedState = (SavedState) getLastNonConfigurationInstance();
-		if (savedState != null) {
-			flipper = savedState.flipper;
-		}
 
 		inflater = getLayoutInflater();
 
@@ -310,17 +303,6 @@ public class Alice extends Activity implements AsyncTasksListener {
 	}
 
 	@Override
-	public Object onRetainNonConfigurationInstance() {
-
-		if (flipper != null) {
-			SavedState savedState = new SavedState();
-			savedState.flipper = flipper;
-		}
-
-		return super.onRetainNonConfigurationInstance();
-	}
-
-	@Override
 	protected void onPause() {
 		mgr.cancel(pi);
 		super.onPause();
@@ -336,13 +318,6 @@ public class Alice extends Activity implements AsyncTasksListener {
 		mgr.cancel(pi);
 		unregisterReceiver(receiver);
 		super.onDestroy();
-	}
-
-	private class SavedState {
-		Object Context;
-		ViewFlipper flipper;
-		AsyncTasksListener listener;
-		LayoutInflater inflater;
 	}
 
 	public class ResponseReceiver extends BroadcastReceiver {
@@ -431,23 +406,20 @@ public class Alice extends Activity implements AsyncTasksListener {
 					HashMap<String, String> respOpts = diagnosis
 							.getReply_options();
 
-					Iterator it = respOpts.entrySet().iterator();
+					for (Entry<String, String> entry : respOpts.entrySet()) {
+						final String key = entry.getKey();
+						final String value = entry.getValue();
 
-					while (it.hasNext()) {
-						final Map.Entry<String, String> pairs = (Map.Entry<String, String>) it
-								.next();
-						RadioButton rb = new RadioButton(this.context);
-						rb.setText(pairs.getKey());
-						rb.setOnClickListener(new View.OnClickListener() {
+						RadioButton rbtn = new RadioButton(this.context);
+						rbtn.setText(key);
+						rbtn.setOnClickListener(new View.OnClickListener() {
 
 							@Override
 							public void onClick(View v) {
-								doDiagnosis(diagnosis.getGuide(),
-										pairs.getValue());
+								doDiagnosis(diagnosis.getGuide(), value);
 							}
 						});
-						optGroup.addView(rb);
-
+						optGroup.addView(rbtn);
 					}
 
 					break;
@@ -535,7 +507,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 					infoResp.setText(diagnosis.getReply().toString());
 
 					break;
-					
+
 				case 6:
 					// TODO Response Type 6 - EXIT THE CURRENT GUIDE - Text
 					row = inflater.inflate(R.layout.diagnosis_information_chat,
