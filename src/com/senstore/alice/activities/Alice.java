@@ -532,13 +532,26 @@ public class Alice extends Activity implements AsyncTasksListener {
 			return row;
 		}
 
-		public void resetAdapter() {
+		private void resetAdapter() {
 			listitems = new ArrayList<Diagnosis>();
 
 		}
 
-		public void addItem(Diagnosis diagnosis) {
+		private void addItem(Diagnosis diagnosis) {
 			listitems.add(diagnosis);
+		}
+
+		private void createOutgoingChat(View row,String query_text) {
+
+			TextView infoQuery2 = (TextView) row
+					.findViewById(R.id.info_txt_query);
+			
+			infoQuery2.setText(query_text);
+		}
+
+		private void createIncomingChat(View row) {
+			TextView infoResp2 = (TextView) row
+					.findViewById(R.id.info_txt_response);
 		}
 
 	}
