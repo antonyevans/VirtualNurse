@@ -21,6 +21,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -150,7 +151,15 @@ public class Alice extends Activity implements AsyncTasksListener {
 			final String start_input = hg.startInput();
 
 			Button b = new Button(this);
-
+			
+			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, 35);
+			params.setMargins(10, 10, 10,10 );
+			params.gravity = Gravity.CENTER;
+			params.height = 35;
+			b.setLayoutParams(params);
+			b.setGravity(Gravity.CENTER);
+			
+			b.setPadding(10, 10, 10, 10);
 			Drawable btnBg = getResources().getDrawable(R.drawable.buttonbgb);
 
 			b.setBackgroundDrawable(btnBg);
@@ -540,8 +549,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 						@Override
 						public void onClick(View v) {
 							// TODO Auto-generated method stub
-							Toast.makeText(context, "Calling Daktari now",
-									Toast.LENGTH_SHORT);
+							Toast.makeText(context, "Calling Doctor now",
+									Toast.LENGTH_SHORT).show();
 
 						}
 					});
