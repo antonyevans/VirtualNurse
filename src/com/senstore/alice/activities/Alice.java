@@ -13,11 +13,16 @@ import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.DialogInterface.OnDismissListener;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
+import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.Gravity;
@@ -25,6 +30,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -42,6 +48,12 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
+import com.nuance.nmdp.speechkit.Prompt;
+import com.nuance.nmdp.speechkit.Recognition;
+import com.nuance.nmdp.speechkit.Recognizer;
+import com.nuance.nmdp.speechkit.SpeechError;
+import com.nuance.nmdp.speechkit.SpeechKit;
+import com.nuance.nmdp.speechkit.Vocalizer;
 import com.senstore.alice.R;
 import com.senstore.alice.api.HarvardGuide;
 import com.senstore.alice.listeners.AsyncTasksListener;
@@ -49,6 +61,7 @@ import com.senstore.alice.models.Diagnosis;
 import com.senstore.alice.overlays.AliceItemizedOverlay;
 import com.senstore.alice.services.BackgroundLogger;
 import com.senstore.alice.tasks.DiagnosisAsyncTask;
+import com.senstore.alice.utils.AppInfo;
 import com.senstore.alice.utils.Constants;
 import com.senstore.alice.utils.Registry;
 
@@ -79,6 +92,15 @@ public class Alice extends Activity implements AsyncTasksListener {
 	private View menuView;
 
 	private LayoutInflater inflater;
+
+	private static SpeechKit _speechKit;
+	private static final int LISTENING_DIALOG = 0;
+	private final Recognizer.Listener _listener;
+	private Recognizer _currentRecognizer;
+	private ListeningDialog _listeningDialog;
+	private boolean _destroyed;
+	private Vocalizer _vocalizer;
+	private Object _lastTtsContext = null;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -123,6 +145,36 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 		}// else proceed with the normal app flow
 
+		// set volume control to media
+		setVolumeControlStream(AudioManager.STREAM_MUSIC);
+
+		// Adjust the volume
+		AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		int max_volume = audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+		// audio.setStreamVolume(AudioManager.STREAM_MUSIC, 5, 0);
+
+		// If this Activity is being recreated due to a config change (e.g.
+		// screen rotation), check for the saved SpeechKit instance.
+		_speechKit = (SpeechKit) getLastNonConfigurationInstance();
+		if (_speechKit == null) {
+			_speechKit = SpeechKit.initialize(getApplication()
+					.getApplicationContext(), AppInfo.SpeechKitAppId,
+					AppInfo.SpeechKitServer, AppInfo.SpeechKitPort,
+					AppInfo.SpeechKitSsl, AppInfo.SpeechKitApplicationKey);
+			_speechKit.connect();
+			// TODO: Keep an eye out for audio prompts not working on the Droid
+			// 2 or other 2.2 devices.
+			Prompt beep = _speechKit.defineAudioPrompt(R.raw.beep);
+			_speechKit.setDefaultRecognizerPrompts(beep, Prompt.vibration(100),
+					null, null);
+		}
+		_destroyed = false;
+
+	}
+
+	// Allow other activities to access the SpeechKit instance.
+	static SpeechKit getSpeechKit() {
+		return _speechKit;
 	}
 
 	/**
@@ -317,8 +369,157 @@ public class Alice extends Activity implements AsyncTasksListener {
 	protected void onDestroy() {
 		mgr.cancel(pi);
 		unregisterReceiver(receiver);
+
+		_destroyed = true;
+		if (_currentRecognizer != null) {
+			_currentRecognizer.cancel();
+			_currentRecognizer = null;
+		}
+		if (_vocalizer != null) {
+			_vocalizer.cancel();
+			_vocalizer = null;
+		}
+
 		super.onDestroy();
 	}
+
+	// ======================START VOICE======================================//
+	public void startDictation(View view) {
+		_listeningDialog.setText("Initializing...");
+		showDialog(LISTENING_DIALOG);
+		_listeningDialog.setStoppable(false);
+		setResults(new Recognition.Result[0]);
+
+		_currentRecognizer = Alice.getSpeechKit().createRecognizer(
+				Recognizer.RecognizerType.Dictation,
+				Recognizer.EndOfSpeechDetection.Long, "en_US", _listener,
+				_handler);
+		_currentRecognizer.start();
+	}
+
+	@Override
+	public Object onRetainNonConfigurationInstance() {
+		if (_listeningDialog.isShowing() && _currentRecognizer != null) {
+			// If a recognition is in progress, save it, because the activity
+			// is about to be destroyed and recreated
+			SavedState savedState = new SavedState();
+			savedState.Recognizer = _currentRecognizer;
+			savedState.DialogText = _listeningDialog.getText();
+			savedState.DialogLevel = _listeningDialog.getLevel();
+			savedState.DialogRecording = _listeningDialog.isRecording();
+			savedState.Handler = _handler;
+
+			_currentRecognizer = null; // Prevent onDestroy() from canceling
+
+			// Save the Vocalizer state, because we know the Activity will be
+			// immediately recreated.
+			// TextView textView = (TextView)findViewById(R.id.text_currentTts);
+
+			// savedState.Text = textView.getText().toString();
+			// savedState.TextColor =
+			// textView.getTextColors().getDefaultColor();
+			savedState.Vocalizer = _vocalizer;
+			savedState.Context = _lastTtsContext;
+
+			_vocalizer = null; // Prevent onDestroy() from canceling
+
+			return savedState;
+		}
+		return null;
+	}
+
+	private Recognizer.Listener createListener() {
+		return new Recognizer.Listener() {
+
+			public void onRecordingBegin(Recognizer recognizer) {
+				_listeningDialog.setText("Recording...");
+				_listeningDialog.setStoppable(true);
+				_listeningDialog.setRecording(true);
+
+				// Create a repeating task to update the audio level
+				Runnable r = new Runnable() {
+					public void run() {
+						if (_listeningDialog != null
+								&& _listeningDialog.isRecording()
+								&& _currentRecognizer != null) {
+							_listeningDialog.setLevel(Float
+									.toString(_currentRecognizer
+											.getAudioLevel()));
+							_handler.postDelayed(this, 500);
+						}
+					}
+				};
+				r.run();
+			}
+
+			public void onRecordingDone(Recognizer recognizer) {
+				_listeningDialog.setText("Processing...");
+				_listeningDialog.setLevel("");
+				_listeningDialog.setRecording(false);
+				_listeningDialog.setStoppable(false);
+			}
+
+			public void onError(Recognizer recognizer, SpeechError error) {
+				if (recognizer != _currentRecognizer)
+					return;
+				if (_listeningDialog.isShowing())
+					dismissDialog(LISTENING_DIALOG);
+				_currentRecognizer = null;
+				_listeningDialog.setRecording(false);
+
+				// Display the error + suggestion in the edit box
+				String detail = error.getErrorDetail();
+				String suggestion = error.getSuggestion();
+
+				if (suggestion == null)
+					suggestion = "";
+				updateCurrentText(detail + "\n" + suggestion, Color.GREEN,
+						false);
+			}
+
+			public void onResults(Recognizer recognizer, Recognition results) {
+				if (_listeningDialog.isShowing())
+					dismissDialog(LISTENING_DIALOG);
+				_currentRecognizer = null;
+				_listeningDialog.setRecording(false);
+				int count = results.getResultCount();
+				Recognition.Result[] rs = new Recognition.Result[count];
+				for (int i = 0; i < count; i++) {
+					rs[i] = results.getResult(i);
+				}
+				setResults(rs);
+			}
+		};
+	}
+
+	private void speakReply(String Reply) {
+		_lastTtsContext = new Object();
+		_vocalizer.speakString(Reply, _lastTtsContext);
+	}
+
+	private void createListeningDialog() {
+		_listeningDialog = new ListeningDialog(this);
+		_listeningDialog.setOnDismissListener(new OnDismissListener() {
+			public void onDismiss(DialogInterface dialog) {
+				if (_currentRecognizer != null) // Cancel the current recognizer
+				{
+					_currentRecognizer.cancel();
+					_currentRecognizer = null;
+				}
+
+				if (!_destroyed) {
+					// Remove the dialog so that it will be recreated next time.
+					// This is necessary to avoid a bug in Android >= 1.6 where
+					// the
+					// animation stops working.
+					CopyOfAlice.this.removeDialog(LISTENING_DIALOG);
+					createListeningDialog();
+				}
+			}
+		});
+	}
+
+	// ======================END VOICE=======================================//
 
 	public class ResponseReceiver extends BroadcastReceiver {
 
@@ -541,11 +742,11 @@ public class Alice extends Activity implements AsyncTasksListener {
 			listitems.add(diagnosis);
 		}
 
-		private void createOutgoingChat(View row,String query_text) {
+		private void createOutgoingChat(View row, String query_text) {
 
 			TextView infoQuery2 = (TextView) row
 					.findViewById(R.id.info_txt_query);
-			
+
 			infoQuery2.setText(query_text);
 		}
 
