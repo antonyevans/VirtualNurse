@@ -55,4 +55,8 @@ public class Constants {
 	
 	
 	public static  String INFLATOR_SERVICE = "inflator_service";
+	
+	public static  int INPUT_TYPE=-2;
+	
+	
 }

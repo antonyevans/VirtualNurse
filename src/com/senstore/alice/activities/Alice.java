@@ -26,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -48,6 +49,7 @@ import com.nuance.nmdp.speechkit.Vocalizer;
 import com.senstore.alice.R;
 import com.senstore.alice.api.HarvardGuide;
 import com.senstore.alice.listeners.AsyncTasksListener;
+import com.senstore.alice.models.AdapterDiagnosis;
 import com.senstore.alice.models.Diagnosis;
 import com.senstore.alice.overlays.AliceItemizedOverlay;
 import com.senstore.alice.services.BackgroundLogger;
@@ -76,7 +78,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 	private LayoutInflater inflater;
 
-	private Diagnosis mDiagnosis;
+	private AdapterDiagnosis mDiagnosis;
 
 	private static SpeechKit _speechKit;
 	private static final int LISTENING_DIALOG = 1;
@@ -418,7 +420,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 			} else {
 
 				// add diagnosis object to adapter
-				chatAdapter.addItem(result);
+				AdapterDiagnosis diag = new AdapterDiagnosis(result);
+				chatAdapter.addItem(diag);
 
 				// tell listeners that underlying data has changed. Refresh the
 				// view
@@ -489,7 +492,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 	// custom adapter for the chat listview
 	public class AliceChatAdapter extends BaseAdapter {
-		ArrayList<Diagnosis> listitems;
+		ArrayList<AdapterDiagnosis> listitems;
 		LayoutInflater inflater;
 		Context context;
 
@@ -497,7 +500,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 			this.context = context;
 			inflater = (LayoutInflater) context
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			listitems = new ArrayList<Diagnosis>();
+			listitems = new ArrayList<AdapterDiagnosis>();
 
 		}
 
@@ -526,12 +529,11 @@ public class Alice extends Activity implements AsyncTasksListener {
 			final int currPos =position;
 			View row = null;
 			
-			Log.v(Constants.TAG, "THIS IS MY INPUT->"+mDiagnosis.getGuide());
+			Log.v(Constants.TAG, "THIS IS MY INPUT->"+mDiagnosis.getPrevText());
 			
 
 			// retrieve ID for discriminating the different views
-			String type = mDiagnosis.getResponse_type();
-			int diagnosisType = Integer.parseInt(type);
+			int diagnosisType = mDiagnosis.getResponse_type();
 
 			switch (diagnosisType) {
 			case 1:
@@ -543,8 +545,6 @@ public class Alice extends Activity implements AsyncTasksListener {
 				// Response Type 2 - Show Options Dialog
 				row = inflater.inflate(R.layout.diagnosis_options_chat, null);
 
-				TextView optQuery = (TextView) row
-						.findViewById(R.id.options_txt_query);
 				TextView optResp = (TextView) row
 						.findViewById(R.id.options_txt_response);
 				
@@ -554,13 +554,15 @@ public class Alice extends Activity implements AsyncTasksListener {
 					@Override
 					public void onClick(View v) {
 						AliceChatAdapter.this.removeItem(currPos);
+						if (currPos>1) {
+							AliceChatAdapter.this.removeItem(currPos-1);
+						}
 						notifyDataSetChanged();
 						
 					}
 				});
 				
 
-				optQuery.setText(mDiagnosis.getInput().toString());
 				optResp.setText(mDiagnosis.getReply().toString());
 
 				LinearLayout optGroup = (LinearLayout) row
@@ -597,6 +599,9 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 						@Override
 						public void onClick(View v) {
+							AdapterDiagnosis diag = new AdapterDiagnosis(null);
+							diag.setPrevText(key);
+							listitems.add(diag);
 							doTouchDiagnosis(mDiagnosis.getGuide(),
 									mDiagnosis.getCurrent_query(), value);
 						}
@@ -614,8 +619,6 @@ public class Alice extends Activity implements AsyncTasksListener {
 				// hospital/doctor
 				row = inflater.inflate(R.layout.diagnosis_map_chat, null);
 
-				TextView mapQuery = (TextView) row
-						.findViewById(R.id.map_txt_query);
 				TextView mapResp = (TextView) row
 						.findViewById(R.id.map_txt_response);
 				Button map_close = (Button)row.findViewById(R.id.map_close);
@@ -624,11 +627,13 @@ public class Alice extends Activity implements AsyncTasksListener {
 					@Override
 					public void onClick(View v) {
 						AliceChatAdapter.this.removeItem(currPos);
+						if (currPos>1) {
+							AliceChatAdapter.this.removeItem(currPos-1);
+						}
 						notifyDataSetChanged();
 						
 					}
 				});
-				mapQuery.setText(mDiagnosis.getInput().toString());
 				mapResp.setText(mDiagnosis.getReply().toString());
 
 				MapView mapView = (MapView) row.findViewById(R.id.mapview);
@@ -666,8 +671,6 @@ public class Alice extends Activity implements AsyncTasksListener {
 				// doctor.
 				row = inflater.inflate(R.layout.diagnosis_calldoc_chat, null);
 
-				TextView callQuery = (TextView) row
-						.findViewById(R.id.calldoc_txt_query);
 				TextView callResp = (TextView) row
 						.findViewById(R.id.calldoc_txt_response);
 				
@@ -677,12 +680,14 @@ public class Alice extends Activity implements AsyncTasksListener {
 					@Override
 					public void onClick(View v) {
 						AliceChatAdapter.this.removeItem(currPos);
+						if (currPos>1) {
+							AliceChatAdapter.this.removeItem(currPos-1);
+						}
 						notifyDataSetChanged();
 						
 					}
 				});
 
-				callQuery.setText(mDiagnosis.getInput().toString());
 				callResp.setText(mDiagnosis.getReply().toString());
 
 				Button callBtn = (Button) row.findViewById(R.id.calldoc_btn);
@@ -704,8 +709,6 @@ public class Alice extends Activity implements AsyncTasksListener {
 				row = inflater.inflate(R.layout.diagnosis_information_chat,
 						null);
 
-				TextView infoQuery = (TextView) row
-						.findViewById(R.id.info_txt_query);
 				TextView infoResp = (TextView) row
 						.findViewById(R.id.info_txt_response);
 				
@@ -715,12 +718,15 @@ public class Alice extends Activity implements AsyncTasksListener {
 					@Override
 					public void onClick(View v) {
 						AliceChatAdapter.this.removeItem(currPos);
+						if (currPos>1) {
+							AliceChatAdapter.this.removeItem(currPos-1);
+						}
+						
 						notifyDataSetChanged();
 						
 					}
 				});
 
-				infoQuery.setText(mDiagnosis.getInput().toString());
 				infoResp.setText(mDiagnosis.getReply().toString());
 
 				break;
@@ -730,14 +736,22 @@ public class Alice extends Activity implements AsyncTasksListener {
 				row = inflater.inflate(R.layout.diagnosis_information_chat,
 						null);
 
-				TextView infoQuery2 = (TextView) row
-						.findViewById(R.id.info_txt_query);
 				TextView infoResp2 = (TextView) row
 						.findViewById(R.id.info_txt_response);
 
-				infoQuery2.setText(mDiagnosis.getInput().toString());
 				infoResp2.setText(mDiagnosis.getReply().toString());
 
+				break;
+				
+			case -2:
+				// TODO Response Type 6 - EXIT THE CURRENT GUIDE - Text
+				row = inflater.inflate(R.layout.diagnosis_input_chat,
+						null);
+
+				TextView inputQuery = (TextView) row
+						.findViewById(R.id.input_text_query);
+				inputQuery.setText(mDiagnosis.getPrevText());
+				
 				break;
 
 			default:
@@ -748,15 +762,15 @@ public class Alice extends Activity implements AsyncTasksListener {
 		}
 
 		private void resetAdapter() {
-			listitems = new ArrayList<Diagnosis>();
+			listitems = new ArrayList<AdapterDiagnosis>();
 
 		}
 
-		private void addItem(Diagnosis diagnosis) {
+		private void addItem(AdapterDiagnosis diagnosis) {
 			listitems.add(diagnosis);
 		}
 
-		private void removeItem(Diagnosis diagnosis) {
+		private void removeItem(AdapterDiagnosis diagnosis) {
 			listitems.remove(diagnosis);
 		}
 		
