@@ -80,7 +80,8 @@ public class DiagnosisAsyncTask extends AsyncTask<Void, String, Diagnosis> {
 		Log.i(Constants.TAG, "Setting the last_query to : " + last_query);
 
 		if (isVoice()) {
-			diagnosis = handler.voiceDiagnosis(last_query, input_text);
+			diagnosis = handler.voiceDiagnosis(health_guide, last_query,
+					input_text);
 		} else {
 			diagnosis = handler.touchDiagnosis(health_guide, last_query,
 					input_text);

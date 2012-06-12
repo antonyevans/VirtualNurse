@@ -352,11 +352,12 @@ public class Alice extends Activity implements AsyncTasksListener {
 	 * @param input_text
 	 *            and then executes the request
 	 */
-	public void doVoiceDiagnosis(String last_query, String input_text) {
+	public void doVoiceDiagnosis(String health_guide,String last_query, String input_text) {
 		diagnosisTask = new DiagnosisAsyncTask();
 		diagnosisTask.setVoice(true);
 		diagnosisTask.setListener(listener);
 		diagnosisTask.setLast_query(last_query);
+		diagnosisTask.setHealth_guide(health_guide);
 		diagnosisTask.setInput_text(input_text);
 		diagnosisTask.execute();
 	}
@@ -843,14 +844,13 @@ public class Alice extends Activity implements AsyncTasksListener {
 			// updateCurrentText(dialogue, Color.WHITE, false);
 			Log.i(Constants.TAG, t);
 			// speakReply(askAlice(t));
-			
-			if(mDiagnosis!=null){
-				doVoiceDiagnosis(mDiagnosis.getCurrent_query(), t);
-			}else{
-				doVoiceDiagnosis(Constants.VOICE_DEFAULT_LAST_QUERY, t);
-			}
 
-			
+			if (mDiagnosis != null) {
+				doVoiceDiagnosis(mDiagnosis.getGuide(),
+						mDiagnosis.getCurrent_query(), t);
+			} else {
+				doVoiceDiagnosis("null",Constants.VOICE_DEFAULT_LAST_QUERY, t);
+			}
 
 		} else {
 			// setResult("");

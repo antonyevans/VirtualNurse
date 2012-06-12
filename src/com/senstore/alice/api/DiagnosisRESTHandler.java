@@ -75,11 +75,12 @@ public class DiagnosisRESTHandler {
 	 * 
 	 * 
 	 */
-	public Diagnosis voiceDiagnosis(String last_query, String input_text) {
+	public Diagnosis voiceDiagnosis(String guide,String last_query, String input_text) {
 
 		String absoluteURL = Constants.SERVER_URL + "harvard.json";
 		RestClient req = new RestClient(absoluteURL);
 		req.addParam("user_id", Utils.getPhoneNumber());
+		req.addParam("guide", guide);
 		req.addParam("last_query", last_query);
 		req.addParam("input", input_text);
 		req.addParam("select_type", Constants.DIAGNOSIS_VOICE);
