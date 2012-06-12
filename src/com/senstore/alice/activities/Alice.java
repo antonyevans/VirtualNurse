@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.Service;
@@ -223,6 +224,19 @@ public class Alice extends Activity implements AsyncTasksListener {
 		}
 
 		speakReply("Welcome to the Pocket Doctor. I am Alice, how can I help you today? You can click on the microphone to talk to me.");
+
+	}
+
+	private void showAlert(String title, String message) {
+		AlertDialog alert = new AlertDialog.Builder(this).create();
+		alert.setTitle(title);
+		alert.setMessage(message);
+		alert.setButton("Ok", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				return;
+			}
+		});
+		alert.show();
 	}
 
 	/**
@@ -496,8 +510,13 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 				if (diagnosis.getCurrent_query().equalsIgnoreCase("problem")) {
 
-					//TODO Show Alert Dialog that the server could not understand their request
+					// TODO Show Alert Dialog that the server could not
+					// understand their request
+
+					//showAlert("Problem", diagnosis.getReply());
 					
+					Log.i(Constants.TAG, "Hapa Tu : "+diagnosis.getReply());
+
 				} else {
 					// retrive ID for discriminating the different views
 					int diagnosisType = Integer.parseInt(type);
