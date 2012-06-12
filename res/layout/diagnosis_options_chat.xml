@@ -12,7 +12,7 @@
         	android:layout_marginRight="10dp"
         	android:layout_marginTop="5dp"
         	android:layout_marginBottom="5dp"
-        	android:background="@drawable/bubbleright" >
+        	android:background="@drawable/bubble_right" >
             
         <TextView
             android:id="@+id/options_txt_query"
@@ -42,7 +42,7 @@
         	android:layout_marginRight="10dp"
         	android:layout_marginTop="5dp"
         	android:layout_marginBottom="5dp"
-        	android:background="@drawable/bubbleleft" >
+        	android:background="@drawable/bubble_left" >
             
         <TextView
             android:id="@+id/options_txt_response"

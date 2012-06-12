@@ -20,3 +20,6 @@ project.properties
 *.settings
 
 *.classpath
+
+
+.DS_Store/
