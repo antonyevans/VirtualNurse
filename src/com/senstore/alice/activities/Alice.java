@@ -30,8 +30,6 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -542,25 +540,49 @@ public class Alice extends Activity implements AsyncTasksListener {
 				optQuery.setText(diagnosis.getCurrent_query().toString());
 				optResp.setText(diagnosis.getReply().toString());
 
-				RadioGroup optGroup = (RadioGroup) row
-						.findViewById(R.id.options_query_options);
+				LinearLayout optGroup = (LinearLayout) row
+						.findViewById(R.id.options_response_options);
 
 				HashMap<String, String> respOpts = diagnosis.getReply_options();
+				
+				Log.v(Constants.TAG, "This is the size of things->"+respOpts.size());
+				int count = 0;
 
 				for (Entry<String, String> entry : respOpts.entrySet()) {
 					final String key = entry.getKey();
 					final String value = entry.getValue();
+					
+					Button bo = new Button(this.context);
 
-					RadioButton rbtn = new RadioButton(this.context);
-					rbtn.setText(key);
-					rbtn.setOnClickListener(new View.OnClickListener() {
+					LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+							LinearLayout.LayoutParams.FILL_PARENT,
+							LinearLayout.LayoutParams.WRAP_CONTENT);
+					params.setMargins(10, 10, 10, 10);
+					params.gravity = Gravity.CENTER;
+					// params.height = 35;
+					bo.setLayoutParams(params);
+					bo.setGravity(Gravity.CENTER);
+
+					bo.setPadding(10, 10, 10, 10);
+					Drawable btnBg = getResources().getDrawable(R.drawable.radio_btn);
+
+					bo.setBackgroundDrawable(btnBg);
+
+					bo.setText(key);
+
+					bo.setOnClickListener(new OnClickListener() {
 
 						@Override
 						public void onClick(View v) {
 							doTouchDiagnosis(diagnosis.getGuide(), value);
 						}
 					});
-					optGroup.addView(rbtn);
+					
+					optGroup.addView(bo);
+					count++;
+					Log.v(Constants.TAG, "Added this number of times->"+count);
+
+					
 				}
 
 				break;
