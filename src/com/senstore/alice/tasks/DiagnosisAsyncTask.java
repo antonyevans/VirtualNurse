@@ -19,6 +19,24 @@ public class DiagnosisAsyncTask extends AsyncTask<Void, String, Diagnosis> {
 
 	private String health_guide = null;
 	private String input_text = null;
+	private String last_query = null;
+	private boolean isVoice = false;
+
+	public String getLast_query() {
+		return last_query;
+	}
+
+	public void setLast_query(String last_query) {
+		this.last_query = last_query;
+	}
+
+	public boolean isVoice() {
+		return isVoice;
+	}
+
+	public void setVoice(boolean isVoice) {
+		this.isVoice = isVoice;
+	}
 
 	public void setHealth_guide(String health_guide) {
 		this.health_guide = health_guide;
@@ -53,9 +71,15 @@ public class DiagnosisAsyncTask extends AsyncTask<Void, String, Diagnosis> {
 
 	@Override
 	protected Diagnosis doInBackground(Void... params) {
+		Diagnosis diagnosis = null;
 		publishProgress("Diagnosing on remote server");
 		DiagnosisRESTHandler handler = new DiagnosisRESTHandler();
-		return handler.touchDiagnosis(health_guide, input_text);
+		if (isVoice()) {
+			diagnosis = handler.voiceDiagnosis(last_query, input_text);
+		} else {
+			diagnosis = handler.touchDiagnosis(health_guide, input_text);
+		}
+		return diagnosis;
 	}
 
 }

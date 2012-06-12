@@ -66,9 +66,11 @@ public class DiagnosisParser {
 
 		Diagnosis diag = new Diagnosis();
 
-		JSONObject jsonObj;
+		JSONObject api;
 		try {
-			jsonObj = new JSONObject(jsonStr);
+			api = new JSONObject(jsonStr);
+
+			JSONObject jsonObj = api.getJSONObject("api");
 
 			String created_at = jsonObj.getString("created_at");
 			String current_query = jsonObj.getString("current_query");
@@ -88,7 +90,10 @@ public class DiagnosisParser {
 			diag.setGuide(guide);
 			diag.setId(id);
 			diag.setInput(input);
-			diag.setReply_options(getReplyOptions(jsonObj));
+
+			if (hasOptions(jsonObj)) {
+				diag.setReply_options(getReplyOptions(jsonObj));
+			}
 			diag.setLast_query(last_query);
 			diag.setReply(reply);
 			diag.setResponse_type(response_type);
@@ -104,13 +109,33 @@ public class DiagnosisParser {
 		return diag;
 	}
 
+	private boolean hasOptions(JSONObject obj) {
+		boolean hasOptions = false;
+		Object optionsObject;
+		try {
+			optionsObject = obj.get("options");
+
+			if (optionsObject == JSONObject.NULL) {
+				hasOptions = false;
+			} else {
+				hasOptions = true;
+			}
+		} catch (JSONException e) {
+			Log.e(Constants.TAG, e.getMessage());
+		}
+		return hasOptions;
+
+	}
+
 	private HashMap<String, String> getReplyOptions(JSONObject obj) {
 
 		HashMap<String, String> options = new HashMap<String, String>();
 
-		// Handle the reply options - text,link - K,V
-		JSONArray reply_options;
 		try {
+
+			// Handle the reply options - text,link - K,V
+			JSONArray reply_options;
+
 			reply_options = obj.getJSONArray("options");
 
 			// loop through the JSONArray and get all the items
@@ -125,6 +150,7 @@ public class DiagnosisParser {
 
 				Log.i(Constants.TAG, text + " - " + link);
 			}
+
 		} catch (JSONException e) {
 			Log.e(Constants.TAG, e.getMessage());
 		}

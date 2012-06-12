@@ -1,4 +1,4 @@
-package com.senstore.alice.utils;
+package com.senstore.alice.activities;
 
 public class AppInfo
 {

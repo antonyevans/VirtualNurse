@@ -2,56 +2,41 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" 
-    android:background="@drawable/background">
-    
-    <LinearLayout 
-           android:layout_width="fill_parent"
-           android:layout_height="wrap_content"
-           android:id="@+id/linear_flipper"
-           android:gravity="clip_vertical"
-           android:layout_above="@+id/footer_mic"
-           android:layout_alignParentTop="true"
-           >
-    <ViewFlipper
-        android:id="@+id/alice_view_flipper"
+    android:background="@drawable/background"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/linear_flipper"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        
-         >
-     
-        
-    </ViewFlipper>
-    
+        android:layout_above="@+id/footer_mic"
+        android:layout_alignParentTop="true"
+        android:gravity="clip_vertical" >
+
+        <ViewFlipper
+            android:id="@+id/alice_view_flipper"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+        </ViewFlipper>
     </LinearLayout>
-    
-	
-	
-    
-       <LinearLayout 
-           android:layout_width="fill_parent"
-           android:layout_height="wrap_content"
-           android:layout_alignParentBottom="true"
-           android:background="@drawable/barbottom"
-           android:id="@+id/alice_footer"
-           android:orientation="horizontal"
-           
-           >
-           
-           
-           
-       </LinearLayout> 
-       
-       <ImageView
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:src="@drawable/micbtn"
-           android:layout_centerInParent="true"
-           android:layout_alignParentBottom="true"
-           android:id="@+id/footer_mic" 
-           
-           />
-       
-    
+
+    <LinearLayout
+        android:id="@+id/alice_footer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/barbottom"
+        android:orientation="horizontal" >
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/footer_mic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:contentDescription="TODO"
+        android:onClick="startDictation"
+        android:src="@drawable/micbtn" />
 
 </RelativeLayout>

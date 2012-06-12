@@ -19,7 +19,7 @@ public class Constants {
 	public static String REGISTRY_LOCATION="deviceLocation";
 
 	// Do not forget to add the trailing '/'
-	public static String SERVER_URL = "http://sharp-waterfall-5241.herokuapp.com/";
+	public static String SERVER_URL = "http://www.senstore.com/";
 
 	public static String SECURITY_HASH = "701319fdb07288ca9f4bfae8b214b81d";
 
@@ -41,6 +41,7 @@ public class Constants {
 	// Response of question
 	// Diagnosis Activities, select type - select_type=voice, select_type=touch
 	public static String DIAGNOSIS_VOICE = "voice";
+	public static String VOICE_DEFAULT_LAST_QUERY = "start";
 	public static String DIAGNOSIS_TOUCH = "touch";
 	public static int DIAGNOSIS_GUIDE_DEFAULT = 0;
 	public static int CHAT_LENGTH_DEFAULT = 0;

@@ -6,19 +6,20 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import android.app.Activity;
-import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
-import android.location.LocationManager;
+import android.media.AudioManager;
 import android.os.Bundle;
-import android.os.SystemClock;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -35,13 +36,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-import com.commonsware.cwac.locpoll.LocationPoller;
-import com.commonsware.cwac.locpoll.LocationReceiver;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
+import com.nuance.nmdp.speechkit.Prompt;
+import com.nuance.nmdp.speechkit.Recognition;
+import com.nuance.nmdp.speechkit.Recognizer;
+import com.nuance.nmdp.speechkit.SpeechError;
+import com.nuance.nmdp.speechkit.SpeechKit;
+import com.nuance.nmdp.speechkit.Vocalizer;
 import com.senstore.alice.R;
 import com.senstore.alice.api.HarvardGuide;
 import com.senstore.alice.listeners.AsyncTasksListener;
@@ -54,13 +59,6 @@ import com.senstore.alice.utils.Registry;
 
 public class Alice extends Activity implements AsyncTasksListener {
 
-	// 2 minutes(120000)
-	// 5 minutes(300000)
-	// 10 minutes(600000)
-	// 30 minutes(1800000)
-	private static final int PERIOD = 120000; // 2 minutes
-	private PendingIntent pi = null;
-	private AlarmManager mgr = null;
 	private ResponseReceiver receiver;
 
 	private static final int DIAGNOSIS_DIALOG = 0;
@@ -79,6 +77,25 @@ public class Alice extends Activity implements AsyncTasksListener {
 	private View menuView;
 
 	private LayoutInflater inflater;
+
+	private static SpeechKit _speechKit;
+	private static final int LISTENING_DIALOG = 1;
+	private Handler _handler = null;
+	private final Recognizer.Listener _listener;
+	private Recognizer _currentRecognizer;
+	private ListeningDialog _listeningDialog;
+	private boolean _destroyed;
+
+	private Vocalizer _vocalizer;
+	private Object _lastTtsContext = null;
+
+	public Alice() {
+		super();
+		_listener = createListener();
+		_currentRecognizer = null;
+		_listeningDialog = null;
+		_destroyed = true;
+	}
 
 	/** Called when the activity is first created. */
 	@Override
@@ -108,21 +125,118 @@ public class Alice extends Activity implements AsyncTasksListener {
 		// Load the main menu
 		createHarvardGuideWidget();
 
+		// TODO Fix the on screen rotation changed
+		if (savedInstanceState != null) {
+			int flipperPosition = savedInstanceState.getInt("FLIPPER_POSITION");
+			flipper.setDisplayedChild(flipperPosition);
+		}
+
 		flipper.addView(menuView);
 
 		// Register the Background Logger Broadcast Receiver
 		initLogBroadcastReceiver();
 
-		initLocationService();
-
 		// Check if the app has been run before.
 		if (isFirstRun()) {
 			Log.i(Constants.TAG, "isFirstRun()");
 			// Start a background Task, to register the current user/device
-			doLog(Integer.toString(Constants.LOG_REGISTER));
+			// doLog(Integer.toString(Constants.LOG_REGISTER));
 
 		}// else proceed with the normal app flow
 
+		// TODO Speech/Voice
+
+		// set volume control to media
+		setVolumeControlStream(AudioManager.STREAM_MUSIC);
+
+		// Adjust the volume
+		// AudioManager audio = (AudioManager)
+		// getSystemService(Context.AUDIO_SERVICE);
+		// int max_volume = audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+		// audio.setStreamVolume(AudioManager.STREAM_MUSIC, 5, 0);
+
+		// If this Activity is being recreated due to a config change (e.g.
+		// screen rotation), check for the saved SpeechKit instance.
+		_speechKit = (SpeechKit) getLastNonConfigurationInstance();
+		if (_speechKit == null) {
+			_speechKit = SpeechKit.initialize(getApplication()
+					.getApplicationContext(), AppInfo.SpeechKitAppId,
+					AppInfo.SpeechKitServer, AppInfo.SpeechKitPort,
+					AppInfo.SpeechKitSsl, AppInfo.SpeechKitApplicationKey);
+			_speechKit.connect();
+			// TODO: Keep an eye out for audio prompts not working on the Droid
+			// 2 or other 2.2 devices.
+			Prompt beep = _speechKit.defineAudioPrompt(R.raw.beep);
+			_speechKit.setDefaultRecognizerPrompts(beep, Prompt.vibration(100),
+					null, null);
+		}
+		_destroyed = false;
+
+		// Initialize the listening dialog
+		createListeningDialog();
+
+		// Create Vocalizer listener
+		Vocalizer.Listener vocalizerListener = new Vocalizer.Listener() {
+
+			public void onSpeakingBegin(Vocalizer vocalizer, String text,
+					Object context) {
+
+				// TODO
+				// updateCurrentText("Alice:  " + text, Color.GRAY, false);
+			}
+
+			public void onSpeakingDone(Vocalizer vocalizer, String text,
+					SpeechError error, Object context) {
+				// Use the context to detemine if this was the final TTS phrase
+				if (context != _lastTtsContext) {
+					// updateCurrentText("More phrases remaining", Color.YELLOW,
+					// false);
+				} else {
+					// updateCurrentText("", Color.WHITE, false);
+				}
+			}
+		};
+		_vocalizer = Alice.getSpeechKit().createVocalizerWithLanguage("en_US",
+				vocalizerListener, new Handler());
+		_vocalizer.setVoice("Serena");
+
+		SavedState savedState = (SavedState) getLastNonConfigurationInstance();
+		if (savedState == null) {
+			// Initialize the handler, for access to this application's message
+			// queue
+			_handler = new Handler();
+		} else {
+			// There was a recognition in progress when the OS destroyed/
+			// recreated this activity, so restore the existing recognition
+			_currentRecognizer = savedState.Recognizer;
+			_listeningDialog.setText(savedState.DialogText);
+			_listeningDialog.setLevel(savedState.DialogLevel);
+			_listeningDialog.setRecording(savedState.DialogRecording);
+			_handler = savedState.Handler;
+
+			if (savedState.DialogRecording) {
+				// Simulate onRecordingBegin() to start animation
+				_listener.onRecordingBegin(_currentRecognizer);
+			}
+
+			_currentRecognizer.setListener(_listener);
+
+		}
+
+		// speakReply("Welcome to the Pocket Doctor. I am Alice, how can I help you today? You can click on the microphone to talk to me.");
+
+	}
+
+	private void showAlert(String title, String message) {
+		AlertDialog alert = new AlertDialog.Builder(this).create();
+		alert.setTitle(title);
+		alert.setMessage(message);
+		alert.setButton("Ok", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				return;
+			}
+		});
+		alert.show();
 	}
 
 	/**
@@ -165,7 +279,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 				@Override
 				public void onClick(View v) {
-					doDiagnosis(guide, start_input);
+					doTouchDiagnosis(guide, start_input);
 				}
 			});
 
@@ -180,19 +294,6 @@ public class Alice extends Activity implements AsyncTasksListener {
 		filter.addCategory(Intent.CATEGORY_DEFAULT);
 		receiver = new ResponseReceiver();
 		registerReceiver(receiver, filter);
-	}
-
-	private void initLocationService() {
-		mgr = (AlarmManager) getSystemService(ALARM_SERVICE);
-		Intent i = new Intent(this, LocationPoller.class);
-		i.putExtra(LocationPoller.EXTRA_INTENT, new Intent(this,
-				LocationReceiver.class));
-		i.putExtra(LocationPoller.EXTRA_PROVIDER, LocationManager.GPS_PROVIDER);
-		pi = PendingIntent.getBroadcast(this, 0, i, 0);
-		mgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-				SystemClock.elapsedRealtime(), PERIOD, pi);
-
-		Log.i(Constants.TAG, "Location polling every 2 minutes begun");
 	}
 
 	private void setNotFirstRun() {
@@ -220,18 +321,37 @@ public class Alice extends Activity implements AsyncTasksListener {
 	}
 
 	/**
-	 * Creates an instance of {@link DiagnosisAsyncTask}, and sets the
-	 * {@link AsyncTasksListener}
+	 * Touch Diagnosis - Creates an instance of {@link DiagnosisAsyncTask}, and
+	 * sets the {@link AsyncTasksListener}
 	 * 
 	 * @param health_guide
 	 *            and
 	 * @param input_text
 	 *            and then executes the request
 	 */
-	public void doDiagnosis(String health_guide, String input_text) {
+	public void doTouchDiagnosis(String health_guide, String input_text) {
 		diagnosisTask = new DiagnosisAsyncTask();
+		diagnosisTask.setVoice(false);
 		diagnosisTask.setListener(listener);
 		diagnosisTask.setHealth_guide(health_guide);
+		diagnosisTask.setInput_text(input_text);
+		diagnosisTask.execute();
+	}
+
+	/**
+	 * Voice Diagnosis - Creates an instance of {@link DiagnosisAsyncTask}, and
+	 * sets the {@link AsyncTasksListener}
+	 * 
+	 * @param last_query
+	 *            and
+	 * @param input_text
+	 *            and then executes the request
+	 */
+	public void doVoiceDiagnosis(String last_query, String input_text) {
+		diagnosisTask = new DiagnosisAsyncTask();
+		diagnosisTask.setVoice(true);
+		diagnosisTask.setListener(listener);
+		diagnosisTask.setLast_query(last_query);
 		diagnosisTask.setInput_text(input_text);
 		diagnosisTask.execute();
 	}
@@ -247,8 +367,17 @@ public class Alice extends Activity implements AsyncTasksListener {
 			mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 			mProgressDialog.setCancelable(false);
 			return mProgressDialog;
+		case LISTENING_DIALOG:
+			return _listeningDialog;
 		}
+
 		return null;
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		int position = flipper.getDisplayedChild();
+		savedInstanceState.putInt("FLIPPER_POSITION", position);
 	}
 
 	@Override
@@ -269,42 +398,57 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 		if (result != null) {
 
-			// add diagnosis object to adapter
-			chatAdapter.addItem(result);
+			// In cases where the server cannot understand/decipher
+			// input_text, we receive back a 'problem'. Test for the same
+			// here
+			if (result.getCurrent_query().equalsIgnoreCase("problem")) {
 
-			// tell listeners that underlying data has changed. Refrash the view
-			chatAdapter.notifyDataSetChanged();
+				// TODO Show Alert Dialog that the server could not
+				// understand their request
 
-			// identify the view on display currently
-			View currentView = flipper.getCurrentView();
+				showAlert("Problem", result.getReply());
 
-			if (currentView.equals(menuView)) {
-				// identify the number of children in the flipper
-				int childCount = flipper.getChildCount();
-				if (childCount > 1) {
-					flipper.showNext();
-				} else {
-					flipper.addView(chatview);
-					flipper.showNext();
+				Log.i(Constants.TAG, "Hapa Tu : " + result.getReply());
+
+			} else {
+
+				// add diagnosis object to adapter
+				chatAdapter.addItem(result);
+
+				// tell listeners that underlying data has changed. Refresh the
+				// view
+				chatAdapter.notifyDataSetChanged();
+
+				// identify the view on display currently
+				View currentView = flipper.getCurrentView();
+
+				if (currentView.equals(menuView)) {
+					// identify the number of children in the flipper
+					int childCount = flipper.getChildCount();
+					if (childCount > 1) {
+						flipper.showNext();
+					} else {
+						flipper.addView(chatview);
+						flipper.showNext();
+					}
+
+					// perhaps scroll to the last item if layout does not handle
+					// this well
+
+				} else if (currentView.equals(chatview)) {
+					// TODO: Check if we really have to do nothing here
+					// perhaps scroll to the last item if layout does not handle
+					// this well
+
 				}
-
-				// perhaps scroll to the last item if layout does not handle
-				// this well
-
-			} else if (currentView.equals(chatview)) {
-				// TODO: Check if we really have to do nothing here
-				// perhaps scroll to the last item if layout does not handle
-				// this well
-
 			}
-
 		}
 
 	}
 
 	@Override
 	protected void onPause() {
-		mgr.cancel(pi);
+		// mgr.cancel(pi);
 		super.onPause();
 	}
 
@@ -315,7 +459,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 	@Override
 	protected void onDestroy() {
-		mgr.cancel(pi);
+		// mgr.cancel(pi);
 		unregisterReceiver(receiver);
 		super.onDestroy();
 	}
@@ -374,159 +518,154 @@ public class Alice extends Activity implements AsyncTasksListener {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			// retrieve currently selected item
 			final Diagnosis diagnosis = listitems.get(position);
-			String type = diagnosis.getResponse_type();
 			View row = null;
 
-			if (type != null) {
-				// retrive ID for discriminating the different views
-				int diagnosisType = Integer.parseInt(type);
+			// retrieve ID for discriminating the different views
+			String type = diagnosis.getResponse_type();
+			int diagnosisType = Integer.parseInt(type);
 
-				switch (diagnosisType) {
-				case 1:
-					// TODO Response Type 1 - Show Confirm Dialog . This is
-					// ignored for now
-					break;
-				case 2:
+			switch (diagnosisType) {
+			case 1:
+				// TODO Response Type 1 - Show Confirm Dialog . This is
+				// ignored for now
+				break;
+			case 2:
 
-					// Response Type 2 - Show Options Dialog
-					row = inflater.inflate(R.layout.diagnosis_options_chat,
-							null);
+				// Response Type 2 - Show Options Dialog
+				row = inflater.inflate(R.layout.diagnosis_options_chat, null);
 
-					TextView optQuery = (TextView) row
-							.findViewById(R.id.options_txt_query);
-					TextView optResp = (TextView) row
-							.findViewById(R.id.options_txt_response);
+				TextView optQuery = (TextView) row
+						.findViewById(R.id.options_txt_query);
+				TextView optResp = (TextView) row
+						.findViewById(R.id.options_txt_response);
 
-					optQuery.setText(diagnosis.getCurrent_query().toString());
-					optResp.setText(diagnosis.getReply().toString());
+				optQuery.setText(diagnosis.getCurrent_query().toString());
+				optResp.setText(diagnosis.getReply().toString());
 
-					RadioGroup optGroup = (RadioGroup) row
-							.findViewById(R.id.options_query_options);
+				RadioGroup optGroup = (RadioGroup) row
+						.findViewById(R.id.options_query_options);
 
-					HashMap<String, String> respOpts = diagnosis
-							.getReply_options();
+				HashMap<String, String> respOpts = diagnosis.getReply_options();
 
-					for (Entry<String, String> entry : respOpts.entrySet()) {
-						final String key = entry.getKey();
-						final String value = entry.getValue();
+				for (Entry<String, String> entry : respOpts.entrySet()) {
+					final String key = entry.getKey();
+					final String value = entry.getValue();
 
-						RadioButton rbtn = new RadioButton(this.context);
-						rbtn.setText(key);
-						rbtn.setOnClickListener(new View.OnClickListener() {
-
-							@Override
-							public void onClick(View v) {
-								doDiagnosis(diagnosis.getGuide(), value);
-							}
-						});
-						optGroup.addView(rbtn);
-					}
-
-					break;
-				case 3:
-					// Response Type 3 - EMERGENCY - Map with nearest
-					// hospital/doctor
-					row = inflater.inflate(R.layout.diagnosis_map_chat, null);
-
-					TextView mapQuery = (TextView) row
-							.findViewById(R.id.map_txt_query);
-					TextView mapResp = (TextView) row
-							.findViewById(R.id.map_txt_response);
-
-					mapQuery.setText(diagnosis.getCurrent_query().toString());
-					mapResp.setText(diagnosis.getReply().toString());
-
-					MapView mapView = (MapView) row.findViewById(R.id.mapview);
-
-					mapView.setBuiltInZoomControls(true);
-
-					List<Overlay> mapOverlays = mapView.getOverlays();
-					Drawable drawable = context.getResources().getDrawable(
-							R.drawable.hospital);
-					AliceItemizedOverlay itemizedoverlay = new AliceItemizedOverlay(
-							drawable, context);
-					GeoPoint point = new GeoPoint((int) -1.297322,
-							(int) 36.792344);
-					OverlayItem overlayitem = new OverlayItem(point,
-							"Health Centre Location",
-							"This is the nearest health centre");
-
-					itemizedoverlay.addOverlay(overlayitem);
-
-					mapOverlays.add(itemizedoverlay);
-
-					MapController mapController = mapView.getController();
-
-					mapController.animateTo(point); // attempt to center map
-
-					mapController.setZoom(14); // this needs some investigation
-												// to realise best zoom level
-
-					break;
-				case 4:
-					// TODO Response Type 4 - CALL DOCTOR - Text with button to
-					// call
-					// doctor.
-					row = inflater.inflate(R.layout.diagnosis_calldoc_chat,
-							null);
-
-					TextView callQuery = (TextView) row
-							.findViewById(R.id.calldoc_txt_query);
-					TextView callResp = (TextView) row
-							.findViewById(R.id.calldoc_txt_response);
-
-					callQuery.setText(diagnosis.getCurrent_query().toString());
-					callResp.setText(diagnosis.getReply().toString());
-
-					Button callBtn = (Button) row
-							.findViewById(R.id.calldoc_btn);
-
-					callBtn.setOnClickListener(new OnClickListener() {
+					RadioButton rbtn = new RadioButton(this.context);
+					rbtn.setText(key);
+					rbtn.setOnClickListener(new View.OnClickListener() {
 
 						@Override
 						public void onClick(View v) {
-							// TODO Auto-generated method stub
-							Toast.makeText(context, "Calling Doctor now",
-									Toast.LENGTH_SHORT).show();
-
+							doTouchDiagnosis(diagnosis.getGuide(), value);
 						}
 					});
-
-					break;
-				case 5:
-					// TODO Response Type 5 - INFORMATION - Text
-					row = inflater.inflate(R.layout.diagnosis_information_chat,
-							null);
-
-					TextView infoQuery = (TextView) row
-							.findViewById(R.id.info_txt_query);
-					TextView infoResp = (TextView) row
-							.findViewById(R.id.info_txt_response);
-
-					infoQuery.setText(diagnosis.getCurrent_query().toString());
-					infoResp.setText(diagnosis.getReply().toString());
-
-					break;
-
-				case 6:
-					// TODO Response Type 6 - EXIT THE CURRENT GUIDE - Text
-					row = inflater.inflate(R.layout.diagnosis_information_chat,
-							null);
-
-					TextView infoQuery2 = (TextView) row
-							.findViewById(R.id.info_txt_query);
-					TextView infoResp2 = (TextView) row
-							.findViewById(R.id.info_txt_response);
-
-					infoQuery2.setText(diagnosis.getCurrent_query().toString());
-					infoResp2.setText(diagnosis.getReply().toString());
-
-					break;
-
-				default:
-					break;
+					optGroup.addView(rbtn);
 				}
 
+				break;
+			case 3:
+				// Response Type 3 - EMERGENCY - Map with nearest
+				// hospital/doctor
+				row = inflater.inflate(R.layout.diagnosis_map_chat, null);
+
+				TextView mapQuery = (TextView) row
+						.findViewById(R.id.map_txt_query);
+				TextView mapResp = (TextView) row
+						.findViewById(R.id.map_txt_response);
+
+				mapQuery.setText(diagnosis.getCurrent_query().toString());
+				mapResp.setText(diagnosis.getReply().toString());
+
+				MapView mapView = (MapView) row.findViewById(R.id.mapview);
+
+				mapView.setBuiltInZoomControls(true);
+
+				List<Overlay> mapOverlays = mapView.getOverlays();
+				Drawable drawable = context.getResources().getDrawable(
+						R.drawable.hospital);
+				AliceItemizedOverlay itemizedoverlay = new AliceItemizedOverlay(
+						drawable, context);
+				GeoPoint point = new GeoPoint((int) -1.297322, (int) 36.792344);
+				OverlayItem overlayitem = new OverlayItem(point,
+						"Health Centre Location",
+						"This is the nearest health centre");
+
+				itemizedoverlay.addOverlay(overlayitem);
+
+				mapOverlays.add(itemizedoverlay);
+
+				MapController mapController = mapView.getController();
+
+				mapController.animateTo(point); // attempt to center map
+
+				mapController.setZoom(14); // this needs some
+											// investigation
+											// to realise best zoom
+											// level
+
+				break;
+			case 4:
+				// TODO Response Type 4 - CALL DOCTOR - Text with button
+				// to
+				// call
+				// doctor.
+				row = inflater.inflate(R.layout.diagnosis_calldoc_chat, null);
+
+				TextView callQuery = (TextView) row
+						.findViewById(R.id.calldoc_txt_query);
+				TextView callResp = (TextView) row
+						.findViewById(R.id.calldoc_txt_response);
+
+				callQuery.setText(diagnosis.getCurrent_query().toString());
+				callResp.setText(diagnosis.getReply().toString());
+
+				Button callBtn = (Button) row.findViewById(R.id.calldoc_btn);
+
+				callBtn.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						Toast.makeText(context, "Calling Doctor now",
+								Toast.LENGTH_SHORT).show();
+
+					}
+				});
+
+				break;
+			case 5:
+				// TODO Response Type 5 - INFORMATION - Text
+				row = inflater.inflate(R.layout.diagnosis_information_chat,
+						null);
+
+				TextView infoQuery = (TextView) row
+						.findViewById(R.id.info_txt_query);
+				TextView infoResp = (TextView) row
+						.findViewById(R.id.info_txt_response);
+
+				infoQuery.setText(diagnosis.getCurrent_query().toString());
+				infoResp.setText(diagnosis.getReply().toString());
+
+				break;
+
+			case 6:
+				// TODO Response Type 6 - EXIT THE CURRENT GUIDE - Text
+				row = inflater.inflate(R.layout.diagnosis_information_chat,
+						null);
+
+				TextView infoQuery2 = (TextView) row
+						.findViewById(R.id.info_txt_query);
+				TextView infoResp2 = (TextView) row
+						.findViewById(R.id.info_txt_response);
+
+				infoQuery2.setText(diagnosis.getCurrent_query().toString());
+				infoResp2.setText(diagnosis.getReply().toString());
+
+				break;
+
+			default:
+				break;
 			}
 
 			return row;
@@ -541,19 +680,194 @@ public class Alice extends Activity implements AsyncTasksListener {
 			listitems.add(diagnosis);
 		}
 
-		private void createOutgoingChat(View row,String query_text) {
-
-			TextView infoQuery2 = (TextView) row
-					.findViewById(R.id.info_txt_query);
-			
-			infoQuery2.setText(query_text);
+		private void removeItem(Diagnosis diagnosis) {
+			listitems.remove(diagnosis);
 		}
 
-		private void createIncomingChat(View row) {
-			TextView infoResp2 = (TextView) row
-					.findViewById(R.id.info_txt_response);
-		}
+	}
 
+	// Start Voice Business
+
+	public void startDictation(View view) {
+		_listeningDialog.setText("Initializing...");
+		showDialog(LISTENING_DIALOG);
+		_listeningDialog.setStoppable(false);
+		setResults(new Recognition.Result[0]);
+
+		_currentRecognizer = Alice.getSpeechKit().createRecognizer(
+				Recognizer.RecognizerType.Dictation,
+				Recognizer.EndOfSpeechDetection.Long, "en_US", _listener,
+				_handler);
+		_currentRecognizer.start();
+	}
+
+	@Override
+	protected void onPrepareDialog(int id, final Dialog dialog) {
+		switch (id) {
+		case LISTENING_DIALOG:
+			_listeningDialog.prepare(new Button.OnClickListener() {
+
+				public void onClick(View v) {
+					if (_currentRecognizer != null) {
+						_currentRecognizer.stopRecording();
+					}
+				}
+			});
+			break;
+		}
+	}
+
+	@Override
+	public Object onRetainNonConfigurationInstance() {
+		if (_listeningDialog.isShowing() && _currentRecognizer != null) {
+			// If a recognition is in progress, save it, because the activity
+			// is about to be destroyed and recreated
+			SavedState savedState = new SavedState();
+			savedState.Recognizer = _currentRecognizer;
+			savedState.DialogText = _listeningDialog.getText();
+			savedState.DialogLevel = _listeningDialog.getLevel();
+			savedState.DialogRecording = _listeningDialog.isRecording();
+			savedState.Handler = _handler;
+
+			_currentRecognizer = null; // Prevent onDestroy() from canceling
+
+			// Save the Vocalizer state, because we know the Activity will be
+			// immediately recreated.
+			savedState.Vocalizer = _vocalizer;
+			savedState.Context = _lastTtsContext;
+
+			_vocalizer = null; // Prevent onDestroy() from canceling
+
+			return savedState;
+		}
+		return null;
+	}
+
+	// Allow other activities to access the SpeechKit instance.
+	static SpeechKit getSpeechKit() {
+		return _speechKit;
+	}
+
+	private class SavedState {
+		String DialogText;
+		String DialogLevel;
+		boolean DialogRecording;
+		Recognizer Recognizer;
+		Handler Handler;
+		Vocalizer Vocalizer;
+		Object Context;
+	}
+
+	private Recognizer.Listener createListener() {
+		return new Recognizer.Listener() {
+
+			public void onRecordingBegin(Recognizer recognizer) {
+				_listeningDialog.setText("Recording...");
+				_listeningDialog.setStoppable(true);
+				_listeningDialog.setRecording(true);
+
+				// Create a repeating task to update the audio level
+				Runnable r = new Runnable() {
+					public void run() {
+						if (_listeningDialog != null
+								&& _listeningDialog.isRecording()
+								&& _currentRecognizer != null) {
+							_listeningDialog.setLevel(Float
+									.toString(_currentRecognizer
+											.getAudioLevel()));
+							_handler.postDelayed(this, 500);
+						}
+					}
+				};
+				r.run();
+			}
+
+			public void onRecordingDone(Recognizer recognizer) {
+				_listeningDialog.setText("Processing...");
+				_listeningDialog.setLevel("");
+				_listeningDialog.setRecording(false);
+				_listeningDialog.setStoppable(false);
+			}
+
+			public void onError(Recognizer recognizer, SpeechError error) {
+				if (recognizer != _currentRecognizer)
+					return;
+				if (_listeningDialog.isShowing())
+					dismissDialog(LISTENING_DIALOG);
+				_currentRecognizer = null;
+				_listeningDialog.setRecording(false);
+
+				// Display the error + suggestion in the edit box
+				String detail = error.getErrorDetail();
+				String suggestion = error.getSuggestion();
+
+				if (suggestion == null)
+					suggestion = "";
+				// TODO
+				Log.i(Constants.TAG, detail + "\n" + suggestion);
+				// updateCurrentText(detail + "\n" + suggestion, Color.GREEN,
+				// false);
+			}
+
+			public void onResults(Recognizer recognizer, Recognition results) {
+				if (_listeningDialog.isShowing())
+					dismissDialog(LISTENING_DIALOG);
+				_currentRecognizer = null;
+				_listeningDialog.setRecording(false);
+				int count = results.getResultCount();
+				Recognition.Result[] rs = new Recognition.Result[count];
+				for (int i = 0; i < count; i++) {
+					rs[i] = results.getResult(i);
+				}
+
+				setResults(rs);
+			}
+		};
+	}
+
+	private void setResults(Recognition.Result[] results) {
+		// _arrayAdapter.clear();
+		if (results.length > 0) {
+			// setResult(results[0].getText());
+			String t = results[0].getText();
+			// String dialogue = "Me:  " + t;
+			// TODO
+			// updateCurrentText(dialogue, Color.WHITE, false);
+			Log.i(Constants.TAG, t);
+			// speakReply(askAlice(t));
+
+			doVoiceDiagnosis(Constants.VOICE_DEFAULT_LAST_QUERY, t);
+
+		} else {
+			// setResult("");
+		}
+	}
+
+	private void speakReply(String reply) {
+		_lastTtsContext = new Object();
+		_vocalizer.speakString(reply, _lastTtsContext);
+	}
+
+	private void createListeningDialog() {
+		_listeningDialog = new ListeningDialog(this);
+		_listeningDialog.setOnDismissListener(new OnDismissListener() {
+			public void onDismiss(DialogInterface dialog) {
+				if (_currentRecognizer != null) // Cancel the current recognizer
+				{
+					_currentRecognizer.cancel();
+					_currentRecognizer = null;
+				}
+
+				if (!_destroyed) {
+					// Remove the dialog so that it will be recreated next time.
+					// This is necessary to avoid a bug in Android >= 1.6 where
+					// the
+					// animation stops working.
+					Alice.this.removeDialog(LISTENING_DIALOG);
+					createListeningDialog();
+				}
+			}
+		});
 	}
 
 }
