@@ -406,7 +406,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 				// TODO Show Alert Dialog that the server could not
 				// understand their request
 
-				showAlert("Problem", result.getReply());
+				showAlert("Problem",
+						result.getInput() + "\n" + result.getReply());
 
 				Log.i(Constants.TAG, "Hapa Tu : " + result.getReply());
 
