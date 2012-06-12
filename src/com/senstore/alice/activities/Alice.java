@@ -20,6 +20,7 @@ import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -563,7 +564,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 				});
 				
 
-				optResp.setText(mDiagnosis.getReply().toString());
+				optResp.setText(Html.fromHtml( mDiagnosis.getReply().toString()));
 
 				LinearLayout optGroup = (LinearLayout) row
 						.findViewById(R.id.options_response_options);
@@ -634,7 +635,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 						
 					}
 				});
-				mapResp.setText(mDiagnosis.getReply().toString());
+				mapResp.setText(Html.fromHtml( mDiagnosis.getReply().toString()));
 
 				MapView mapView = (MapView) row.findViewById(R.id.mapview);
 
@@ -688,7 +689,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 					}
 				});
 
-				callResp.setText(mDiagnosis.getReply().toString());
+				callResp.setText(Html.fromHtml( mDiagnosis.getReply().toString()));
 
 				Button callBtn = (Button) row.findViewById(R.id.calldoc_btn);
 
@@ -727,7 +728,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 					}
 				});
 
-				infoResp.setText(mDiagnosis.getReply().toString());
+				infoResp.setText(Html.fromHtml( mDiagnosis.getReply().toString()));
 
 				break;
 
@@ -739,7 +740,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 				TextView infoResp2 = (TextView) row
 						.findViewById(R.id.info_txt_response);
 
-				infoResp2.setText(mDiagnosis.getReply().toString());
+				infoResp2.setText(Html.fromHtml( mDiagnosis.getReply().toString()));
 
 				break;
 				
