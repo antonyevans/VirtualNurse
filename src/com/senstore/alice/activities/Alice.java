@@ -223,7 +223,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 		}
 
-		speakReply("Welcome to the Pocket Doctor. I am Alice, how can I help you today? You can click on the microphone to talk to me.");
+		// speakReply("Welcome to the Pocket Doctor. I am Alice, how can I help you today? You can click on the microphone to talk to me.");
 
 	}
 
@@ -398,35 +398,50 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 		if (result != null) {
 
-			// add diagnosis object to adapter
-			chatAdapter.addItem(result);
+			// In cases where the server cannot understand/decipher
+			// input_text, we receive back a 'problem'. Test for the same
+			// here
+			if (result.getCurrent_query().equalsIgnoreCase("problem")) {
 
-			// tell listeners that underlying data has changed. Refrash the view
-			chatAdapter.notifyDataSetChanged();
+				// TODO Show Alert Dialog that the server could not
+				// understand their request
 
-			// identify the view on display currently
-			View currentView = flipper.getCurrentView();
+				showAlert("Problem", result.getReply());
 
-			if (currentView.equals(menuView)) {
-				// identify the number of children in the flipper
-				int childCount = flipper.getChildCount();
-				if (childCount > 1) {
-					flipper.showNext();
-				} else {
-					flipper.addView(chatview);
-					flipper.showNext();
+				Log.i(Constants.TAG, "Hapa Tu : " + result.getReply());
+
+			} else {
+
+				// add diagnosis object to adapter
+				chatAdapter.addItem(result);
+
+				// tell listeners that underlying data has changed. Refresh the
+				// view
+				chatAdapter.notifyDataSetChanged();
+
+				// identify the view on display currently
+				View currentView = flipper.getCurrentView();
+
+				if (currentView.equals(menuView)) {
+					// identify the number of children in the flipper
+					int childCount = flipper.getChildCount();
+					if (childCount > 1) {
+						flipper.showNext();
+					} else {
+						flipper.addView(chatview);
+						flipper.showNext();
+					}
+
+					// perhaps scroll to the last item if layout does not handle
+					// this well
+
+				} else if (currentView.equals(chatview)) {
+					// TODO: Check if we really have to do nothing here
+					// perhaps scroll to the last item if layout does not handle
+					// this well
+
 				}
-
-				// perhaps scroll to the last item if layout does not handle
-				// this well
-
-			} else if (currentView.equals(chatview)) {
-				// TODO: Check if we really have to do nothing here
-				// perhaps scroll to the last item if layout does not handle
-				// this well
-
 			}
-
 		}
 
 	}
@@ -503,183 +518,154 @@ public class Alice extends Activity implements AsyncTasksListener {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			// retrieve currently selected item
 			final Diagnosis diagnosis = listitems.get(position);
-			String type = diagnosis.getResponse_type();
 			View row = null;
 
-			if (type != null) {
+			// retrieve ID for discriminating the different views
+			String type = diagnosis.getResponse_type();
+			int diagnosisType = Integer.parseInt(type);
 
-				if (diagnosis.getCurrent_query().equalsIgnoreCase("problem")) {
+			switch (diagnosisType) {
+			case 1:
+				// TODO Response Type 1 - Show Confirm Dialog . This is
+				// ignored for now
+				break;
+			case 2:
 
-					// TODO Show Alert Dialog that the server could not
-					// understand their request
+				// Response Type 2 - Show Options Dialog
+				row = inflater.inflate(R.layout.diagnosis_options_chat, null);
 
-					//showAlert("Problem", diagnosis.getReply());
-					
-					Log.i(Constants.TAG, "Hapa Tu : "+diagnosis.getReply());
+				TextView optQuery = (TextView) row
+						.findViewById(R.id.options_txt_query);
+				TextView optResp = (TextView) row
+						.findViewById(R.id.options_txt_response);
 
-				} else {
-					// retrive ID for discriminating the different views
-					int diagnosisType = Integer.parseInt(type);
+				optQuery.setText(diagnosis.getCurrent_query().toString());
+				optResp.setText(diagnosis.getReply().toString());
 
-					switch (diagnosisType) {
-					case 1:
-						// TODO Response Type 1 - Show Confirm Dialog . This is
-						// ignored for now
-						break;
-					case 2:
+				RadioGroup optGroup = (RadioGroup) row
+						.findViewById(R.id.options_query_options);
 
-						// Response Type 2 - Show Options Dialog
-						row = inflater.inflate(R.layout.diagnosis_options_chat,
-								null);
+				HashMap<String, String> respOpts = diagnosis.getReply_options();
 
-						TextView optQuery = (TextView) row
-								.findViewById(R.id.options_txt_query);
-						TextView optResp = (TextView) row
-								.findViewById(R.id.options_txt_response);
+				for (Entry<String, String> entry : respOpts.entrySet()) {
+					final String key = entry.getKey();
+					final String value = entry.getValue();
 
-						optQuery.setText(diagnosis.getCurrent_query()
-								.toString());
-						optResp.setText(diagnosis.getReply().toString());
+					RadioButton rbtn = new RadioButton(this.context);
+					rbtn.setText(key);
+					rbtn.setOnClickListener(new View.OnClickListener() {
 
-						RadioGroup optGroup = (RadioGroup) row
-								.findViewById(R.id.options_query_options);
-
-						HashMap<String, String> respOpts = diagnosis
-								.getReply_options();
-
-						for (Entry<String, String> entry : respOpts.entrySet()) {
-							final String key = entry.getKey();
-							final String value = entry.getValue();
-
-							RadioButton rbtn = new RadioButton(this.context);
-							rbtn.setText(key);
-							rbtn.setOnClickListener(new View.OnClickListener() {
-
-								@Override
-								public void onClick(View v) {
-									doTouchDiagnosis(diagnosis.getGuide(),
-											value);
-								}
-							});
-							optGroup.addView(rbtn);
+						@Override
+						public void onClick(View v) {
+							doTouchDiagnosis(diagnosis.getGuide(), value);
 						}
-
-						break;
-					case 3:
-						// Response Type 3 - EMERGENCY - Map with nearest
-						// hospital/doctor
-						row = inflater.inflate(R.layout.diagnosis_map_chat,
-								null);
-
-						TextView mapQuery = (TextView) row
-								.findViewById(R.id.map_txt_query);
-						TextView mapResp = (TextView) row
-								.findViewById(R.id.map_txt_response);
-
-						mapQuery.setText(diagnosis.getCurrent_query()
-								.toString());
-						mapResp.setText(diagnosis.getReply().toString());
-
-						MapView mapView = (MapView) row
-								.findViewById(R.id.mapview);
-
-						mapView.setBuiltInZoomControls(true);
-
-						List<Overlay> mapOverlays = mapView.getOverlays();
-						Drawable drawable = context.getResources().getDrawable(
-								R.drawable.hospital);
-						AliceItemizedOverlay itemizedoverlay = new AliceItemizedOverlay(
-								drawable, context);
-						GeoPoint point = new GeoPoint((int) -1.297322,
-								(int) 36.792344);
-						OverlayItem overlayitem = new OverlayItem(point,
-								"Health Centre Location",
-								"This is the nearest health centre");
-
-						itemizedoverlay.addOverlay(overlayitem);
-
-						mapOverlays.add(itemizedoverlay);
-
-						MapController mapController = mapView.getController();
-
-						mapController.animateTo(point); // attempt to center map
-
-						mapController.setZoom(14); // this needs some
-													// investigation
-													// to realise best zoom
-													// level
-
-						break;
-					case 4:
-						// TODO Response Type 4 - CALL DOCTOR - Text with button
-						// to
-						// call
-						// doctor.
-						row = inflater.inflate(R.layout.diagnosis_calldoc_chat,
-								null);
-
-						TextView callQuery = (TextView) row
-								.findViewById(R.id.calldoc_txt_query);
-						TextView callResp = (TextView) row
-								.findViewById(R.id.calldoc_txt_response);
-
-						callQuery.setText(diagnosis.getCurrent_query()
-								.toString());
-						callResp.setText(diagnosis.getReply().toString());
-
-						Button callBtn = (Button) row
-								.findViewById(R.id.calldoc_btn);
-
-						callBtn.setOnClickListener(new OnClickListener() {
-
-							@Override
-							public void onClick(View v) {
-								// TODO Auto-generated method stub
-								Toast.makeText(context, "Calling Doctor now",
-										Toast.LENGTH_SHORT).show();
-
-							}
-						});
-
-						break;
-					case 5:
-						// TODO Response Type 5 - INFORMATION - Text
-						row = inflater.inflate(
-								R.layout.diagnosis_information_chat, null);
-
-						TextView infoQuery = (TextView) row
-								.findViewById(R.id.info_txt_query);
-						TextView infoResp = (TextView) row
-								.findViewById(R.id.info_txt_response);
-
-						infoQuery.setText(diagnosis.getCurrent_query()
-								.toString());
-						infoResp.setText(diagnosis.getReply().toString());
-
-						break;
-
-					case 6:
-						// TODO Response Type 6 - EXIT THE CURRENT GUIDE - Text
-						row = inflater.inflate(
-								R.layout.diagnosis_information_chat, null);
-
-						TextView infoQuery2 = (TextView) row
-								.findViewById(R.id.info_txt_query);
-						TextView infoResp2 = (TextView) row
-								.findViewById(R.id.info_txt_response);
-
-						infoQuery2.setText(diagnosis.getCurrent_query()
-								.toString());
-						infoResp2.setText(diagnosis.getReply().toString());
-
-						break;
-
-					default:
-						break;
-					}
-
+					});
+					optGroup.addView(rbtn);
 				}
 
+				break;
+			case 3:
+				// Response Type 3 - EMERGENCY - Map with nearest
+				// hospital/doctor
+				row = inflater.inflate(R.layout.diagnosis_map_chat, null);
+
+				TextView mapQuery = (TextView) row
+						.findViewById(R.id.map_txt_query);
+				TextView mapResp = (TextView) row
+						.findViewById(R.id.map_txt_response);
+
+				mapQuery.setText(diagnosis.getCurrent_query().toString());
+				mapResp.setText(diagnosis.getReply().toString());
+
+				MapView mapView = (MapView) row.findViewById(R.id.mapview);
+
+				mapView.setBuiltInZoomControls(true);
+
+				List<Overlay> mapOverlays = mapView.getOverlays();
+				Drawable drawable = context.getResources().getDrawable(
+						R.drawable.hospital);
+				AliceItemizedOverlay itemizedoverlay = new AliceItemizedOverlay(
+						drawable, context);
+				GeoPoint point = new GeoPoint((int) -1.297322, (int) 36.792344);
+				OverlayItem overlayitem = new OverlayItem(point,
+						"Health Centre Location",
+						"This is the nearest health centre");
+
+				itemizedoverlay.addOverlay(overlayitem);
+
+				mapOverlays.add(itemizedoverlay);
+
+				MapController mapController = mapView.getController();
+
+				mapController.animateTo(point); // attempt to center map
+
+				mapController.setZoom(14); // this needs some
+											// investigation
+											// to realise best zoom
+											// level
+
+				break;
+			case 4:
+				// TODO Response Type 4 - CALL DOCTOR - Text with button
+				// to
+				// call
+				// doctor.
+				row = inflater.inflate(R.layout.diagnosis_calldoc_chat, null);
+
+				TextView callQuery = (TextView) row
+						.findViewById(R.id.calldoc_txt_query);
+				TextView callResp = (TextView) row
+						.findViewById(R.id.calldoc_txt_response);
+
+				callQuery.setText(diagnosis.getCurrent_query().toString());
+				callResp.setText(diagnosis.getReply().toString());
+
+				Button callBtn = (Button) row.findViewById(R.id.calldoc_btn);
+
+				callBtn.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						Toast.makeText(context, "Calling Doctor now",
+								Toast.LENGTH_SHORT).show();
+
+					}
+				});
+
+				break;
+			case 5:
+				// TODO Response Type 5 - INFORMATION - Text
+				row = inflater.inflate(R.layout.diagnosis_information_chat,
+						null);
+
+				TextView infoQuery = (TextView) row
+						.findViewById(R.id.info_txt_query);
+				TextView infoResp = (TextView) row
+						.findViewById(R.id.info_txt_response);
+
+				infoQuery.setText(diagnosis.getCurrent_query().toString());
+				infoResp.setText(diagnosis.getReply().toString());
+
+				break;
+
+			case 6:
+				// TODO Response Type 6 - EXIT THE CURRENT GUIDE - Text
+				row = inflater.inflate(R.layout.diagnosis_information_chat,
+						null);
+
+				TextView infoQuery2 = (TextView) row
+						.findViewById(R.id.info_txt_query);
+				TextView infoResp2 = (TextView) row
+						.findViewById(R.id.info_txt_response);
+
+				infoQuery2.setText(diagnosis.getCurrent_query().toString());
+				infoResp2.setText(diagnosis.getReply().toString());
+
+				break;
+
+			default:
+				break;
 			}
 
 			return row;
@@ -857,9 +843,9 @@ public class Alice extends Activity implements AsyncTasksListener {
 		}
 	}
 
-	private void speakReply(String Reply) {
+	private void speakReply(String reply) {
 		_lastTtsContext = new Object();
-		_vocalizer.speakString(Reply, _lastTtsContext);
+		_vocalizer.speakString(reply, _lastTtsContext);
 	}
 
 	private void createListeningDialog() {
