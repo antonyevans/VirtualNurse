@@ -516,6 +516,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			// retrieve currently selected item
 			final Diagnosis diagnosis = listitems.get(position);
+			final int currPos =position;
 			View row = null;
 
 			// retrieve ID for discriminating the different views
@@ -536,6 +537,18 @@ public class Alice extends Activity implements AsyncTasksListener {
 						.findViewById(R.id.options_txt_query);
 				TextView optResp = (TextView) row
 						.findViewById(R.id.options_txt_response);
+				
+				Button opt_close = (Button)row.findViewById(R.id.options_close);
+				opt_close.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						AliceChatAdapter.this.removeItem(currPos);
+						notifyDataSetChanged();
+						
+					}
+				});
+				
 
 				optQuery.setText(diagnosis.getCurrent_query().toString());
 				optResp.setText(diagnosis.getReply().toString());
@@ -595,7 +608,16 @@ public class Alice extends Activity implements AsyncTasksListener {
 						.findViewById(R.id.map_txt_query);
 				TextView mapResp = (TextView) row
 						.findViewById(R.id.map_txt_response);
-
+				Button map_close = (Button)row.findViewById(R.id.map_close);
+				map_close.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						AliceChatAdapter.this.removeItem(currPos);
+						notifyDataSetChanged();
+						
+					}
+				});
 				mapQuery.setText(diagnosis.getCurrent_query().toString());
 				mapResp.setText(diagnosis.getReply().toString());
 
@@ -638,6 +660,17 @@ public class Alice extends Activity implements AsyncTasksListener {
 						.findViewById(R.id.calldoc_txt_query);
 				TextView callResp = (TextView) row
 						.findViewById(R.id.calldoc_txt_response);
+				
+				Button calldoc_close = (Button)row.findViewById(R.id.calldoc_close);
+				calldoc_close.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						AliceChatAdapter.this.removeItem(currPos);
+						notifyDataSetChanged();
+						
+					}
+				});
 
 				callQuery.setText(diagnosis.getCurrent_query().toString());
 				callResp.setText(diagnosis.getReply().toString());
@@ -665,6 +698,17 @@ public class Alice extends Activity implements AsyncTasksListener {
 						.findViewById(R.id.info_txt_query);
 				TextView infoResp = (TextView) row
 						.findViewById(R.id.info_txt_response);
+				
+				Button info_close = (Button)row.findViewById(R.id.info_close);
+				info_close.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						AliceChatAdapter.this.removeItem(currPos);
+						notifyDataSetChanged();
+						
+					}
+				});
 
 				infoQuery.setText(diagnosis.getCurrent_query().toString());
 				infoResp.setText(diagnosis.getReply().toString());
@@ -704,6 +748,10 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 		private void removeItem(Diagnosis diagnosis) {
 			listitems.remove(diagnosis);
+		}
+		
+		private void removeItem(int position) {
+			listitems.remove(position);
 		}
 
 	}
