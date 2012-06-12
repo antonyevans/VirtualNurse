@@ -279,7 +279,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 				@Override
 				public void onClick(View v) {
-					doTouchDiagnosis(guide, start_input);
+					doTouchDiagnosis(guide, Constants.VOICE_DEFAULT_LAST_QUERY,start_input);
 				}
 			});
 
@@ -329,10 +329,11 @@ public class Alice extends Activity implements AsyncTasksListener {
 	 * @param input_text
 	 *            and then executes the request
 	 */
-	public void doTouchDiagnosis(String health_guide, String input_text) {
+	public void doTouchDiagnosis(String health_guide, String last_query,String input_text) {
 		diagnosisTask = new DiagnosisAsyncTask();
 		diagnosisTask.setVoice(false);
 		diagnosisTask.setListener(listener);
+		diagnosisTask.setLast_query(last_query);
 		diagnosisTask.setHealth_guide(health_guide);
 		diagnosisTask.setInput_text(input_text);
 		diagnosisTask.execute();
@@ -558,7 +559,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 						@Override
 						public void onClick(View v) {
-							doTouchDiagnosis(diagnosis.getGuide(), value);
+							doTouchDiagnosis(diagnosis.getGuide(), diagnosis.getLast_query(),value);
 						}
 					});
 					optGroup.addView(rbtn);

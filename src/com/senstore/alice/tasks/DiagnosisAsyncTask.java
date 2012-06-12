@@ -77,7 +77,7 @@ public class DiagnosisAsyncTask extends AsyncTask<Void, String, Diagnosis> {
 		if (isVoice()) {
 			diagnosis = handler.voiceDiagnosis(last_query, input_text);
 		} else {
-			diagnosis = handler.touchDiagnosis(health_guide, input_text);
+			diagnosis = handler.touchDiagnosis(health_guide, last_query,input_text);
 		}
 		return diagnosis;
 	}
