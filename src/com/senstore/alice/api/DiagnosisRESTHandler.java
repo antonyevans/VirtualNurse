@@ -36,13 +36,10 @@ public class DiagnosisRESTHandler {
 	 */
 	public Diagnosis touchDiagnosis(String guide, String input_text) {
 
-		String absoluteURL = Constants.SERVER_URL + "selectguide.json";
+		String absoluteURL = Constants.SERVER_URL + "harvard.json";
 		RestClient req = new RestClient(absoluteURL);
 		req.addParam("user_id", Utils.getPhoneNumber());
 		req.addParam("user_text", input_text);
-
-		// req.addParam("last_query", "start");
-
 		req.addParam("guide", guide);
 		req.addParam("input", input_text);
 		req.addParam("select_type", Constants.DIAGNOSIS_TOUCH);
@@ -82,7 +79,6 @@ public class DiagnosisRESTHandler {
 		String absoluteURL = Constants.SERVER_URL + "selectguide.json";
 		RestClient req = new RestClient(absoluteURL);
 		req.addParam("user_id", Utils.getPhoneNumber());
-		req.addParam("user_text", input_text);
 		req.addParam("last_query", last_query);
 		req.addParam("input", input_text);
 		req.addParam("select_type", Constants.DIAGNOSIS_VOICE);

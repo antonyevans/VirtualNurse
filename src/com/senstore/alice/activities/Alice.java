@@ -709,11 +709,6 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 			// Save the Vocalizer state, because we know the Activity will be
 			// immediately recreated.
-			// TextView textView = (TextView)findViewById(R.id.text_currentTts);
-
-			// savedState.Text = textView.getText().toString();
-			// savedState.TextColor =
-			// textView.getTextColors().getDefaultColor();
 			savedState.Vocalizer = _vocalizer;
 			savedState.Context = _lastTtsContext;
 
@@ -735,9 +730,6 @@ public class Alice extends Activity implements AsyncTasksListener {
 		boolean DialogRecording;
 		Recognizer Recognizer;
 		Handler Handler;
-		// added this next code
-		// int TextColor;
-		String Text;
 		Vocalizer Vocalizer;
 		Object Context;
 	}
@@ -819,6 +811,9 @@ public class Alice extends Activity implements AsyncTasksListener {
 			// updateCurrentText(dialogue, Color.WHITE, false);
 			Log.i(Constants.TAG, t);
 			// speakReply(askAlice(t));
+
+			doVoiceDiagnosis(Constants.VOICE_DEFAULT_LAST_QUERY, t);
+
 		} else {
 			// setResult("");
 		}

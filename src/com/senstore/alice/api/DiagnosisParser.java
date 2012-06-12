@@ -66,9 +66,11 @@ public class DiagnosisParser {
 
 		Diagnosis diag = new Diagnosis();
 
-		JSONObject jsonObj;
+		JSONObject api;
 		try {
-			jsonObj = new JSONObject(jsonStr);
+			api = new JSONObject(jsonStr);
+
+			JSONObject jsonObj = api.getJSONObject("api");
 
 			String created_at = jsonObj.getString("created_at");
 			String current_query = jsonObj.getString("current_query");
