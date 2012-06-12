@@ -4,6 +4,7 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
     
+    
     <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -34,7 +35,12 @@
         
             
         </LinearLayout>
-      
+        
+      <RelativeLayout
+    android:layout_width="fill_parent" android:layout_height="wrap_content">
+    <RelativeLayout android:orientation="vertical"
+        android:layout_width="fill_parent" android:layout_height="fill_parent">
+        
     <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -65,6 +71,14 @@
         
             
         </LinearLayout>
+        </RelativeLayout>
+        <Button android:layout_alignParentRight="true"
+	        android:background="@drawable/bubble_close"
+	        android:gravity="center_vertical|center_horizontal"
+	        android:layout_height="wrap_content"
+	        android:layout_width="wrap_content"/>
+        
+        </RelativeLayout>
         
     <LinearLayout
             android:layout_width="fill_parent"
