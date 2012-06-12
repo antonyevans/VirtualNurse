@@ -19,7 +19,7 @@ public class Constants {
 	public static String REGISTRY_LOCATION="deviceLocation";
 
 	// Do not forget to add the trailing '/'
-	public static String SERVER_URL = "http://sharp-waterfall-5241.herokuapp.com/";
+	public static String SERVER_URL = "http://www.senstore.com/";
 
 	public static String SECURITY_HASH = "701319fdb07288ca9f4bfae8b214b81d";
 

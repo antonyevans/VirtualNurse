@@ -11,10 +11,14 @@ import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -36,6 +40,12 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
+import com.nuance.nmdp.speechkit.Prompt;
+import com.nuance.nmdp.speechkit.Recognition;
+import com.nuance.nmdp.speechkit.Recognizer;
+import com.nuance.nmdp.speechkit.SpeechError;
+import com.nuance.nmdp.speechkit.SpeechKit;
+import com.nuance.nmdp.speechkit.Vocalizer;
 import com.senstore.alice.R;
 import com.senstore.alice.api.HarvardGuide;
 import com.senstore.alice.listeners.AsyncTasksListener;
@@ -67,6 +77,25 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 	private LayoutInflater inflater;
 
+	private static SpeechKit _speechKit;
+	private static final int LISTENING_DIALOG = 1;
+	private Handler _handler = null;
+	private final Recognizer.Listener _listener;
+	private Recognizer _currentRecognizer;
+	private ListeningDialog _listeningDialog;
+	private boolean _destroyed;
+
+	private Vocalizer _vocalizer;
+	private Object _lastTtsContext = null;
+
+	public Alice() {
+		super();
+		_listener = createListener();
+		_currentRecognizer = null;
+		_listeningDialog = null;
+		_destroyed = true;
+	}
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -95,6 +124,12 @@ public class Alice extends Activity implements AsyncTasksListener {
 		// Load the main menu
 		createHarvardGuideWidget();
 
+		// TODO Fix the on screen rotation changed
+		if (savedInstanceState != null) {
+			int flipperPosition = savedInstanceState.getInt("FLIPPER_POSITION");
+			flipper.setDisplayedChild(flipperPosition);
+		}
+
 		flipper.addView(menuView);
 
 		// Register the Background Logger Broadcast Receiver
@@ -108,6 +143,86 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 		}// else proceed with the normal app flow
 
+		// TODO Speech/Voice
+
+		// set volume control to media
+		setVolumeControlStream(AudioManager.STREAM_MUSIC);
+
+		// Adjust the volume
+		// AudioManager audio = (AudioManager)
+		// getSystemService(Context.AUDIO_SERVICE);
+		// int max_volume = audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+		// audio.setStreamVolume(AudioManager.STREAM_MUSIC, 5, 0);
+
+		// If this Activity is being recreated due to a config change (e.g.
+		// screen rotation), check for the saved SpeechKit instance.
+		_speechKit = (SpeechKit) getLastNonConfigurationInstance();
+		if (_speechKit == null) {
+			_speechKit = SpeechKit.initialize(getApplication()
+					.getApplicationContext(), AppInfo.SpeechKitAppId,
+					AppInfo.SpeechKitServer, AppInfo.SpeechKitPort,
+					AppInfo.SpeechKitSsl, AppInfo.SpeechKitApplicationKey);
+			_speechKit.connect();
+			// TODO: Keep an eye out for audio prompts not working on the Droid
+			// 2 or other 2.2 devices.
+			Prompt beep = _speechKit.defineAudioPrompt(R.raw.beep);
+			_speechKit.setDefaultRecognizerPrompts(beep, Prompt.vibration(100),
+					null, null);
+		}
+		_destroyed = false;
+
+		// Initialize the listening dialog
+		createListeningDialog();
+
+		// Create Vocalizer listener
+		Vocalizer.Listener vocalizerListener = new Vocalizer.Listener() {
+
+			public void onSpeakingBegin(Vocalizer vocalizer, String text,
+					Object context) {
+
+				// TODO
+				// updateCurrentText("Alice:  " + text, Color.GRAY, false);
+			}
+
+			public void onSpeakingDone(Vocalizer vocalizer, String text,
+					SpeechError error, Object context) {
+				// Use the context to detemine if this was the final TTS phrase
+				if (context != _lastTtsContext) {
+					// updateCurrentText("More phrases remaining", Color.YELLOW,
+					// false);
+				} else {
+					// updateCurrentText("", Color.WHITE, false);
+				}
+			}
+		};
+		_vocalizer = Alice.getSpeechKit().createVocalizerWithLanguage("en_US",
+				vocalizerListener, new Handler());
+		_vocalizer.setVoice("Serena");
+
+		SavedState savedState = (SavedState) getLastNonConfigurationInstance();
+		if (savedState == null) {
+			// Initialize the handler, for access to this application's message
+			// queue
+			_handler = new Handler();
+		} else {
+			// There was a recognition in progress when the OS destroyed/
+			// recreated this activity, so restore the existing recognition
+			_currentRecognizer = savedState.Recognizer;
+			_listeningDialog.setText(savedState.DialogText);
+			_listeningDialog.setLevel(savedState.DialogLevel);
+			_listeningDialog.setRecording(savedState.DialogRecording);
+			_handler = savedState.Handler;
+
+			if (savedState.DialogRecording) {
+				// Simulate onRecordingBegin() to start animation
+				_listener.onRecordingBegin(_currentRecognizer);
+			}
+
+			_currentRecognizer.setListener(_listener);
+
+		}
+
+		speakReply("Welcome to the Pocket Doctor. I am Alice, how can I help you today? You can click on the microphone to talk to me.");
 	}
 
 	/**
@@ -150,7 +265,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 				@Override
 				public void onClick(View v) {
-					doDiagnosis(guide, start_input);
+					doTouchDiagnosis(guide, start_input);
 				}
 			});
 
@@ -192,18 +307,37 @@ public class Alice extends Activity implements AsyncTasksListener {
 	}
 
 	/**
-	 * Creates an instance of {@link DiagnosisAsyncTask}, and sets the
-	 * {@link AsyncTasksListener}
+	 * Touch Diagnosis - Creates an instance of {@link DiagnosisAsyncTask}, and
+	 * sets the {@link AsyncTasksListener}
 	 * 
 	 * @param health_guide
 	 *            and
 	 * @param input_text
 	 *            and then executes the request
 	 */
-	public void doDiagnosis(String health_guide, String input_text) {
+	public void doTouchDiagnosis(String health_guide, String input_text) {
 		diagnosisTask = new DiagnosisAsyncTask();
+		diagnosisTask.setVoice(false);
 		diagnosisTask.setListener(listener);
 		diagnosisTask.setHealth_guide(health_guide);
+		diagnosisTask.setInput_text(input_text);
+		diagnosisTask.execute();
+	}
+
+	/**
+	 * Voice Diagnosis - Creates an instance of {@link DiagnosisAsyncTask}, and
+	 * sets the {@link AsyncTasksListener}
+	 * 
+	 * @param last_query
+	 *            and
+	 * @param input_text
+	 *            and then executes the request
+	 */
+	public void doVoiceDiagnosis(String last_query, String input_text) {
+		diagnosisTask = new DiagnosisAsyncTask();
+		diagnosisTask.setVoice(true);
+		diagnosisTask.setListener(listener);
+		diagnosisTask.setLast_query(last_query);
 		diagnosisTask.setInput_text(input_text);
 		diagnosisTask.execute();
 	}
@@ -219,8 +353,17 @@ public class Alice extends Activity implements AsyncTasksListener {
 			mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 			mProgressDialog.setCancelable(false);
 			return mProgressDialog;
+		case LISTENING_DIALOG:
+			return _listeningDialog;
 		}
+
 		return null;
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		int position = flipper.getDisplayedChild();
+		savedInstanceState.putInt("FLIPPER_POSITION", position);
 	}
 
 	@Override
@@ -388,7 +531,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 							@Override
 							public void onClick(View v) {
-								doDiagnosis(diagnosis.getGuide(), value);
+								doTouchDiagnosis(diagnosis.getGuide(), value);
 							}
 						});
 						optGroup.addView(rbtn);
@@ -517,6 +660,195 @@ public class Alice extends Activity implements AsyncTasksListener {
 			listitems.remove(diagnosis);
 		}
 
+	}
+
+	// Start Voice Business
+
+	public void startDictation(View view) {
+		_listeningDialog.setText("Initializing...");
+		showDialog(LISTENING_DIALOG);
+		_listeningDialog.setStoppable(false);
+		setResults(new Recognition.Result[0]);
+
+		_currentRecognizer = Alice.getSpeechKit().createRecognizer(
+				Recognizer.RecognizerType.Dictation,
+				Recognizer.EndOfSpeechDetection.Long, "en_US", _listener,
+				_handler);
+		_currentRecognizer.start();
+	}
+
+	@Override
+	protected void onPrepareDialog(int id, final Dialog dialog) {
+		switch (id) {
+		case LISTENING_DIALOG:
+			_listeningDialog.prepare(new Button.OnClickListener() {
+
+				public void onClick(View v) {
+					if (_currentRecognizer != null) {
+						_currentRecognizer.stopRecording();
+					}
+				}
+			});
+			break;
+		}
+	}
+
+	@Override
+	public Object onRetainNonConfigurationInstance() {
+		if (_listeningDialog.isShowing() && _currentRecognizer != null) {
+			// If a recognition is in progress, save it, because the activity
+			// is about to be destroyed and recreated
+			SavedState savedState = new SavedState();
+			savedState.Recognizer = _currentRecognizer;
+			savedState.DialogText = _listeningDialog.getText();
+			savedState.DialogLevel = _listeningDialog.getLevel();
+			savedState.DialogRecording = _listeningDialog.isRecording();
+			savedState.Handler = _handler;
+
+			_currentRecognizer = null; // Prevent onDestroy() from canceling
+
+			// Save the Vocalizer state, because we know the Activity will be
+			// immediately recreated.
+			// TextView textView = (TextView)findViewById(R.id.text_currentTts);
+
+			// savedState.Text = textView.getText().toString();
+			// savedState.TextColor =
+			// textView.getTextColors().getDefaultColor();
+			savedState.Vocalizer = _vocalizer;
+			savedState.Context = _lastTtsContext;
+
+			_vocalizer = null; // Prevent onDestroy() from canceling
+
+			return savedState;
+		}
+		return null;
+	}
+
+	// Allow other activities to access the SpeechKit instance.
+	static SpeechKit getSpeechKit() {
+		return _speechKit;
+	}
+
+	private class SavedState {
+		String DialogText;
+		String DialogLevel;
+		boolean DialogRecording;
+		Recognizer Recognizer;
+		Handler Handler;
+		// added this next code
+		// int TextColor;
+		String Text;
+		Vocalizer Vocalizer;
+		Object Context;
+	}
+
+	private Recognizer.Listener createListener() {
+		return new Recognizer.Listener() {
+
+			public void onRecordingBegin(Recognizer recognizer) {
+				_listeningDialog.setText("Recording...");
+				_listeningDialog.setStoppable(true);
+				_listeningDialog.setRecording(true);
+
+				// Create a repeating task to update the audio level
+				Runnable r = new Runnable() {
+					public void run() {
+						if (_listeningDialog != null
+								&& _listeningDialog.isRecording()
+								&& _currentRecognizer != null) {
+							_listeningDialog.setLevel(Float
+									.toString(_currentRecognizer
+											.getAudioLevel()));
+							_handler.postDelayed(this, 500);
+						}
+					}
+				};
+				r.run();
+			}
+
+			public void onRecordingDone(Recognizer recognizer) {
+				_listeningDialog.setText("Processing...");
+				_listeningDialog.setLevel("");
+				_listeningDialog.setRecording(false);
+				_listeningDialog.setStoppable(false);
+			}
+
+			public void onError(Recognizer recognizer, SpeechError error) {
+				if (recognizer != _currentRecognizer)
+					return;
+				if (_listeningDialog.isShowing())
+					dismissDialog(LISTENING_DIALOG);
+				_currentRecognizer = null;
+				_listeningDialog.setRecording(false);
+
+				// Display the error + suggestion in the edit box
+				String detail = error.getErrorDetail();
+				String suggestion = error.getSuggestion();
+
+				if (suggestion == null)
+					suggestion = "";
+				// TODO
+				Log.i(Constants.TAG, detail + "\n" + suggestion);
+				// updateCurrentText(detail + "\n" + suggestion, Color.GREEN,
+				// false);
+			}
+
+			public void onResults(Recognizer recognizer, Recognition results) {
+				if (_listeningDialog.isShowing())
+					dismissDialog(LISTENING_DIALOG);
+				_currentRecognizer = null;
+				_listeningDialog.setRecording(false);
+				int count = results.getResultCount();
+				Recognition.Result[] rs = new Recognition.Result[count];
+				for (int i = 0; i < count; i++) {
+					rs[i] = results.getResult(i);
+				}
+
+				setResults(rs);
+			}
+		};
+	}
+
+	private void setResults(Recognition.Result[] results) {
+		// _arrayAdapter.clear();
+		if (results.length > 0) {
+			// setResult(results[0].getText());
+			String t = results[0].getText();
+			// String dialogue = "Me:  " + t;
+			// TODO
+			// updateCurrentText(dialogue, Color.WHITE, false);
+			Log.i(Constants.TAG, t);
+			// speakReply(askAlice(t));
+		} else {
+			// setResult("");
+		}
+	}
+
+	private void speakReply(String Reply) {
+		_lastTtsContext = new Object();
+		_vocalizer.speakString(Reply, _lastTtsContext);
+	}
+
+	private void createListeningDialog() {
+		_listeningDialog = new ListeningDialog(this);
+		_listeningDialog.setOnDismissListener(new OnDismissListener() {
+			public void onDismiss(DialogInterface dialog) {
+				if (_currentRecognizer != null) // Cancel the current recognizer
+				{
+					_currentRecognizer.cancel();
+					_currentRecognizer = null;
+				}
+
+				if (!_destroyed) {
+					// Remove the dialog so that it will be recreated next time.
+					// This is necessary to avoid a bug in Android >= 1.6 where
+					// the
+					// animation stops working.
+					Alice.this.removeDialog(LISTENING_DIALOG);
+					createListeningDialog();
+				}
+			}
+		});
 	}
 
 }
