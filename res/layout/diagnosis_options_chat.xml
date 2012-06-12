@@ -4,6 +4,7 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
     
+    
     <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -12,7 +13,8 @@
         	android:layout_marginRight="10dp"
         	android:layout_marginTop="5dp"
         	android:layout_marginBottom="5dp"
-        	android:background="@drawable/bubbleright" >
+        	android:background="@drawable/bubble_right"
+        	android:orientation="vertical" >
             
         <TextView
             android:id="@+id/options_txt_query"
@@ -33,7 +35,12 @@
         
             
         </LinearLayout>
-      
+        
+      <RelativeLayout
+    android:layout_width="fill_parent" android:layout_height="wrap_content">
+    <RelativeLayout android:orientation="vertical"
+        android:layout_width="fill_parent" android:layout_height="fill_parent">
+        
     <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -42,7 +49,8 @@
         	android:layout_marginRight="10dp"
         	android:layout_marginTop="5dp"
         	android:layout_marginBottom="5dp"
-        	android:background="@drawable/bubbleleft" >
+        	android:background="@drawable/bubble_left"
+        	android:orientation="vertical" >
             
         <TextView
             android:id="@+id/options_txt_response"
@@ -63,6 +71,15 @@
         
             
         </LinearLayout>
+        </RelativeLayout>
+        <Button android:layout_alignParentRight="true"
+            android:id="@+id/options_close"
+	        android:background="@drawable/bubble_close"
+	        android:gravity="center_vertical|center_horizontal"
+	        android:layout_height="wrap_content"
+	        android:layout_width="wrap_content"/>
+        
+        </RelativeLayout>
         
     <LinearLayout
             android:layout_width="fill_parent"
@@ -70,25 +87,9 @@
             android:id="@+id/options_response_options"
             android:layout_marginLeft="10dp"
         	android:layout_marginRight="10dp"
-        	android:layout_marginTop="5dp"
-        	android:layout_marginBottom="5dp">
+        	android:orientation="vertical">
             
-        <RadioGroup 
-            android:paddingLeft="15dp"
-	        android:paddingRight="10dp"
-	        android:paddingTop="10dp"
-	        android:paddingBottom="10dp"
-	        android:layout_marginLeft="10dp"
-	        android:layout_marginRight="10dp"
-	       	android:layout_marginTop="10dp"
-	        android:layout_marginBottom="10dp"
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:id="@+id/options_query_options"
-	        
-            >
-            
-        </RadioGroup>
+        
         
         
             

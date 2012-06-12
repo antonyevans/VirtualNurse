@@ -3,12 +3,6 @@
  */
 package com.senstore.alice.test;
 
-import com.commonsware.cwac.locpoll.LocationPoller;
-import com.commonsware.cwac.locpoll.LocationReceiver;
-import com.senstore.alice.R;
-import com.senstore.alice.utils.Constants;
-import com.senstore.alice.utils.Registry;
-
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -20,6 +14,12 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+
+import com.commonsware.cwac.locpoll.LocationPoller;
+import com.commonsware.cwac.locpoll.LocationReceiver;
+import com.senstore.alice.R;
+import com.senstore.alice.utils.Constants;
+import com.senstore.alice.utils.Registry;
 
 /**
  * @author Muniu Kariuki - muniu@bityarn.co.ke

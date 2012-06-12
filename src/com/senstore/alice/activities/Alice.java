@@ -30,8 +30,6 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -271,7 +269,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 			b.setGravity(Gravity.CENTER);
 
 			b.setPadding(10, 10, 10, 10);
-			Drawable btnBg = getResources().getDrawable(R.drawable.buttonbgb);
+			Drawable btnBg = getResources().getDrawable(R.drawable.btn_orange);
 
 			b.setBackgroundDrawable(btnBg);
 
@@ -525,6 +523,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			// retrieve currently selected item
 			mDiagnosis = listitems.get(position);
+			final int currPos =position;
 			View row = null;
 
 			// retrieve ID for discriminating the different views
@@ -545,23 +544,52 @@ public class Alice extends Activity implements AsyncTasksListener {
 						.findViewById(R.id.options_txt_query);
 				TextView optResp = (TextView) row
 						.findViewById(R.id.options_txt_response);
+				
+				Button opt_close = (Button)row.findViewById(R.id.options_close);
+				opt_close.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						AliceChatAdapter.this.removeItem(currPos);
+						notifyDataSetChanged();
+						
+					}
+				});
+				
 
-				optQuery.setText(mDiagnosis.getCurrent_query().toString());
-				optResp.setText(mDiagnosis.getReply().toString());
 
-				RadioGroup optGroup = (RadioGroup) row
-						.findViewById(R.id.options_query_options);
+				LinearLayout optGroup = (LinearLayout) row
+						.findViewById(R.id.options_response_options);
 
 				HashMap<String, String> respOpts = mDiagnosis
 						.getReply_options();
+				
+				Log.v(Constants.TAG, "This is the size of things->"+respOpts.size());
+				int count = 0;
 
 				for (Entry<String, String> entry : respOpts.entrySet()) {
 					final String key = entry.getKey();
 					final String value = entry.getValue();
+					
+					Button bo = new Button(this.context);
 
-					RadioButton rbtn = new RadioButton(this.context);
-					rbtn.setText(key);
-					rbtn.setOnClickListener(new View.OnClickListener() {
+					LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+							LinearLayout.LayoutParams.FILL_PARENT,
+							LinearLayout.LayoutParams.WRAP_CONTENT);
+					params.setMargins(10, 10, 10, 10);
+					params.gravity = Gravity.CENTER;
+					// params.height = 35;
+					bo.setLayoutParams(params);
+					bo.setGravity(Gravity.CENTER);
+
+					bo.setPadding(10, 10, 10, 10);
+					Drawable btnBg = getResources().getDrawable(R.drawable.radio_btn);
+
+					bo.setBackgroundDrawable(btnBg);
+
+					bo.setText(key);
+
+					bo.setOnClickListener(new OnClickListener() {
 
 						@Override
 						public void onClick(View v) {
@@ -569,7 +597,12 @@ public class Alice extends Activity implements AsyncTasksListener {
 									mDiagnosis.getCurrent_query(), value);
 						}
 					});
-					optGroup.addView(rbtn);
+					
+					optGroup.addView(bo);
+					count++;
+					Log.v(Constants.TAG, "Added this number of times->"+count);
+
+					
 				}
 
 				break;
@@ -582,9 +615,16 @@ public class Alice extends Activity implements AsyncTasksListener {
 						.findViewById(R.id.map_txt_query);
 				TextView mapResp = (TextView) row
 						.findViewById(R.id.map_txt_response);
-
-				mapQuery.setText(mDiagnosis.getCurrent_query().toString());
-				mapResp.setText(mDiagnosis.getReply().toString());
+				Button map_close = (Button)row.findViewById(R.id.map_close);
+				map_close.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						AliceChatAdapter.this.removeItem(currPos);
+						notifyDataSetChanged();
+						
+					}
+				});
 
 				MapView mapView = (MapView) row.findViewById(R.id.mapview);
 
@@ -625,9 +665,18 @@ public class Alice extends Activity implements AsyncTasksListener {
 						.findViewById(R.id.calldoc_txt_query);
 				TextView callResp = (TextView) row
 						.findViewById(R.id.calldoc_txt_response);
+				
+				Button calldoc_close = (Button)row.findViewById(R.id.calldoc_close);
+				calldoc_close.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						AliceChatAdapter.this.removeItem(currPos);
+						notifyDataSetChanged();
+						
+					}
+				});
 
-				callQuery.setText(mDiagnosis.getCurrent_query().toString());
-				callResp.setText(mDiagnosis.getReply().toString());
 
 				Button callBtn = (Button) row.findViewById(R.id.calldoc_btn);
 
@@ -652,9 +701,18 @@ public class Alice extends Activity implements AsyncTasksListener {
 						.findViewById(R.id.info_txt_query);
 				TextView infoResp = (TextView) row
 						.findViewById(R.id.info_txt_response);
+				
+				Button info_close = (Button)row.findViewById(R.id.info_close);
+				info_close.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						AliceChatAdapter.this.removeItem(currPos);
+						notifyDataSetChanged();
+						
+					}
+				});
 
-				infoQuery.setText(mDiagnosis.getCurrent_query().toString());
-				infoResp.setText(mDiagnosis.getReply().toString());
 
 				break;
 
@@ -691,6 +749,10 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 		private void removeItem(Diagnosis diagnosis) {
 			listitems.remove(diagnosis);
+		}
+		
+		private void removeItem(int position) {
+			listitems.remove(position);
 		}
 
 	}

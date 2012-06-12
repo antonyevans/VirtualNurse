@@ -12,7 +12,8 @@
         	android:layout_marginRight="10dp"
         	android:layout_marginTop="5dp"
         	android:layout_marginBottom="5dp"
-        	android:background="@drawable/bubbleright" >
+        	android:background="@drawable/bubble_right"
+        	android:orientation="vertical" >
             
         <TextView
             android:id="@+id/calldoc_txt_query"
@@ -33,7 +34,11 @@
         
             
         </LinearLayout>
-      
+        
+      <RelativeLayout
+    android:layout_width="fill_parent" android:layout_height="wrap_content">
+    <RelativeLayout android:orientation="vertical"
+        android:layout_width="fill_parent" android:layout_height="fill_parent">
     <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -42,7 +47,8 @@
         	android:layout_marginRight="10dp"
         	android:layout_marginTop="5dp"
         	android:layout_marginBottom="5dp"
-        	android:background="@drawable/bubbleleft" >
+        	android:background="@drawable/bubble_left"
+        	android:orientation="vertical" >
             
         <TextView
             android:id="@+id/calldoc_txt_response"
@@ -63,6 +69,15 @@
         
             
         </LinearLayout>
+        </RelativeLayout>
+        <Button android:layout_alignParentRight="true"
+            android:id="@+id/calldoc_close"
+	        android:background="@drawable/bubble_close"
+	        android:gravity="center_vertical|center_horizontal"
+	        android:layout_height="wrap_content"
+	        android:layout_width="wrap_content"/>
+        
+        </RelativeLayout>
         
     <LinearLayout
             android:layout_width="fill_parent"
@@ -82,7 +97,7 @@
 	        	android:layout_marginRight="10dp"
 	        	android:layout_marginTop="10dp"
 	        	android:layout_marginBottom="10dp"
-			    android:background="@drawable/buttonbgb"
+			    android:background="@drawable/btn_green"
 			    android:gravity="center"
 			     />
         
