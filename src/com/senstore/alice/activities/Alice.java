@@ -76,6 +76,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 	private LayoutInflater inflater;
 
+	private Diagnosis mDiagnosis;
+
 	private static SpeechKit _speechKit;
 	private static final int LISTENING_DIALOG = 1;
 	private Handler _handler = null;
@@ -277,7 +279,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 				@Override
 				public void onClick(View v) {
-					doTouchDiagnosis(guide, start_input);
+					doTouchDiagnosis(guide, Constants.VOICE_DEFAULT_LAST_QUERY,
+							start_input);
 				}
 			});
 
@@ -327,10 +330,12 @@ public class Alice extends Activity implements AsyncTasksListener {
 	 * @param input_text
 	 *            and then executes the request
 	 */
-	public void doTouchDiagnosis(String health_guide, String input_text) {
+	public void doTouchDiagnosis(String health_guide, String last_query,
+			String input_text) {
 		diagnosisTask = new DiagnosisAsyncTask();
 		diagnosisTask.setVoice(false);
 		diagnosisTask.setListener(listener);
+		diagnosisTask.setLast_query(last_query);
 		diagnosisTask.setHealth_guide(health_guide);
 		diagnosisTask.setInput_text(input_text);
 		diagnosisTask.execute();
@@ -345,11 +350,12 @@ public class Alice extends Activity implements AsyncTasksListener {
 	 * @param input_text
 	 *            and then executes the request
 	 */
-	public void doVoiceDiagnosis(String last_query, String input_text) {
+	public void doVoiceDiagnosis(String health_guide,String last_query, String input_text) {
 		diagnosisTask = new DiagnosisAsyncTask();
 		diagnosisTask.setVoice(true);
 		diagnosisTask.setListener(listener);
 		diagnosisTask.setLast_query(last_query);
+		diagnosisTask.setHealth_guide(health_guide);
 		diagnosisTask.setInput_text(input_text);
 		diagnosisTask.execute();
 	}
@@ -404,7 +410,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 				// TODO Show Alert Dialog that the server could not
 				// understand their request
 
-				showAlert("Problem", result.getReply());
+				showAlert("Problem",
+						result.getInput() + "\n" + result.getReply());
 
 				Log.i(Constants.TAG, "Hapa Tu : " + result.getReply());
 
@@ -515,15 +522,15 @@ public class Alice extends Activity implements AsyncTasksListener {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			// retrieve currently selected item
-			final Diagnosis diagnosis = listitems.get(position);
+			mDiagnosis = listitems.get(position);
 			final int currPos =position;
 			View row = null;
 			
-			Log.v(Constants.TAG, "THIS IS MY INPUT->"+diagnosis.getGuide());
+			Log.v(Constants.TAG, "THIS IS MY INPUT->"+mDiagnosis.getGuide());
 			
 
 			// retrieve ID for discriminating the different views
-			String type = diagnosis.getResponse_type();
+			String type = mDiagnosis.getResponse_type();
 			int diagnosisType = Integer.parseInt(type);
 
 			switch (diagnosisType) {
@@ -553,13 +560,14 @@ public class Alice extends Activity implements AsyncTasksListener {
 				});
 				
 
-				optQuery.setText(diagnosis.getInput().toString());
-				optResp.setText(diagnosis.getReply().toString());
+				optQuery.setText(mDiagnosis.getInput().toString());
+				optResp.setText(mDiagnosis.getReply().toString());
 
 				LinearLayout optGroup = (LinearLayout) row
 						.findViewById(R.id.options_response_options);
 
-				HashMap<String, String> respOpts = diagnosis.getReply_options();
+				HashMap<String, String> respOpts = mDiagnosis
+						.getReply_options();
 				
 				int count = 0;
 
@@ -589,7 +597,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 						@Override
 						public void onClick(View v) {
-							doTouchDiagnosis(diagnosis.getGuide(), value);
+							doTouchDiagnosis(mDiagnosis.getGuide(),
+									mDiagnosis.getCurrent_query(), value);
 						}
 					});
 					
@@ -619,8 +628,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 						
 					}
 				});
-				mapQuery.setText(diagnosis.getInput().toString());
-				mapResp.setText(diagnosis.getReply().toString());
+				mapQuery.setText(mDiagnosis.getInput().toString());
+				mapResp.setText(mDiagnosis.getReply().toString());
 
 				MapView mapView = (MapView) row.findViewById(R.id.mapview);
 
@@ -673,8 +682,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 					}
 				});
 
-				callQuery.setText(diagnosis.getInput().toString());
-				callResp.setText(diagnosis.getReply().toString());
+				callQuery.setText(mDiagnosis.getInput().toString());
+				callResp.setText(mDiagnosis.getReply().toString());
 
 				Button callBtn = (Button) row.findViewById(R.id.calldoc_btn);
 
@@ -711,8 +720,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 					}
 				});
 
-				infoQuery.setText(diagnosis.getInput().toString());
-				infoResp.setText(diagnosis.getReply().toString());
+				infoQuery.setText(mDiagnosis.getInput().toString());
+				infoResp.setText(mDiagnosis.getReply().toString());
 
 				break;
 
@@ -726,8 +735,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 				TextView infoResp2 = (TextView) row
 						.findViewById(R.id.info_txt_response);
 
-				infoQuery2.setText(diagnosis.getInput().toString());
-				infoResp2.setText(diagnosis.getReply().toString());
+				infoQuery2.setText(mDiagnosis.getInput().toString());
+				infoResp2.setText(mDiagnosis.getReply().toString());
 
 				break;
 
@@ -907,7 +916,12 @@ public class Alice extends Activity implements AsyncTasksListener {
 			Log.i(Constants.TAG, t);
 			// speakReply(askAlice(t));
 
-			doVoiceDiagnosis(Constants.VOICE_DEFAULT_LAST_QUERY, t);
+			if (mDiagnosis != null) {
+				doVoiceDiagnosis(mDiagnosis.getGuide(),
+						mDiagnosis.getCurrent_query(), t);
+			} else {
+				doVoiceDiagnosis("null",Constants.VOICE_DEFAULT_LAST_QUERY, t);
+			}
 
 		} else {
 			// setResult("");
