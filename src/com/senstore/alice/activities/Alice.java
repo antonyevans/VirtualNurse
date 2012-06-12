@@ -559,7 +559,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 						@Override
 						public void onClick(View v) {
-							doTouchDiagnosis(diagnosis.getGuide(), diagnosis.getLast_query(),value);
+							doTouchDiagnosis(diagnosis.getGuide(), diagnosis.getCurrent_query(),value);
 						}
 					});
 					optGroup.addView(rbtn);
