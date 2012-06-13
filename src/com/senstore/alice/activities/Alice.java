@@ -57,9 +57,6 @@ import com.senstore.alice.utils.Constants;
 import com.senstore.alice.utils.Registry;
 
 public class Alice extends Activity implements AsyncTasksListener {
-
-	private int flipperPos = 0;
-
 	private ResponseReceiver receiver;
 
 	private static final int DIAGNOSIS_DIALOG = 0;
@@ -131,14 +128,6 @@ public class Alice extends Activity implements AsyncTasksListener {
 		// Load the main menu
 		createHarvardGuideWidget();
 
-		// TODO Fix the on screen rotation changed
-		/*if (savedInstanceState != null) {
-			int flipperPosition = savedInstanceState.getInt("FLIPPER_POSITION");
-			flipper.setDisplayedChild(flipperPosition);
-		}*/
-
-		flipper.setDisplayedChild(flipperPos);
-		
 		flipper.addView(menuView);
 
 		// Register the Background Logger Broadcast Receiver
@@ -152,16 +141,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 		}// else proceed with the normal app flow
 
-		// TODO Speech/Voice
-
 		// set volume control to media
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
-
-		// Adjust the volume
-		// AudioManager audio = (AudioManager)
-		// getSystemService(Context.AUDIO_SERVICE);
-		// int max_volume = audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-		// audio.setStreamVolume(AudioManager.STREAM_MUSIC, 5, 0);
 
 		// If this Activity is being recreated due to a config change (e.g.
 		// screen rotation), check for the saved SpeechKit instance.
@@ -189,18 +170,15 @@ public class Alice extends Activity implements AsyncTasksListener {
 			public void onSpeakingBegin(Vocalizer vocalizer, String text,
 					Object context) {
 
-				// TODO
-				// updateCurrentText("Alice:  " + text, Color.GRAY, false);
 			}
 
 			public void onSpeakingDone(Vocalizer vocalizer, String text,
 					SpeechError error, Object context) {
 				// Use the context to detemine if this was the final TTS phrase
 				if (context != _lastTtsContext) {
-					// updateCurrentText("More phrases remaining", Color.YELLOW,
-					// false);
+
 				} else {
-					// updateCurrentText("", Color.WHITE, false);
+
 				}
 			}
 		};
@@ -389,12 +367,6 @@ public class Alice extends Activity implements AsyncTasksListener {
 		return null;
 	}
 
-	/*@Override
-	public void onSaveInstanceState(Bundle savedInstanceState) {
-		int position = flipper.getDisplayedChild();
-		savedInstanceState.putInt("FLIPPER_POSITION", position);
-	}*/
-
 	@Override
 	public void onTaskPreExecute() {
 		showDialog(DIAGNOSIS_DIALOG);
@@ -442,8 +414,6 @@ public class Alice extends Activity implements AsyncTasksListener {
 				// identify the view on display currently
 				View currentView = flipper.getCurrentView();
 
-			
-				
 				if (currentView.equals(menuView)) {
 					// identify the number of children in the flipper
 					int childCount = flipper.getChildCount();
@@ -470,22 +440,16 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 	@Override
 	protected void onPause() {
-		// mgr.cancel(pi);
-
-		flipperPos = flipper.getDisplayedChild();
-
 		super.onPause();
 	}
 
 	@Override
 	protected void onResume() {
-		flipper.setDisplayedChild(flipperPos);
 		super.onResume();
 	}
 
 	@Override
 	protected void onDestroy() {
-		// mgr.cancel(pi);
 		unregisterReceiver(receiver);
 		super.onDestroy();
 	}
@@ -584,8 +548,10 @@ public class Alice extends Activity implements AsyncTasksListener {
 						}
 
 						if (listitems.size() == 0) {
-							/*startActivity(new Intent(
-									AliceChatAdapter.this.context, Alice.class));*/
+							/*
+							 * startActivity(new Intent(
+							 * AliceChatAdapter.this.context, Alice.class));
+							 */
 							removeDiagnosisView(flipper.getCurrentView());
 						} else {
 							notifyDataSetChanged();
