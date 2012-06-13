@@ -142,7 +142,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 		if (isFirstRun()) {
 			Log.i(Constants.TAG, "isFirstRun()");
 			// Start a background Task, to register the current user/device
-			// doLog(Integer.toString(Constants.LOG_REGISTER));
+			doLog(Integer.toString(Constants.LOG_REGISTER));
 
 		}// else proceed with the normal app flow
 
@@ -352,7 +352,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 	 * @param input_text
 	 *            and then executes the request
 	 */
-	public void doVoiceDiagnosis(String health_guide,String last_query, String input_text) {
+	public void doVoiceDiagnosis(String health_guide, String last_query,
+			String input_text) {
 		diagnosisTask = new DiagnosisAsyncTask();
 		diagnosisTask.setVoice(true);
 		diagnosisTask.setListener(listener);
@@ -419,18 +420,16 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 			} else {
 
-				
-				Log.i(Constants.TAG, "Adding : "+result.getInput());
-				
+				Log.i(Constants.TAG, "Adding : " + result.getInput());
+
 				// add diagnosis object to adapter
 				AdapterDiagnosis diag = new AdapterDiagnosis(result);
 				chatAdapter.addItem(diag);
-				
 
 				// tell listeners that underlying data has changed. Refresh the
 				// view
 				chatAdapter.notifyDataSetChanged();
-				
+
 				chatlist.setSelectionFromTop(chatAdapter.getCount(), 10);
 
 				// identify the view on display currently
@@ -493,6 +492,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 				setNotFirstRun();
 			}
 
+			Log.i(Constants.TAG, "Successfully logged type " + text);
+
 		}
 	}
 
@@ -531,9 +532,9 @@ public class Alice extends Activity implements AsyncTasksListener {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			// retrieve currently selected item
-			
+
 			mDiagnosis = listitems.get(position);
-			final int currPos =position;
+			final int currPos = position;
 			View row = null;
 
 			// retrieve ID for discriminating the different views
@@ -551,43 +552,44 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 				TextView optResp = (TextView) row
 						.findViewById(R.id.options_txt_response);
-				
-				Button opt_close = (Button)row.findViewById(R.id.options_close);
+
+				Button opt_close = (Button) row
+						.findViewById(R.id.options_close);
 				opt_close.setOnClickListener(new OnClickListener() {
-					
+
 					@Override
 					public void onClick(View v) {
 						AliceChatAdapter.this.removeItem(currPos);
-						if (currPos>1) {
-							AliceChatAdapter.this.removeItem(currPos-1);
+						if (currPos > 1) {
+							AliceChatAdapter.this.removeItem(currPos - 1);
 						}
-						
-						if (listitems.size()==0) {
-							startActivity(new Intent(AliceChatAdapter.this.context, Alice.class));
-						}else{
+
+						if (listitems.size() == 0) {
+							startActivity(new Intent(
+									AliceChatAdapter.this.context, Alice.class));
+						} else {
 							notifyDataSetChanged();
-							chatlist.setSelectionFromTop(chatAdapter.getCount(), 10);
+							chatlist.setSelectionFromTop(
+									chatAdapter.getCount(), 10);
 						}
-						
-						
+
 					}
 				});
-				
 
-				optResp.setText(Html.fromHtml( mDiagnosis.getReply().toString()));
+				optResp.setText(Html.fromHtml(mDiagnosis.getReply().toString()));
 
 				LinearLayout optGroup = (LinearLayout) row
 						.findViewById(R.id.options_response_options);
 
 				HashMap<String, String> respOpts = mDiagnosis
 						.getReply_options();
-				
-				//int count = 0;
+
+				// int count = 0;
 
 				for (Entry<String, String> entry : respOpts.entrySet()) {
 					final String key = entry.getKey();
 					final String value = entry.getValue();
-					
+
 					Button bo = new Button(this.context);
 
 					LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -600,7 +602,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 					bo.setGravity(Gravity.CENTER);
 
 					bo.setPadding(10, 10, 10, 10);
-					Drawable btnBg = getResources().getDrawable(R.drawable.radio_btn);
+					Drawable btnBg = getResources().getDrawable(
+							R.drawable.radio_btn);
 
 					bo.setBackgroundDrawable(btnBg);
 
@@ -612,19 +615,18 @@ public class Alice extends Activity implements AsyncTasksListener {
 						public void onClick(View v) {
 							AdapterDiagnosis diag = new AdapterDiagnosis(null);
 							diag.setPrevText(key);
-							//AdapterDiagnosis tmpDiag = 
+							// AdapterDiagnosis tmpDiag =
 							listitems.add(diag);
-							//Log.v(Constants.TAG, "ADDING ITEM");
-							
+							// Log.v(Constants.TAG, "ADDING ITEM");
+
 							doTouchDiagnosis(mDiagnosis.getGuide(),
 									mDiagnosis.getCurrent_query(), value);
 						}
 					});
-					
-					optGroup.addView(bo);
-					//count++;
 
-					
+					optGroup.addView(bo);
+					// count++;
+
 				}
 
 				break;
@@ -635,26 +637,28 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 				TextView mapResp = (TextView) row
 						.findViewById(R.id.map_txt_response);
-				Button map_close = (Button)row.findViewById(R.id.map_close);
+				Button map_close = (Button) row.findViewById(R.id.map_close);
 				map_close.setOnClickListener(new OnClickListener() {
-					
+
 					@Override
 					public void onClick(View v) {
 						AliceChatAdapter.this.removeItem(currPos);
-						if (currPos>1) {
-							AliceChatAdapter.this.removeItem(currPos-1);
+						if (currPos > 1) {
+							AliceChatAdapter.this.removeItem(currPos - 1);
 						}
-						
-						if (listitems.size()==0) {
-							startActivity(new Intent(AliceChatAdapter.this.context, Alice.class));
-						}else{
+
+						if (listitems.size() == 0) {
+							startActivity(new Intent(
+									AliceChatAdapter.this.context, Alice.class));
+						} else {
 							notifyDataSetChanged();
-							chatlist.setSelectionFromTop(chatAdapter.getCount(), 10);
+							chatlist.setSelectionFromTop(
+									chatAdapter.getCount(), 10);
 						}
-						
+
 					}
 				});
-				mapResp.setText(Html.fromHtml( mDiagnosis.getReply().toString()));
+				mapResp.setText(Html.fromHtml(mDiagnosis.getReply().toString()));
 
 				MapView mapView = (MapView) row.findViewById(R.id.mapview);
 
@@ -693,28 +697,32 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 				TextView callResp = (TextView) row
 						.findViewById(R.id.calldoc_txt_response);
-				
-				Button calldoc_close = (Button)row.findViewById(R.id.calldoc_close);
+
+				Button calldoc_close = (Button) row
+						.findViewById(R.id.calldoc_close);
 				calldoc_close.setOnClickListener(new OnClickListener() {
-					
+
 					@Override
 					public void onClick(View v) {
 						AliceChatAdapter.this.removeItem(currPos);
-						if (currPos>1) {
-							AliceChatAdapter.this.removeItem(currPos-1);
+						if (currPos > 1) {
+							AliceChatAdapter.this.removeItem(currPos - 1);
 						}
-						
-						if (listitems.size()==0) {
-							startActivity(new Intent(AliceChatAdapter.this.context, Alice.class));
-						}else{
+
+						if (listitems.size() == 0) {
+							startActivity(new Intent(
+									AliceChatAdapter.this.context, Alice.class));
+						} else {
 							notifyDataSetChanged();
-							chatlist.setSelectionFromTop(chatAdapter.getCount(), 10);
+							chatlist.setSelectionFromTop(
+									chatAdapter.getCount(), 10);
 						}
-						
+
 					}
 				});
 
-				callResp.setText(Html.fromHtml( mDiagnosis.getReply().toString()));
+				callResp.setText(Html
+						.fromHtml(mDiagnosis.getReply().toString()));
 
 				Button callBtn = (Button) row.findViewById(R.id.calldoc_btn);
 
@@ -737,29 +745,32 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 				TextView infoResp = (TextView) row
 						.findViewById(R.id.info_txt_response);
-				
-				Button info_close = (Button)row.findViewById(R.id.info_close);
+
+				Button info_close = (Button) row.findViewById(R.id.info_close);
 				info_close.setOnClickListener(new OnClickListener() {
-					
+
 					@Override
 					public void onClick(View v) {
 						AliceChatAdapter.this.removeItem(currPos);
-						if (currPos>1) {
-							AliceChatAdapter.this.removeItem(currPos-1);
+						if (currPos > 1) {
+							AliceChatAdapter.this.removeItem(currPos - 1);
 						}
-						
-						if (listitems.size()==0) {
-							
-							startActivity(new Intent(AliceChatAdapter.this.context, Alice.class));
-						}else{
+
+						if (listitems.size() == 0) {
+
+							startActivity(new Intent(
+									AliceChatAdapter.this.context, Alice.class));
+						} else {
 							notifyDataSetChanged();
-							chatlist.setSelectionFromTop(chatAdapter.getCount(), 10);
+							chatlist.setSelectionFromTop(
+									chatAdapter.getCount(), 10);
 						}
-						
+
 					}
 				});
 
-				infoResp.setText(Html.fromHtml( mDiagnosis.getReply().toString()));
+				infoResp.setText(Html
+						.fromHtml(mDiagnosis.getReply().toString()));
 
 				break;
 
@@ -771,45 +782,35 @@ public class Alice extends Activity implements AsyncTasksListener {
 				TextView infoResp2 = (TextView) row
 						.findViewById(R.id.info_txt_response);
 
-				infoResp2.setText(Html.fromHtml( mDiagnosis.getReply().toString()));
-				
+				infoResp2.setText(Html.fromHtml(mDiagnosis.getReply()
+						.toString()));
+
 				break;
-				
+
 			case -2:
 				// TODO Response Type 6 - EXIT THE CURRENT GUIDE - Text
-				row = inflater.inflate(R.layout.diagnosis_input_chat,
-						null);
+				row = inflater.inflate(R.layout.diagnosis_input_chat, null);
 
 				TextView inputQuery = (TextView) row
 						.findViewById(R.id.input_text_query);
 				inputQuery.setText(mDiagnosis.getPrevText());
-//				row.setFocusable(false);
-				
-				
+				// row.setFocusable(false);
+
 				break;
 
 			default:
 				break;
 			}
-			
-			//At this point, add the two rows(query & response)
-			
-			
-			
-			
+
+			// At this point, add the two rows(query & response)
+
 			return row;
 		}
-		
-		
-
-		
 
 		private void addItem(AdapterDiagnosis diagnosis) {
 			listitems.add(diagnosis);
 		}
 
-		
-		
 		private void removeItem(int position) {
 			listitems.remove(position);
 		}
@@ -935,9 +936,9 @@ public class Alice extends Activity implements AsyncTasksListener {
 					suggestion = "";
 				// TODO
 				Log.i(Constants.TAG, detail + "\n" + suggestion);
-				
+
 				showAlert("Error", detail + "\n" + suggestion);
-				
+
 			}
 
 			public void onResults(Recognizer recognizer, Recognition results) {
@@ -961,9 +962,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 			String t = results[0].getText();
 			// TODO
 			// updateCurrentText(dialogue, Color.WHITE, false);
-			
-			
-			
+
 			Log.i(Constants.TAG, t);
 			// speakReply(askAlice(t));
 
@@ -971,7 +970,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 				doVoiceDiagnosis(mDiagnosis.getGuide(),
 						mDiagnosis.getCurrent_query(), t);
 			} else {
-				doVoiceDiagnosis("null",Constants.VOICE_DEFAULT_LAST_QUERY, t);
+				doVoiceDiagnosis("null", Constants.VOICE_DEFAULT_LAST_QUERY, t);
 			}
 
 		} else {

@@ -33,9 +33,13 @@ public class LogParser {
 
 		ActionLog log = new ActionLog();
 
-		JSONObject jsonObj;
+		JSONObject api;
 		try {
-			jsonObj = new JSONObject(jsonStr);
+
+			api = new JSONObject(jsonStr);
+
+			JSONObject jsonObj = api.getJSONObject("record");
+
 			String created_at = jsonObj.getString("created_at");
 			String id = jsonObj.getString("id");
 			String location = jsonObj.getString("location");
