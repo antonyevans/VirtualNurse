@@ -792,6 +792,11 @@ public class Alice extends Activity implements AsyncTasksListener {
 				break;
 			}
 			
+			//At this point, add the two rows(query & response)
+			
+			
+			
+			
 			return row;
 		}
 		
