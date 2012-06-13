@@ -27,9 +27,9 @@ class ListeningDialog extends Dialog {
 		setOwnerActivity(owner);
 		setCancelable(true);
 
-		 WindowManager.LayoutParams layout = getWindow().getAttributes();
-		// layout.gravity = Gravity.BOTTOM;
-		 layout.width = WindowManager.LayoutParams.FILL_PARENT;
+		WindowManager.LayoutParams layout = getWindow().getAttributes();
+		layout.gravity = Gravity.BOTTOM;
+		layout.width = WindowManager.LayoutParams.FILL_PARENT;
 	}
 
 	public void setText(String text) {
@@ -40,10 +40,10 @@ class ListeningDialog extends Dialog {
 		}
 	}
 
-	/*public void setLevel(String level) {
-		TextView t = (TextView) findViewById(R.id.text_recordLevel);
-		t.setText(level);
-	}*/
+	/*
+	 * public void setLevel(String level) { TextView t = (TextView)
+	 * findViewById(R.id.text_recordLevel); t.setText(level); }
+	 */
 
 	public void setRecording(boolean recording) {
 		_recording = recording;
@@ -75,7 +75,7 @@ class ListeningDialog extends Dialog {
 		if (_text != null) {
 			setText(_text);
 		}
-		//setLevel("");
+		// setLevel("");
 		_recording = false;
 
 		Button b = (Button) findViewById(R.id.btn_listeningStop);

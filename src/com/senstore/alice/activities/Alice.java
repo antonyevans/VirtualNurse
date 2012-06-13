@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -357,13 +358,17 @@ public class Alice extends Activity implements AsyncTasksListener {
 		switch (id) {
 		case DIAGNOSIS_DIALOG:
 			mProgressDialog = new ProgressDialog(this);
-			mProgressDialog
-					.setTitle(getString(R.string.diagnosis_dialog_title));
+			//mProgressDialog
+				//	.setTitle(getString(R.string.diagnosis_dialog_title));
 			mProgressDialog
 					.setMessage(getString(R.string.diagnosis_dialog_text));
 			mProgressDialog.setIndeterminate(true);
+			
 			mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 			mProgressDialog.setCancelable(false);
+			WindowManager.LayoutParams layout = mProgressDialog.getWindow().getAttributes();
+			layout.width = WindowManager.LayoutParams.FILL_PARENT;
+			layout.gravity = Gravity.BOTTOM;
 			return mProgressDialog;
 		case LISTENING_DIALOG:
 			return _listeningDialog;
