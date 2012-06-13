@@ -3,23 +3,42 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
-
+	
     
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
-
+    <LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+    
         <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:orientation="vertical" >
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content">
 
-            <LinearLayout
+    	        <ImageView
+    	            android:id="@+id/tri_right"
+    	            android:layout_width="wrap_content"
+    	            android:layout_height="wrap_content"
+    	            android:layout_alignParentLeft="true"
+    	            android:layout_alignParentTop="true"
+    	            android:layout_marginTop="30dp"
+    	            android:src="@drawable/tri_left" />
+        
+    	    </RelativeLayout>
+    	    
+    	<RelativeLayout
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:id="@+id/layout_left"
+		        android:layout_alignParentLeft="true" >
+		    <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >  
+    	    <LinearLayout
                 android:id="@+id/options_text_response"
-                android:layout_width="fill_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="5dp"
                 android:background="@drawable/bubble_left"
@@ -39,17 +58,27 @@
                     android:paddingTop="10dp"
                     android:text=""
                     android:textColor="@android:color/black" />
+                
+                
             </LinearLayout>
-        </RelativeLayout>
-
-        <Button
+            </RelativeLayout>
+            <Button
             android:id="@+id/options_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:background="@drawable/bubble_close"
             android:gravity="center_vertical|center_horizontal" />
-    </RelativeLayout>
+
+    	    
+        
+    	    </RelativeLayout>
+    	    
+    	    
+    
+    
+    </LinearLayout>
+    
 
     <LinearLayout
         android:id="@+id/options_response_options"

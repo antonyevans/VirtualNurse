@@ -694,9 +694,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 				break;
 			case 4:
 				// TODO Response Type 4 - CALL DOCTOR - Text with button
-				// to
-				// call
-				// doctor.
+				// to call doctor.
 				row = inflater.inflate(R.layout.diagnosis_calldoc_chat, null);
 
 				TextView callResp = (TextView) row
@@ -1015,8 +1013,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 				if (!_destroyed) {
 					// Remove the dialog so that it will be recreated next time.
 					// This is necessary to avoid a bug in Android >= 1.6 where
-					// the
-					// animation stops working.
+					// the animation stops working.
 					Alice.this.removeDialog(LISTENING_DIALOG);
 					createListeningDialog();
 				}
