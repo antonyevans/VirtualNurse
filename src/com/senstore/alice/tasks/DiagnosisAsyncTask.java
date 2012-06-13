@@ -74,7 +74,7 @@ public class DiagnosisAsyncTask extends AsyncTask<Void, String, Diagnosis> {
 	@Override
 	protected Diagnosis doInBackground(Void... params) {
 		Diagnosis diagnosis = null;
-		publishProgress("Diagnosing on remote server");
+		//publishProgress("Diagnosing on remote server");
 		DiagnosisRESTHandler handler = new DiagnosisRESTHandler();
 
 		Log.i(Constants.TAG, "Setting the last_query to : " + last_query);

@@ -368,8 +368,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 		switch (id) {
 		case DIAGNOSIS_DIALOG:
 			mProgressDialog = new ProgressDialog(this);
-			mProgressDialog.setTitle(getString(R.string.app_name));
-			mProgressDialog.setMessage("Working...");
+			mProgressDialog.setTitle(getString(R.string.diagnosis_dialog_title));
+			mProgressDialog.setMessage(getString(R.string.diagnosis_dialog_text));
 			mProgressDialog.setIndeterminate(true);
 			mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 			mProgressDialog.setCancelable(false);
@@ -413,8 +413,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 				// TODO Show Alert Dialog that the server could not
 				// understand their request
 
-				showAlert("Problem",
-						result.getInput() + "\n" + result.getReply());
+				showAlert(getString(R.string.alert_dialog_title), result.getInput()
+						+ "\n" + result.getReply());
 
 				Log.i(Constants.TAG, "Hapa Tu : " + result.getReply());
 
