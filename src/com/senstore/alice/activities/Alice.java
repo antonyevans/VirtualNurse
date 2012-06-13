@@ -27,7 +27,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -420,9 +419,13 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 			} else {
 
+				
+				Log.i(Constants.TAG, "Adding : "+result.getInput());
+				
 				// add diagnosis object to adapter
 				AdapterDiagnosis diag = new AdapterDiagnosis(result);
 				chatAdapter.addItem(diag);
+				
 
 				// tell listeners that underlying data has changed. Refresh the
 				// view
@@ -532,9 +535,6 @@ public class Alice extends Activity implements AsyncTasksListener {
 			mDiagnosis = listitems.get(position);
 			final int currPos =position;
 			View row = null;
-			
-			Log.v(Constants.TAG, position+"THIS IS MY Type->"+mDiagnosis.getResponse_type());
-			
 
 			// retrieve ID for discriminating the different views
 			int diagnosisType = mDiagnosis.getResponse_type();
@@ -582,7 +582,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 				HashMap<String, String> respOpts = mDiagnosis
 						.getReply_options();
 				
-				int count = 0;
+				//int count = 0;
 
 				for (Entry<String, String> entry : respOpts.entrySet()) {
 					final String key = entry.getKey();
@@ -614,7 +614,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 							diag.setPrevText(key);
 							//AdapterDiagnosis tmpDiag = 
 							listitems.add(diag);
-							Log.v(Constants.TAG, "ADDING ITEM");
+							//Log.v(Constants.TAG, "ADDING ITEM");
 							
 							doTouchDiagnosis(mDiagnosis.getGuide(),
 									mDiagnosis.getCurrent_query(), value);
@@ -622,7 +622,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 					});
 					
 					optGroup.addView(bo);
-					count++;
+					//count++;
 
 					
 				}
@@ -797,18 +797,13 @@ public class Alice extends Activity implements AsyncTasksListener {
 		
 		
 
-		private void resetAdapter() {
-			listitems = new ArrayList<AdapterDiagnosis>();
-
-		}
+		
 
 		private void addItem(AdapterDiagnosis diagnosis) {
 			listitems.add(diagnosis);
 		}
 
-		private void removeItem(AdapterDiagnosis diagnosis) {
-			listitems.remove(diagnosis);
-		}
+		
 		
 		private void removeItem(int position) {
 			listitems.remove(position);
@@ -935,8 +930,9 @@ public class Alice extends Activity implements AsyncTasksListener {
 					suggestion = "";
 				// TODO
 				Log.i(Constants.TAG, detail + "\n" + suggestion);
-				// updateCurrentText(detail + "\n" + suggestion, Color.GREEN,
-				// false);
+				
+				showAlert("Error", detail + "\n" + suggestion);
+				
 			}
 
 			public void onResults(Recognizer recognizer, Recognition results) {
@@ -956,13 +952,13 @@ public class Alice extends Activity implements AsyncTasksListener {
 	}
 
 	private void setResults(Recognition.Result[] results) {
-		// _arrayAdapter.clear();
 		if (results.length > 0) {
-			// setResult(results[0].getText());
 			String t = results[0].getText();
-			// String dialogue = "Me:  " + t;
 			// TODO
 			// updateCurrentText(dialogue, Color.WHITE, false);
+			
+			
+			
 			Log.i(Constants.TAG, t);
 			// speakReply(askAlice(t));
 

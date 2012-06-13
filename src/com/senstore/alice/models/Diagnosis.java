@@ -25,6 +25,16 @@ public class Diagnosis {
 	private String updated_at = null;
 	private String user_id = null;
 
+	private String query_string = null;
+
+	public String getQuery_string() {
+		return query_string;
+	}
+
+	public void setQuery_string(String query_string) {
+		this.query_string = query_string;
+	}
+
 	public Diagnosis() {
 
 	}
