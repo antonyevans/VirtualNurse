@@ -114,11 +114,11 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 		// inflate flipper to switch between menu and chat screen
 		flipper = (ViewFlipper) findViewById(R.id.alice_view_flipper);
-		
+
 		if (savedInstanceState != null) {
-	        int flipperPosition = savedInstanceState.getInt("FLIPPER_POSITION");
-	        flipper.setDisplayedChild(flipperPosition);
-	    }
+			int flipperPosition = savedInstanceState.getInt("FLIPPER_POSITION");
+			flipper.setDisplayedChild(flipperPosition);
+		}
 
 		// inflate the view with the listview
 		chatview = inflater.inflate(R.layout.alice_chat_list_layout, null);
@@ -442,11 +442,11 @@ public class Alice extends Activity implements AsyncTasksListener {
 		}
 
 	}
-	
+
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
-	    int position = flipper.getDisplayedChild();
-	    savedInstanceState.putInt("FLIPPER_POSITION", position);
+		int position = flipper.getDisplayedChild();
+		savedInstanceState.putInt("FLIPPER_POSITION", position);
 	}
 
 	@Override
@@ -559,10 +559,6 @@ public class Alice extends Activity implements AsyncTasksListener {
 						}
 
 						if (listitems.size() == 0) {
-							/*
-							 * startActivity(new Intent(
-							 * AliceChatAdapter.this.context, Alice.class));
-							 */
 							removeDiagnosisView(flipper.getCurrentView());
 						} else {
 							notifyDataSetChanged();
@@ -580,8 +576,6 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 				HashMap<String, String> respOpts = mDiagnosis
 						.getReply_options();
-
-				// int count = 0;
 
 				for (Entry<String, String> entry : respOpts.entrySet()) {
 					final String key = entry.getKey();
@@ -612,6 +606,9 @@ public class Alice extends Activity implements AsyncTasksListener {
 						public void onClick(View v) {
 
 							mDiagnosis.setQuery_string(key);
+							Log.i(Constants.TAG,
+									"Query String = "
+											+ mDiagnosis.getQuery_string());
 							doTouchDiagnosis(mDiagnosis.getGuide(),
 									mDiagnosis.getCurrent_query(), value);
 						}
@@ -642,10 +639,6 @@ public class Alice extends Activity implements AsyncTasksListener {
 						}
 
 						if (listitems.size() == 0) {
-							/*
-							 * startActivity(new Intent(
-							 * AliceChatAdapter.this.context, Alice.class));
-							 */
 							removeDiagnosisView(flipper.getCurrentView());
 						} else {
 							notifyDataSetChanged();
@@ -706,10 +699,6 @@ public class Alice extends Activity implements AsyncTasksListener {
 						}
 
 						if (listitems.size() == 0) {
-							/*
-							 * startActivity(new Intent(
-							 * AliceChatAdapter.this.context, Alice.class));
-							 */
 							removeDiagnosisView(flipper.getCurrentView());
 						} else {
 							notifyDataSetChanged();
@@ -986,6 +975,9 @@ public class Alice extends Activity implements AsyncTasksListener {
 			// speakReply(askAlice(t));
 
 			if (mDiagnosis != null) {
+				// Set the voice input as the query string in the Diagnosis
+				// object
+				mDiagnosis.setQuery_string(t);
 
 				doVoiceDiagnosis(mDiagnosis.getGuide(),
 						mDiagnosis.getCurrent_query(), t);
