@@ -3,15 +3,13 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
-        
-     <RelativeLayout
-    android:layout_width="fill_parent" android:layout_height="wrap_content">
-    <RelativeLayout android:orientation="vertical"
-        android:layout_width="fill_parent" android:layout_height="fill_parent"> 
+    
+      
+    
     <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/map_text_response"
+            android:id="@+id/info_close_text_response"
             android:layout_marginLeft="10dp"
         	android:layout_marginRight="10dp"
         	android:layout_marginTop="5dp"
@@ -20,7 +18,7 @@
         	android:orientation="vertical" >
             
         <TextView
-            android:id="@+id/map_txt_response"
+            android:id="@+id/info_close_txt_response"
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
 	        android:text=""
@@ -38,38 +36,33 @@
         
             
         </LinearLayout>
-        </RelativeLayout>
-        <Button android:layout_alignParentRight="true"
-            android:id="@+id/map_close"
-	        android:background="@drawable/bubble_close"
-	        android:gravity="center_vertical|center_horizontal"
-	        android:layout_height="wrap_content"
-	        android:layout_width="wrap_content"/>
         
-        </RelativeLayout>
-    <LinearLayout
+		<LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/map_response_call"
+            android:id="@+id/info_exit_btn_view"
             android:layout_marginLeft="10dp"
         	android:layout_marginRight="10dp"
         	android:layout_marginTop="5dp"
         	android:layout_marginBottom="5dp">
             
-        
-        <com.google.android.maps.MapView
-			 xmlns:android="http://schemas.android.com/apk/res/android"
-			 android:id="@+id/mapview"
-			 android:layout_width="fill_parent"
-			 android:layout_height="100dp"
-			 android:clickable="true"
-			 android:apiKey="00NLBX7xqYbhVdILAM1_yeCtZI165D-Tnc9fE5w"
-			/>
-        	
+        	<Button
+			    android:id="@+id/info_exit_btn"
+			    android:layout_width="fill_parent"
+			    android:layout_height="35dp"
+			    android:text="Close"
+			    android:layout_marginLeft="10dp"
+	        	android:layout_marginRight="10dp"
+	        	android:layout_marginTop="10dp"
+	        	android:layout_marginBottom="10dp"
+			    android:background="@drawable/btn_orange"
+			    android:gravity="center"
+			     />
         
             
-        </LinearLayout>
+        </LinearLayout>        
     
     <include layout="@layout/query_text_view"/>
+    
 
 </LinearLayout>

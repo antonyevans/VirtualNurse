@@ -78,7 +78,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 	private LayoutInflater inflater;
 
-	private AdapterDiagnosis mDiagnosis;
+	private Diagnosis mDiagnosis;
 
 	private static SpeechKit _speechKit;
 	private static final int LISTENING_DIALOG = 1;
@@ -90,6 +90,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 	private Vocalizer _vocalizer;
 	private Object _lastTtsContext = null;
+	
+	private LayoutInflater inflator;
 
 	public Alice() {
 		super();
@@ -108,6 +110,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 				getApplicationContext());
 
 		setContentView(R.layout.main);
+		inflater= getLayoutInflater();
 
 		inflater = getLayoutInflater();
 
@@ -423,8 +426,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 				Log.i(Constants.TAG, "Adding : " + result.getInput());
 
 				// add diagnosis object to adapter
-				AdapterDiagnosis diag = new AdapterDiagnosis(result);
-				chatAdapter.addItem(diag);
+				chatAdapter.addItem(result);
 
 				// tell listeners that underlying data has changed. Refresh the
 				// view
@@ -478,6 +480,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 	}
 
 	public class ResponseReceiver extends BroadcastReceiver {
+		
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -499,7 +502,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 	// custom adapter for the chat listview
 	public class AliceChatAdapter extends BaseAdapter {
-		ArrayList<AdapterDiagnosis> listitems;
+		ArrayList<Diagnosis> listitems;
 		LayoutInflater inflater;
 		Context context;
 
@@ -507,7 +510,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 			this.context = context;
 			inflater = (LayoutInflater) context
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			listitems = new ArrayList<AdapterDiagnosis>();
+			listitems = new ArrayList<Diagnosis>();
 
 		}
 
@@ -538,7 +541,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 			View row = null;
 
 			// retrieve ID for discriminating the different views
-			int diagnosisType = mDiagnosis.getResponse_type();
+			String type = mDiagnosis.getResponse_type();
+			int diagnosisType = Integer.parseInt(type);
 
 			switch (diagnosisType) {
 			case 1:
@@ -560,9 +564,12 @@ public class Alice extends Activity implements AsyncTasksListener {
 					@Override
 					public void onClick(View v) {
 						AliceChatAdapter.this.removeItem(currPos);
-						if (currPos > 1) {
-							AliceChatAdapter.this.removeItem(currPos - 1);
+						if (currPos>0) {
+							Diagnosis tmpDiag = listitems.get(currPos-1);
+							tmpDiag.setQuery_string(null);
 						}
+						
+						
 
 						if (listitems.size() == 0) {
 							startActivity(new Intent(
@@ -613,12 +620,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 						@Override
 						public void onClick(View v) {
-							AdapterDiagnosis diag = new AdapterDiagnosis(null);
-							diag.setPrevText(key);
-							// AdapterDiagnosis tmpDiag =
-							listitems.add(diag);
-							// Log.v(Constants.TAG, "ADDING ITEM");
-
+							
+							mDiagnosis.setQuery_string(key);
 							doTouchDiagnosis(mDiagnosis.getGuide(),
 									mDiagnosis.getCurrent_query(), value);
 						}
@@ -643,8 +646,9 @@ public class Alice extends Activity implements AsyncTasksListener {
 					@Override
 					public void onClick(View v) {
 						AliceChatAdapter.this.removeItem(currPos);
-						if (currPos > 1) {
-							AliceChatAdapter.this.removeItem(currPos - 1);
+						if (currPos>0) {
+							Diagnosis tmpDiag = listitems.get(currPos-1);
+							tmpDiag.setQuery_string(null);
 						}
 
 						if (listitems.size() == 0) {
@@ -705,8 +709,9 @@ public class Alice extends Activity implements AsyncTasksListener {
 					@Override
 					public void onClick(View v) {
 						AliceChatAdapter.this.removeItem(currPos);
-						if (currPos > 1) {
-							AliceChatAdapter.this.removeItem(currPos - 1);
+						if (currPos>0) {
+							Diagnosis tmpDiag = listitems.get(currPos-1);
+							tmpDiag.setQuery_string(null);
 						}
 
 						if (listitems.size() == 0) {
@@ -752,8 +757,9 @@ public class Alice extends Activity implements AsyncTasksListener {
 					@Override
 					public void onClick(View v) {
 						AliceChatAdapter.this.removeItem(currPos);
-						if (currPos > 1) {
-							AliceChatAdapter.this.removeItem(currPos - 1);
+						if (currPos>0) {
+							Diagnosis tmpDiag = listitems.get(currPos-1);
+							tmpDiag.setQuery_string(null);
 						}
 
 						if (listitems.size() == 0) {
@@ -776,38 +782,50 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 			case 6:
 				// TODO Response Type 6 - EXIT THE CURRENT GUIDE - Text
-				row = inflater.inflate(R.layout.diagnosis_information_chat,
+				row = inflater.inflate(R.layout.diagnosis_information_close_chat,
 						null);
 
 				TextView infoResp2 = (TextView) row
-						.findViewById(R.id.info_txt_response);
+						.findViewById(R.id.info_close_txt_response);
+				Button info_exit = (Button) row.findViewById(R.id.info_exit_btn);
+				info_exit.setOnClickListener(new OnClickListener() {
 
+					@Override
+					public void onClick(View v) {
+						listitems= new ArrayList<Diagnosis>();
+						startActivity(new Intent(
+								AliceChatAdapter.this.context, Alice.class));
+						
+
+					}
+				});
+				
 				infoResp2.setText(Html.fromHtml(mDiagnosis.getReply()
 						.toString()));
 
 				break;
 
-			case -2:
-				// TODO Response Type 6 - EXIT THE CURRENT GUIDE - Text
-				row = inflater.inflate(R.layout.diagnosis_input_chat, null);
-
-				TextView inputQuery = (TextView) row
-						.findViewById(R.id.input_text_query);
-				inputQuery.setText(mDiagnosis.getPrevText());
-				// row.setFocusable(false);
-
-				break;
+			
 
 			default:
 				break;
 			}
 
 			// At this point, add the two rows(query & response)
-
+			
+			if (mDiagnosis.getQuery_string()!=null) {
+				View txtView = inflater.inflate(R.layout.diagnosis_input_chat, null);
+				
+				TextView queryTxt = (TextView)txtView.findViewById(R.id.input_text_query);
+				queryTxt.setText(mDiagnosis.getQuery_string());
+				
+				LinearLayout toAdd = (LinearLayout)row.findViewById(R.id.input_text_view);
+				toAdd.addView(txtView);
+			}
 			return row;
 		}
 
-		private void addItem(AdapterDiagnosis diagnosis) {
+		private void addItem(Diagnosis diagnosis) {
 			listitems.add(diagnosis);
 		}
 
@@ -967,6 +985,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 			// speakReply(askAlice(t));
 
 			if (mDiagnosis != null) {
+				
 				doVoiceDiagnosis(mDiagnosis.getGuide(),
 						mDiagnosis.getCurrent_query(), t);
 			} else {
