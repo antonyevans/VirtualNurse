@@ -612,7 +612,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 							mDiagnosis.setQuery_string(key);
 							Log.i(Constants.TAG,
-									"Query String = "
+									"Query String(from options) = "
 											+ mDiagnosis.getQuery_string());
 							doTouchDiagnosis(mDiagnosis.getGuide(),
 									mDiagnosis.getCurrent_query(), value);
@@ -983,6 +983,9 @@ public class Alice extends Activity implements AsyncTasksListener {
 				// Set the voice input as the query string in the Diagnosis
 				// object
 				mDiagnosis.setQuery_string(t);
+				Log.i(Constants.TAG,
+						"Query String(from voice) = "
+								+ mDiagnosis.getQuery_string());
 
 				doVoiceDiagnosis(mDiagnosis.getGuide(),
 						mDiagnosis.getCurrent_query(), t);
