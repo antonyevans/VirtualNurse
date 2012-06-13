@@ -201,7 +201,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 			// recreated this activity, so restore the existing recognition
 			_currentRecognizer = savedState.Recognizer;
 			_listeningDialog.setText(savedState.DialogText);
-			_listeningDialog.setLevel(savedState.DialogLevel);
+			// _listeningDialog.setLevel(savedState.DialogLevel);
 			_listeningDialog.setRecording(savedState.DialogRecording);
 			_handler = savedState.Handler;
 
@@ -916,9 +916,9 @@ public class Alice extends Activity implements AsyncTasksListener {
 						if (_listeningDialog != null
 								&& _listeningDialog.isRecording()
 								&& _currentRecognizer != null) {
-							_listeningDialog.setLevel(Float
-									.toString(_currentRecognizer
-											.getAudioLevel()));
+							// _listeningDialog.setLevel(Float
+							// .toString(_currentRecognizer
+							// .getAudioLevel()));
 							_handler.postDelayed(this, 500);
 						}
 					}
@@ -928,7 +928,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 			public void onRecordingDone(Recognizer recognizer) {
 				_listeningDialog.setText("Processing...");
-				_listeningDialog.setLevel("");
+				// _listeningDialog.setLevel("");
 				_listeningDialog.setRecording(false);
 				_listeningDialog.setStoppable(false);
 			}
