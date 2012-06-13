@@ -55,6 +55,7 @@ import com.senstore.alice.services.BackgroundLogger;
 import com.senstore.alice.tasks.DiagnosisAsyncTask;
 import com.senstore.alice.utils.Constants;
 import com.senstore.alice.utils.Registry;
+import com.senstore.alice.views.ChatListView;
 
 public class Alice extends Activity implements AsyncTasksListener {
 	private ResponseReceiver receiver;
@@ -67,7 +68,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 	private DiagnosisAsyncTask diagnosisTask;
 
 	private View chatview;
-	private ListView chatlist;
+	private ChatListView chatlist;
 	private ViewFlipper flipper;
 
 	private AliceChatAdapter chatAdapter;
@@ -124,7 +125,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 		chatview = inflater.inflate(R.layout.alice_chat_list_layout, null);
 
 		// load listview
-		chatlist = (ListView) chatview.findViewById(R.id.alice_chat_list);
+		chatlist = (ChatListView) chatview.findViewById(R.id.alice_chat_list);
 		chatlist.setFocusable(false);
 
 		chatAdapter = new AliceChatAdapter(this);
@@ -414,7 +415,24 @@ public class Alice extends Activity implements AsyncTasksListener {
 				// view
 				chatAdapter.notifyDataSetChanged();
 
-				chatlist.setSelectionFromTop(chatAdapter.getCount(), 10);
+				//chatlist.setSelectionFromTop(chatAdapter.getCount(), 10);
+//				if (chatlist.getFirstVisiblePosition() > chatAdapter.getCount() || chatlist.getLastVisiblePosition() <= chatAdapter.getCount()) {
+//				    
+//				}
+				
+				//chatlist.smoothScrollToPosition(chatAdapter.getCount());
+				
+				chatlist.clearFocus();
+				chatlist.post(new Runnable() {
+					
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						chatlist.setSelection(chatAdapter.getCount());
+					}
+				});
+				
+				
 
 				// identify the view on display currently
 				View currentView = flipper.getCurrentView();
@@ -436,6 +454,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 					// TODO: Check if we really have to do nothing here
 					// perhaps scroll to the last item if layout does not handle
 					// this well
+					Log.v(Constants.TAG, "Still Chat view");
 
 				}
 			}
@@ -562,8 +581,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 							removeDiagnosisView(flipper.getCurrentView());
 						} else {
 							notifyDataSetChanged();
-							chatlist.setSelectionFromTop(
-									chatAdapter.getCount(), 10);
+							
 						}
 
 					}

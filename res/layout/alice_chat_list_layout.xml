@@ -4,14 +4,14 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <ListView
+    <com.senstore.alice.views.ChatListView
         android:id="@+id/alice_chat_list"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:cacheColorHint="#00000000"
         android:focusableInTouchMode="false"
-        android:stackFromBottom="true"
+        android:stackFromBottom="false"
         android:transcriptMode="normal" >
-    </ListView>
+    </com.senstore.alice.views.ChatListView>
 
 </RelativeLayout>
