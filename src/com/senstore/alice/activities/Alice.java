@@ -261,7 +261,12 @@ public class Alice extends Activity implements AsyncTasksListener {
 			b.setGravity(Gravity.CENTER);
 
 			b.setPadding(10, 10, 10, 10);
-			Drawable btnBg = getResources().getDrawable(R.drawable.btn_orange);
+			
+			//Drawable btnBg = getResources().getDrawable(R.drawable.btn_orange);
+			
+			Drawable btnBg = getResources().getDrawable(
+					R.drawable.radio_btn);
+
 
 			b.setBackgroundDrawable(btnBg);
 
@@ -358,15 +363,16 @@ public class Alice extends Activity implements AsyncTasksListener {
 		switch (id) {
 		case DIAGNOSIS_DIALOG:
 			mProgressDialog = new ProgressDialog(this);
-			//mProgressDialog
-				//	.setTitle(getString(R.string.diagnosis_dialog_title));
+			// mProgressDialog
+			// .setTitle(getString(R.string.diagnosis_dialog_title));
 			mProgressDialog
 					.setMessage(getString(R.string.diagnosis_dialog_text));
 			mProgressDialog.setIndeterminate(true);
-			
+
 			mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 			mProgressDialog.setCancelable(false);
-			WindowManager.LayoutParams layout = mProgressDialog.getWindow().getAttributes();
+			WindowManager.LayoutParams layout = mProgressDialog.getWindow()
+					.getAttributes();
 			layout.width = WindowManager.LayoutParams.FILL_PARENT;
 			layout.gravity = Gravity.BOTTOM;
 			return mProgressDialog;
@@ -419,15 +425,14 @@ public class Alice extends Activity implements AsyncTasksListener {
 				// view
 				chatAdapter.notifyDataSetChanged();
 
-				
-				//chatlist.setSelectionFromTop(chatAdapter.getCount(), 10);
+				// chatlist.setSelectionFromTop(chatAdapter.getCount(), 10);
 				chatlist.clearFocus();
 				chatlist.post(new Runnable() {
-					
+
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						chatlist.setSelection(chatAdapter.getCount()-1);
+						chatlist.setSelection(chatAdapter.getCount() - 1);
 					}
 				});
 
@@ -541,8 +546,6 @@ public class Alice extends Activity implements AsyncTasksListener {
 			// TODO Auto-generated method stub
 			return 0;
 		}
-		
-		
 
 		public int getCurrPos() {
 			return currPos;
@@ -637,7 +640,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 						public void onClick(View v) {
 
 							mDiagnosis.setQuery_string(key);
-							Log.v(Constants.TAG, "POS ->"+currPos+"Just set ->"+key+" ");
+							Log.v(Constants.TAG, "POS ->" + currPos
+									+ "Just set ->" + key + " ");
 							Log.i(Constants.TAG,
 									"Query String(from options) = "
 											+ mDiagnosis.getQuery_string());
@@ -833,8 +837,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 			// At this point, add the two rows(query & response)
 
 			if (mDiagnosis.getQuery_string() != null) {
-				
-				Log.v(Constants.TAG, "QUERY NOT NULL->"+getCount());
+
+				Log.v(Constants.TAG, "QUERY NOT NULL->" + getCount());
 				View txtView = inflater.inflate(R.layout.diagnosis_input_chat,
 						null);
 
@@ -845,10 +849,13 @@ public class Alice extends Activity implements AsyncTasksListener {
 				LinearLayout toAdd = (LinearLayout) row
 						.findViewById(R.id.input_text_view);
 				toAdd.addView(txtView);
-			}else{
-				
-				Log.v(Constants.TAG, "QUERY IS NULL ->"+getCount());
+			} else {
+
+				Log.v(Constants.TAG, "QUERY IS NULL ->" + getCount());
 			}
+
+			
+
 			return row;
 		}
 
