@@ -414,7 +414,17 @@ public class Alice extends Activity implements AsyncTasksListener {
 				// view
 				chatAdapter.notifyDataSetChanged();
 
-				chatlist.setSelectionFromTop(chatAdapter.getCount(), 10);
+				
+				//chatlist.setSelectionFromTop(chatAdapter.getCount(), 10);
+				chatlist.clearFocus();
+				chatlist.post(new Runnable() {
+					
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						chatlist.setSelection(chatAdapter.getCount()-1);
+					}
+				});
 
 				// identify the view on display currently
 				View currentView = flipper.getCurrentView();
@@ -499,6 +509,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 		ArrayList<Diagnosis> listitems;
 		LayoutInflater inflater;
 		Context context;
+		private int currPos;
 
 		public AliceChatAdapter(Context context) {
 			this.context = context;
@@ -525,13 +536,23 @@ public class Alice extends Activity implements AsyncTasksListener {
 			// TODO Auto-generated method stub
 			return 0;
 		}
+		
+		
+
+		public int getCurrPos() {
+			return currPos;
+		}
+
+		public void setCurrPos(int currPos) {
+			this.currPos = currPos;
+		}
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			// retrieve currently selected item
 
 			mDiagnosis = listitems.get(position);
-			final int currPos = position;
+			setCurrPos(position);
 			View row = null;
 
 			// retrieve ID for discriminating the different views
@@ -611,6 +632,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 						public void onClick(View v) {
 
 							mDiagnosis.setQuery_string(key);
+							Log.v(Constants.TAG, "POS ->"+currPos+"Just set ->"+key+" ");
 							Log.i(Constants.TAG,
 									"Query String = "
 											+ mDiagnosis.getQuery_string());
@@ -806,6 +828,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 			// At this point, add the two rows(query & response)
 
 			if (mDiagnosis.getQuery_string() != null) {
+				
+				Log.v(Constants.TAG, "QUERY NOT NULL->"+getCount());
 				View txtView = inflater.inflate(R.layout.diagnosis_input_chat,
 						null);
 
@@ -816,6 +840,9 @@ public class Alice extends Activity implements AsyncTasksListener {
 				LinearLayout toAdd = (LinearLayout) row
 						.findViewById(R.id.input_text_view);
 				toAdd.addView(txtView);
+			}else{
+				
+				Log.v(Constants.TAG, "QUERY IS NULL ->"+getCount());
 			}
 			return row;
 		}

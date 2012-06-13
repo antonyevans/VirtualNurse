@@ -100,5 +100,6 @@
     
     <include layout="@layout/query_text_view"/>
     
+    
 
 </LinearLayout>

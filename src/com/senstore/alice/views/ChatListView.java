@@ -2,6 +2,7 @@ package com.senstore.alice.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.widget.ListView;
 
 
@@ -47,6 +48,7 @@ public class ChatListView extends ListView {
 		// TODO Auto-generated method stub
 		super.smoothScrollToPosition(position);
 	}
+	
 	
 	
 	
