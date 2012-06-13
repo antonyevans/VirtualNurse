@@ -19,19 +19,21 @@
         android:layout_height="wrap_content" >
     </ProgressBar>
 
-    <TextView
+   <!--  <TextView
         android:id="@+id/text_recordLevel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Level" >
-    </TextView>
+    </TextView>-->
 
     <Button
         android:id="@+id/btn_listeningStop"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/btn_orange"
+        
         android:text="stop" >
     </Button>
 
+    <!-- android:background="@drawable/btn_orange" -->
+    
 </LinearLayout>
