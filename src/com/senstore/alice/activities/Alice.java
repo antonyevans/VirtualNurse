@@ -49,7 +49,6 @@ import com.nuance.nmdp.speechkit.Vocalizer;
 import com.senstore.alice.R;
 import com.senstore.alice.api.HarvardGuide;
 import com.senstore.alice.listeners.AsyncTasksListener;
-import com.senstore.alice.models.AdapterDiagnosis;
 import com.senstore.alice.models.Diagnosis;
 import com.senstore.alice.overlays.AliceItemizedOverlay;
 import com.senstore.alice.services.BackgroundLogger;
@@ -58,6 +57,8 @@ import com.senstore.alice.utils.Constants;
 import com.senstore.alice.utils.Registry;
 
 public class Alice extends Activity implements AsyncTasksListener {
+
+	private int flipperPos = 0;
 
 	private ResponseReceiver receiver;
 
@@ -90,7 +91,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 	private Vocalizer _vocalizer;
 	private Object _lastTtsContext = null;
-	
+
 	private LayoutInflater inflator;
 
 	public Alice() {
@@ -110,7 +111,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 				getApplicationContext());
 
 		setContentView(R.layout.main);
-		inflater= getLayoutInflater();
+		inflater = getLayoutInflater();
 
 		inflater = getLayoutInflater();
 
@@ -131,11 +132,13 @@ public class Alice extends Activity implements AsyncTasksListener {
 		createHarvardGuideWidget();
 
 		// TODO Fix the on screen rotation changed
-		if (savedInstanceState != null) {
+		/*if (savedInstanceState != null) {
 			int flipperPosition = savedInstanceState.getInt("FLIPPER_POSITION");
 			flipper.setDisplayedChild(flipperPosition);
-		}
+		}*/
 
+		flipper.setDisplayedChild(flipperPos);
+		
 		flipper.addView(menuView);
 
 		// Register the Background Logger Broadcast Receiver
@@ -371,8 +374,10 @@ public class Alice extends Activity implements AsyncTasksListener {
 		switch (id) {
 		case DIAGNOSIS_DIALOG:
 			mProgressDialog = new ProgressDialog(this);
-			mProgressDialog.setTitle(getString(R.string.diagnosis_dialog_title));
-			mProgressDialog.setMessage(getString(R.string.diagnosis_dialog_text));
+			mProgressDialog
+					.setTitle(getString(R.string.diagnosis_dialog_title));
+			mProgressDialog
+					.setMessage(getString(R.string.diagnosis_dialog_text));
 			mProgressDialog.setIndeterminate(true);
 			mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 			mProgressDialog.setCancelable(false);
@@ -384,11 +389,11 @@ public class Alice extends Activity implements AsyncTasksListener {
 		return null;
 	}
 
-	@Override
+	/*@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		int position = flipper.getDisplayedChild();
 		savedInstanceState.putInt("FLIPPER_POSITION", position);
-	}
+	}*/
 
 	@Override
 	public void onTaskPreExecute() {
@@ -416,8 +421,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 				// TODO Show Alert Dialog that the server could not
 				// understand their request
 
-				showAlert(getString(R.string.alert_dialog_title), result.getInput()
-						+ "\n" + result.getReply());
+				showAlert(getString(R.string.alert_dialog_title),
+						result.getInput() + "\n" + result.getReply());
 
 				Log.i(Constants.TAG, "Hapa Tu : " + result.getReply());
 
@@ -437,6 +442,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 				// identify the view on display currently
 				View currentView = flipper.getCurrentView();
 
+			
+				
 				if (currentView.equals(menuView)) {
 					// identify the number of children in the flipper
 					int childCount = flipper.getChildCount();
@@ -464,11 +471,15 @@ public class Alice extends Activity implements AsyncTasksListener {
 	@Override
 	protected void onPause() {
 		// mgr.cancel(pi);
+
+		flipperPos = flipper.getDisplayedChild();
+
 		super.onPause();
 	}
 
 	@Override
 	protected void onResume() {
+		flipper.setDisplayedChild(flipperPos);
 		super.onResume();
 	}
 
@@ -480,7 +491,6 @@ public class Alice extends Activity implements AsyncTasksListener {
 	}
 
 	public class ResponseReceiver extends BroadcastReceiver {
-		
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -498,6 +508,10 @@ public class Alice extends Activity implements AsyncTasksListener {
 			Log.i(Constants.TAG, "Successfully logged type " + text);
 
 		}
+	}
+
+	private void removeDiagnosisView(View view) {
+		flipper.removeView(view);
 	}
 
 	// custom adapter for the chat listview
@@ -564,16 +578,15 @@ public class Alice extends Activity implements AsyncTasksListener {
 					@Override
 					public void onClick(View v) {
 						AliceChatAdapter.this.removeItem(currPos);
-						if (currPos>0) {
-							Diagnosis tmpDiag = listitems.get(currPos-1);
+						if (currPos > 0) {
+							Diagnosis tmpDiag = listitems.get(currPos - 1);
 							tmpDiag.setQuery_string(null);
 						}
-						
-						
 
 						if (listitems.size() == 0) {
-							startActivity(new Intent(
-									AliceChatAdapter.this.context, Alice.class));
+							/*startActivity(new Intent(
+									AliceChatAdapter.this.context, Alice.class));*/
+							removeDiagnosisView(flipper.getCurrentView());
 						} else {
 							notifyDataSetChanged();
 							chatlist.setSelectionFromTop(
@@ -620,7 +633,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 						@Override
 						public void onClick(View v) {
-							
+
 							mDiagnosis.setQuery_string(key);
 							doTouchDiagnosis(mDiagnosis.getGuide(),
 									mDiagnosis.getCurrent_query(), value);
@@ -646,14 +659,17 @@ public class Alice extends Activity implements AsyncTasksListener {
 					@Override
 					public void onClick(View v) {
 						AliceChatAdapter.this.removeItem(currPos);
-						if (currPos>0) {
-							Diagnosis tmpDiag = listitems.get(currPos-1);
+						if (currPos > 0) {
+							Diagnosis tmpDiag = listitems.get(currPos - 1);
 							tmpDiag.setQuery_string(null);
 						}
 
 						if (listitems.size() == 0) {
-							startActivity(new Intent(
-									AliceChatAdapter.this.context, Alice.class));
+							/*
+							 * startActivity(new Intent(
+							 * AliceChatAdapter.this.context, Alice.class));
+							 */
+							removeDiagnosisView(flipper.getCurrentView());
 						} else {
 							notifyDataSetChanged();
 							chatlist.setSelectionFromTop(
@@ -707,14 +723,17 @@ public class Alice extends Activity implements AsyncTasksListener {
 					@Override
 					public void onClick(View v) {
 						AliceChatAdapter.this.removeItem(currPos);
-						if (currPos>0) {
-							Diagnosis tmpDiag = listitems.get(currPos-1);
+						if (currPos > 0) {
+							Diagnosis tmpDiag = listitems.get(currPos - 1);
 							tmpDiag.setQuery_string(null);
 						}
 
 						if (listitems.size() == 0) {
-							startActivity(new Intent(
-									AliceChatAdapter.this.context, Alice.class));
+							/*
+							 * startActivity(new Intent(
+							 * AliceChatAdapter.this.context, Alice.class));
+							 */
+							removeDiagnosisView(flipper.getCurrentView());
 						} else {
 							notifyDataSetChanged();
 							chatlist.setSelectionFromTop(
@@ -755,15 +774,18 @@ public class Alice extends Activity implements AsyncTasksListener {
 					@Override
 					public void onClick(View v) {
 						AliceChatAdapter.this.removeItem(currPos);
-						if (currPos>0) {
-							Diagnosis tmpDiag = listitems.get(currPos-1);
+						if (currPos > 0) {
+							Diagnosis tmpDiag = listitems.get(currPos - 1);
 							tmpDiag.setQuery_string(null);
 						}
 
 						if (listitems.size() == 0) {
 
-							startActivity(new Intent(
-									AliceChatAdapter.this.context, Alice.class));
+							/*
+							 * startActivity(new Intent(
+							 * AliceChatAdapter.this.context, Alice.class));
+							 */
+							removeDiagnosisView(flipper.getCurrentView());
 						} else {
 							notifyDataSetChanged();
 							chatlist.setSelectionFromTop(
@@ -780,44 +802,48 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 			case 6:
 				// TODO Response Type 6 - EXIT THE CURRENT GUIDE - Text
-				row = inflater.inflate(R.layout.diagnosis_information_close_chat,
-						null);
+				row = inflater.inflate(
+						R.layout.diagnosis_information_close_chat, null);
 
 				TextView infoResp2 = (TextView) row
 						.findViewById(R.id.info_close_txt_response);
-				Button info_exit = (Button) row.findViewById(R.id.info_exit_btn);
+				Button info_exit = (Button) row
+						.findViewById(R.id.info_exit_btn);
 				info_exit.setOnClickListener(new OnClickListener() {
 
 					@Override
 					public void onClick(View v) {
-						listitems= new ArrayList<Diagnosis>();
-						startActivity(new Intent(
-								AliceChatAdapter.this.context, Alice.class));
-						
+						listitems = new ArrayList<Diagnosis>();
+						/*
+						 * startActivity(new Intent(
+						 * AliceChatAdapter.this.context, Alice.class));
+						 */
+						removeDiagnosisView(flipper.getCurrentView());
 
 					}
 				});
-				
+
 				infoResp2.setText(Html.fromHtml(mDiagnosis.getReply()
 						.toString()));
 
 				break;
-
-			
 
 			default:
 				break;
 			}
 
 			// At this point, add the two rows(query & response)
-			
-			if (mDiagnosis.getQuery_string()!=null) {
-				View txtView = inflater.inflate(R.layout.diagnosis_input_chat, null);
-				
-				TextView queryTxt = (TextView)txtView.findViewById(R.id.input_text_query);
+
+			if (mDiagnosis.getQuery_string() != null) {
+				View txtView = inflater.inflate(R.layout.diagnosis_input_chat,
+						null);
+
+				TextView queryTxt = (TextView) txtView
+						.findViewById(R.id.input_text_query);
 				queryTxt.setText(mDiagnosis.getQuery_string());
-				
-				LinearLayout toAdd = (LinearLayout)row.findViewById(R.id.input_text_view);
+
+				LinearLayout toAdd = (LinearLayout) row
+						.findViewById(R.id.input_text_view);
 				toAdd.addView(txtView);
 			}
 			return row;
@@ -983,7 +1009,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 			// speakReply(askAlice(t));
 
 			if (mDiagnosis != null) {
-				
+
 				doVoiceDiagnosis(mDiagnosis.getGuide(),
 						mDiagnosis.getCurrent_query(), t);
 			} else {
