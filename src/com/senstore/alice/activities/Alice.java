@@ -114,6 +114,11 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 		// inflate flipper to switch between menu and chat screen
 		flipper = (ViewFlipper) findViewById(R.id.alice_view_flipper);
+		
+		if (savedInstanceState != null) {
+	        int flipperPosition = savedInstanceState.getInt("FLIPPER_POSITION");
+	        flipper.setDisplayedChild(flipperPosition);
+	    }
 
 		// inflate the view with the listview
 		chatview = inflater.inflate(R.layout.alice_chat_list_layout, null);
@@ -436,6 +441,12 @@ public class Alice extends Activity implements AsyncTasksListener {
 			}
 		}
 
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+	    int position = flipper.getDisplayedChild();
+	    savedInstanceState.putInt("FLIPPER_POSITION", position);
 	}
 
 	@Override
