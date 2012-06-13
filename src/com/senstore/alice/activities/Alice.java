@@ -427,6 +427,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 				// tell listeners that underlying data has changed. Refresh the
 				// view
 				chatAdapter.notifyDataSetChanged();
+				
+				chatlist.setSelectionFromTop(chatAdapter.getCount(), 10);
 
 				// identify the view on display currently
 				View currentView = flipper.getCurrentView();
@@ -526,11 +528,12 @@ public class Alice extends Activity implements AsyncTasksListener {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			// retrieve currently selected item
+			
 			mDiagnosis = listitems.get(position);
 			final int currPos =position;
 			View row = null;
 			
-			Log.v(Constants.TAG, "THIS IS MY INPUT->"+mDiagnosis.getPrevText());
+			Log.v(Constants.TAG, position+"THIS IS MY Type->"+mDiagnosis.getResponse_type());
 			
 
 			// retrieve ID for discriminating the different views
@@ -558,7 +561,14 @@ public class Alice extends Activity implements AsyncTasksListener {
 						if (currPos>1) {
 							AliceChatAdapter.this.removeItem(currPos-1);
 						}
-						notifyDataSetChanged();
+						
+						if (listitems.size()==0) {
+							startActivity(new Intent(AliceChatAdapter.this.context, Alice.class));
+						}else{
+							notifyDataSetChanged();
+							chatlist.setSelectionFromTop(chatAdapter.getCount(), 10);
+						}
+						
 						
 					}
 				});
@@ -602,7 +612,10 @@ public class Alice extends Activity implements AsyncTasksListener {
 						public void onClick(View v) {
 							AdapterDiagnosis diag = new AdapterDiagnosis(null);
 							diag.setPrevText(key);
+							//AdapterDiagnosis tmpDiag = 
 							listitems.add(diag);
+							Log.v(Constants.TAG, "ADDING ITEM");
+							
 							doTouchDiagnosis(mDiagnosis.getGuide(),
 									mDiagnosis.getCurrent_query(), value);
 						}
@@ -631,7 +644,13 @@ public class Alice extends Activity implements AsyncTasksListener {
 						if (currPos>1) {
 							AliceChatAdapter.this.removeItem(currPos-1);
 						}
-						notifyDataSetChanged();
+						
+						if (listitems.size()==0) {
+							startActivity(new Intent(AliceChatAdapter.this.context, Alice.class));
+						}else{
+							notifyDataSetChanged();
+							chatlist.setSelectionFromTop(chatAdapter.getCount(), 10);
+						}
 						
 					}
 				});
@@ -684,7 +703,13 @@ public class Alice extends Activity implements AsyncTasksListener {
 						if (currPos>1) {
 							AliceChatAdapter.this.removeItem(currPos-1);
 						}
-						notifyDataSetChanged();
+						
+						if (listitems.size()==0) {
+							startActivity(new Intent(AliceChatAdapter.this.context, Alice.class));
+						}else{
+							notifyDataSetChanged();
+							chatlist.setSelectionFromTop(chatAdapter.getCount(), 10);
+						}
 						
 					}
 				});
@@ -723,7 +748,13 @@ public class Alice extends Activity implements AsyncTasksListener {
 							AliceChatAdapter.this.removeItem(currPos-1);
 						}
 						
-						notifyDataSetChanged();
+						if (listitems.size()==0) {
+							
+							startActivity(new Intent(AliceChatAdapter.this.context, Alice.class));
+						}else{
+							notifyDataSetChanged();
+							chatlist.setSelectionFromTop(chatAdapter.getCount(), 10);
+						}
 						
 					}
 				});
@@ -741,7 +772,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 						.findViewById(R.id.info_txt_response);
 
 				infoResp2.setText(Html.fromHtml( mDiagnosis.getReply().toString()));
-
+				
 				break;
 				
 			case -2:
@@ -752,15 +783,19 @@ public class Alice extends Activity implements AsyncTasksListener {
 				TextView inputQuery = (TextView) row
 						.findViewById(R.id.input_text_query);
 				inputQuery.setText(mDiagnosis.getPrevText());
+//				row.setFocusable(false);
+				
 				
 				break;
 
 			default:
 				break;
 			}
-
+			
 			return row;
 		}
+		
+		
 
 		private void resetAdapter() {
 			listitems = new ArrayList<AdapterDiagnosis>();
