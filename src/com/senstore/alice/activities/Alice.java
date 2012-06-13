@@ -55,6 +55,7 @@ import com.senstore.alice.services.BackgroundLogger;
 import com.senstore.alice.tasks.DiagnosisAsyncTask;
 import com.senstore.alice.utils.Constants;
 import com.senstore.alice.utils.Registry;
+import com.senstore.alice.views.ChatListView;
 
 public class Alice extends Activity implements AsyncTasksListener {
 	private ResponseReceiver receiver;
@@ -67,7 +68,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 	private DiagnosisAsyncTask diagnosisTask;
 
 	private View chatview;
-	private ListView chatlist;
+	private ChatListView chatlist;
 	private ViewFlipper flipper;
 
 	private AliceChatAdapter chatAdapter;
@@ -124,7 +125,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 		chatview = inflater.inflate(R.layout.alice_chat_list_layout, null);
 
 		// load listview
-		chatlist = (ListView) chatview.findViewById(R.id.alice_chat_list);
+		chatlist = (ChatListView) chatview.findViewById(R.id.alice_chat_list);
 		chatlist.setFocusable(false);
 
 		chatAdapter = new AliceChatAdapter(this);
@@ -559,15 +560,10 @@ public class Alice extends Activity implements AsyncTasksListener {
 						}
 
 						if (listitems.size() == 0) {
-							/*
-							 * startActivity(new Intent(
-							 * AliceChatAdapter.this.context, Alice.class));
-							 */
 							removeDiagnosisView(flipper.getCurrentView());
 						} else {
 							notifyDataSetChanged();
-							chatlist.setSelectionFromTop(
-									chatAdapter.getCount(), 10);
+							
 						}
 
 					}
