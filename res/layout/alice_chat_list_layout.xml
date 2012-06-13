@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:cacheColorHint="#00000000"
         android:focusableInTouchMode="false"
+        android:stackFromBottom="false"
         android:transcriptMode="normal" >
     </com.senstore.alice.views.ChatListView>
 

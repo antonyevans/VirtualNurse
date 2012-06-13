@@ -415,7 +415,24 @@ public class Alice extends Activity implements AsyncTasksListener {
 				// view
 				chatAdapter.notifyDataSetChanged();
 
-				chatlist.setSelectionFromTop(chatAdapter.getCount(), 10);
+				//chatlist.setSelectionFromTop(chatAdapter.getCount(), 10);
+//				if (chatlist.getFirstVisiblePosition() > chatAdapter.getCount() || chatlist.getLastVisiblePosition() <= chatAdapter.getCount()) {
+//				    
+//				}
+				
+				//chatlist.smoothScrollToPosition(chatAdapter.getCount());
+				
+				chatlist.clearFocus();
+				chatlist.post(new Runnable() {
+					
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						chatlist.setSelection(chatAdapter.getCount());
+					}
+				});
+				
+				
 
 				// identify the view on display currently
 				View currentView = flipper.getCurrentView();
@@ -437,6 +454,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 					// TODO: Check if we really have to do nothing here
 					// perhaps scroll to the last item if layout does not handle
 					// this well
+					Log.v(Constants.TAG, "Still Chat view");
 
 				}
 			}
