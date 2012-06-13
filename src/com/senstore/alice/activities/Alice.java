@@ -49,7 +49,6 @@ import com.nuance.nmdp.speechkit.Vocalizer;
 import com.senstore.alice.R;
 import com.senstore.alice.api.HarvardGuide;
 import com.senstore.alice.listeners.AsyncTasksListener;
-import com.senstore.alice.models.AdapterDiagnosis;
 import com.senstore.alice.models.Diagnosis;
 import com.senstore.alice.overlays.AliceItemizedOverlay;
 import com.senstore.alice.services.BackgroundLogger;
