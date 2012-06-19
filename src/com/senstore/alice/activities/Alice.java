@@ -104,6 +104,9 @@ public class Alice extends Activity implements AsyncTasksListener {
 		_listeningDialog = null;
 		_destroyed = true;
 	}
+	
+	
+	
 
 	/** Called when the activity is first created. */
 	@Override
@@ -233,6 +236,28 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 		// speakReply("Welcome to the Pocket Doctor. I am Alice, how can I help you today? You can click on the microphone to talk to me.");
 
+	}
+	
+	public void onHome(View view){
+		// identify the view on display currently
+		View currentView = flipper.getCurrentView();
+
+		if (currentView.equals(menuView)) {
+			
+
+			// perhaps scroll to the last item if layout does not handle
+			// this well
+
+		} else if (currentView.equals(chatview)) {
+			// TODO: Check if we really have to do nothing here
+			// perhaps scroll to the last item if layout does not handle
+			// this well
+			chatAdapter.resetAdapter();
+			flipper.removeView(currentView);
+			//
+
+		}
+		
 	}
 
 	private void showInfoAlert(String title, String message) {
@@ -589,6 +614,10 @@ public class Alice extends Activity implements AsyncTasksListener {
 		@Override
 		public int getCount() {
 			return listitems.size();
+		}
+		
+		public void resetAdapter() {
+			listitems = new ArrayList<Diagnosis>();
 		}
 
 		@Override
