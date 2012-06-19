@@ -894,6 +894,9 @@ public class Alice extends Activity implements AsyncTasksListener {
 				queryTxt.setText(mDiagnosis.getQuery_string());
 				responseTxt.setText(Html.fromHtml(mDiagnosis.getReply()
 						.toString()));
+				
+				//Alice says......
+				speakReply(mDiagnosis.getReply());
 			}
 
 			return row;
