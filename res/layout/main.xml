@@ -12,8 +12,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/footer_mic"
-        android:layout_below="@+id/layout_actionbar"
-        android:gravity="clip_vertical" >
+        android:layout_below="@+id/layout_actionbar">
 
         <ViewFlipper
             android:id="@+id/alice_view_flipper"

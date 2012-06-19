@@ -270,18 +270,18 @@ public class Alice extends Activity implements AsyncTasksListener {
 			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
 					LinearLayout.LayoutParams.FILL_PARENT,
 					LinearLayout.LayoutParams.WRAP_CONTENT);
-			params.setMargins(10, 10, 0, 10);
-			params.gravity = Gravity.CENTER;
+			params.setMargins(0, 10, 0, 10);
+			//params.gravity = Gravity.CENTER;
 			// params.height = 35;
 			b.setLayoutParams(params);
 			b.setGravity(Gravity.CENTER);
 
-			b.setPadding(10, 10, 0, 10);
+			b.setPadding(10, 10, 10, 10);
 			
 			//Drawable btnBg = getResources().getDrawable(R.drawable.btn_orange);
 			
 			Drawable btnBg = getResources().getDrawable(
-					R.drawable.radio_btn);
+					R.drawable.btn_orange);
 
 
 			b.setBackgroundDrawable(btnBg);
