@@ -16,6 +16,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.DataSetObserver;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -56,6 +57,7 @@ import com.senstore.alice.services.BackgroundLogger;
 import com.senstore.alice.tasks.DiagnosisAsyncTask;
 import com.senstore.alice.utils.Constants;
 import com.senstore.alice.utils.Registry;
+import com.senstore.alice.views.ChatListView;
 
 public class Alice extends Activity implements AsyncTasksListener {
 
@@ -71,7 +73,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 	private DiagnosisAsyncTask diagnosisTask;
 
 	private View chatview;
-	private ListView chatlist;
+	private ChatListView chatlist;
 	private ViewFlipper flipper;
 
 	private AliceChatAdapter chatAdapter;
@@ -128,10 +130,18 @@ public class Alice extends Activity implements AsyncTasksListener {
 		chatview = inflater.inflate(R.layout.alice_chat_list_layout, null);
 
 		// load listview
-		chatlist = (ListView) chatview.findViewById(R.id.alice_chat_list);
+		chatlist = (ChatListView) chatview.findViewById(R.id.alice_chat_list);
 		chatlist.setFocusable(false);
+		
 
 		chatAdapter = new AliceChatAdapter(this);
+		
+		//Testing refresh
+		chatlist.destroyDrawingCache();
+		chatlist.setVisibility(ListView.INVISIBLE);
+		chatlist.setVisibility(ListView.VISIBLE);
+		
+		
 		chatlist.setAdapter(chatAdapter);
 
 		// Load the main menu
@@ -601,7 +611,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 					@Override
 					public void onClick(View v) {
-						AliceChatAdapter.this.removeItem(currPos);
+						
+						removeItem(currPos);
 						if (currPos > 0) {
 							Diagnosis tmpDiag = listitems.get(currPos - 1);
 							tmpDiag.setQuery_string(null);
@@ -612,7 +623,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 						} else {
 							notifyDataSetChanged();
 							chatlist.setSelectionFromTop(
-									chatAdapter.getCount(), 10);
+									chatAdapter.getCount()-1, 10);
 						}
 
 					}
@@ -684,7 +695,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 					@Override
 					public void onClick(View v) {
-						AliceChatAdapter.this.removeItem(currPos);
+						removeItem(currPos);
 						if (currPos > 0) {
 							Diagnosis tmpDiag = listitems.get(currPos - 1);
 							tmpDiag.setQuery_string(null);
@@ -695,7 +706,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 						} else {
 							notifyDataSetChanged();
 							chatlist.setSelectionFromTop(
-									chatAdapter.getCount(), 10);
+									chatAdapter.getCount()-1, 10);
 						}
 
 					}
@@ -745,7 +756,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 					@Override
 					public void onClick(View v) {
-						AliceChatAdapter.this.removeItem(currPos);
+						removeItem(currPos);
 						if (currPos > 0) {
 							Diagnosis tmpDiag = listitems.get(currPos - 1);
 							tmpDiag.setQuery_string(null);
@@ -756,7 +767,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 						} else {
 							notifyDataSetChanged();
 							chatlist.setSelectionFromTop(
-									chatAdapter.getCount(), 10);
+									chatAdapter.getCount()-1, 10);
 						}
 
 					}
@@ -790,7 +801,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 					@Override
 					public void onClick(View v) {
-						AliceChatAdapter.this.removeItem(currPos);
+						removeItem(currPos);
 						if (currPos > 0) {
 							Diagnosis tmpDiag = listitems.get(currPos - 1);
 							tmpDiag.setQuery_string(null);
@@ -801,7 +812,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 						} else {
 							notifyDataSetChanged();
 							chatlist.setSelectionFromTop(
-									chatAdapter.getCount(), 10);
+									chatAdapter.getCount()-1, 10);
 						}
 
 					}
@@ -848,12 +859,12 @@ public class Alice extends Activity implements AsyncTasksListener {
 			return row;
 		}
 
-		private void addItem(Diagnosis diagnosis) {
+		public void addItem(Diagnosis diagnosis) {
 			diagnosis.setQuery_string(prevQuery);
 			listitems.add(diagnosis);
 		}
 
-		private void removeItem(int position) {
+		public void removeItem(int position) {
 			listitems.remove(position);
 		}
 
