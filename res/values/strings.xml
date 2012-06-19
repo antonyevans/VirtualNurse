@@ -18,5 +18,9 @@
     <string name="diagnosis_dialog_title">Virtual Nurse</string>
     <string name="diagnosis_dialog_text">asking alice</string>
     <string name="alert_dialog_title">Virtual Nurse</string>
+    
+    <string name="right_triangle">Right Chat Bubble Triangle</string>
+    <string name="left_triangle">Left Chat Bubble Triangle</string>
+    <string name="close_chat">Chat Close Button</string>
 
 </resources>
