@@ -104,9 +104,6 @@ public class Alice extends Activity implements AsyncTasksListener {
 		_listeningDialog = null;
 		_destroyed = true;
 	}
-	
-	
-	
 
 	/** Called when the activity is first created. */
 	@Override
@@ -190,26 +187,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 		createListeningDialog();
 
 		// Create Vocalizer listener
-		Vocalizer.Listener vocalizerListener = new Vocalizer.Listener() {
-
-			public void onSpeakingBegin(Vocalizer vocalizer, String text,
-					Object context) {
-
-			}
-
-			public void onSpeakingDone(Vocalizer vocalizer, String text,
-					SpeechError error, Object context) {
-				// Use the context to detemine if this was the final TTS phrase
-				if (context != _lastTtsContext) {
-
-				} else {
-
-				}
-			}
-		};
-		_vocalizer = Alice.getSpeechKit().createVocalizerWithLanguage("en_US",
-				vocalizerListener, new Handler());
-		_vocalizer.setVoice("Serena");
+		initVocalizer();
 
 		SavedState savedState = (SavedState) getLastNonConfigurationInstance();
 		if (savedState == null) {
@@ -237,13 +215,35 @@ public class Alice extends Activity implements AsyncTasksListener {
 		// speakReply("Welcome to the Pocket Doctor. I am Alice, how can I help you today? You can click on the microphone to talk to me.");
 
 	}
-	
-	public void onHome(View view){
+
+	public void initVocalizer() {
+		Vocalizer.Listener vocalizerListener = new Vocalizer.Listener() {
+
+			public void onSpeakingBegin(Vocalizer vocalizer, String text,
+					Object context) {
+
+			}
+
+			public void onSpeakingDone(Vocalizer vocalizer, String text,
+					SpeechError error, Object context) {
+				// Use the context to detemine if this was the final TTS phrase
+				if (context != _lastTtsContext) {
+
+				} else {
+
+				}
+			}
+		};
+		_vocalizer = Alice.getSpeechKit().createVocalizerWithLanguage("en_US",
+				vocalizerListener, new Handler());
+		_vocalizer.setVoice("Serena");
+	}
+
+	public void onHome(View view) {
 		// identify the view on display currently
 		View currentView = flipper.getCurrentView();
 
 		if (currentView.equals(menuView)) {
-			
 
 			// perhaps scroll to the last item if layout does not handle
 			// this well
@@ -257,7 +257,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 			//
 
 		}
-		
+
 	}
 
 	private void showInfoAlert(String title, String message) {
@@ -327,18 +327,14 @@ public class Alice extends Activity implements AsyncTasksListener {
 					LinearLayout.LayoutParams.FILL_PARENT,
 					LinearLayout.LayoutParams.WRAP_CONTENT);
 			params.setMargins(0, 10, 0, 10);
-			//params.gravity = Gravity.CENTER;
+			// params.gravity = Gravity.CENTER;
 			// params.height = 35;
 			b.setLayoutParams(params);
 			b.setGravity(Gravity.CENTER);
 
 			b.setPadding(10, 10, 10, 10);
-			
-			
-			Drawable btnBg = getResources().getDrawable(
-					R.drawable.btn_orange);
 
-
+			Drawable btnBg = getResources().getDrawable(R.drawable.btn_orange);
 
 			b.setBackgroundDrawable(btnBg);
 
@@ -552,8 +548,21 @@ public class Alice extends Activity implements AsyncTasksListener {
 		savedInstanceState.putInt("FLIPPER_POSITION", position);
 	}
 
+	public void killVocalizer() {
+		_destroyed = true;
+		if (_currentRecognizer != null) {
+			_currentRecognizer.cancel();
+			_currentRecognizer = null;
+		}
+		if (_vocalizer != null) {
+			_vocalizer.cancel();
+			_vocalizer = null;
+		}
+	}
+
 	@Override
 	protected void onPause() {
+		killVocalizer();
 		super.onPause();
 	}
 
@@ -565,6 +574,9 @@ public class Alice extends Activity implements AsyncTasksListener {
 	@Override
 	protected void onDestroy() {
 		unregisterReceiver(receiver);
+
+		killVocalizer();
+
 		super.onDestroy();
 	}
 
@@ -615,7 +627,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 		public int getCount() {
 			return listitems.size();
 		}
-		
+
 		public void resetAdapter() {
 			listitems = new ArrayList<Diagnosis>();
 		}
@@ -723,6 +735,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 							Log.i(Constants.TAG, "After Updating object {"
 									+ mDiagnosis.getId() + "} with " + key);
 
+							killVocalizer();
+
 							doTouchDiagnosis(mDiagnosis.getGuide(),
 									mDiagnosis.getCurrent_query(), value);
 						}
@@ -823,6 +837,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 					@Override
 					public void onClick(View v) {
 
+						killVocalizer();
+
 						showCallAlert(getString(R.string.app_name),
 								getString(R.string.call_doctor_text));
 
@@ -894,8 +910,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 				queryTxt.setText(mDiagnosis.getQuery_string());
 				responseTxt.setText(Html.fromHtml(mDiagnosis.getReply()
 						.toString()));
-				
-				//Alice says......
+
+				// Alice says......
 				speakReply(mDiagnosis.getReply());
 			}
 
@@ -908,6 +924,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 		}
 
 		public void removeItem(int position) {
+			killVocalizer();
 			listitems.remove(position);
 			notifyDataSetChanged();
 		}
@@ -1079,7 +1096,12 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 	private void speakReply(String reply) {
 		_lastTtsContext = new Object();
-		_vocalizer.speakString(reply, _lastTtsContext);
+		if (_vocalizer != null) {
+			_vocalizer.speakString(reply, _lastTtsContext);
+		} else {
+			initVocalizer();
+			_vocalizer.speakString(reply, _lastTtsContext);
+		}
 	}
 
 	private void createListeningDialog() {
