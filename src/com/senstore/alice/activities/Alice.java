@@ -707,7 +707,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 					LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
 							LinearLayout.LayoutParams.FILL_PARENT,
 							LinearLayout.LayoutParams.WRAP_CONTENT);
-					params.setMargins(10, 10, 10, 10);
+					params.setMargins(15, 10, 2, 10);
 					params.gravity = Gravity.CENTER;
 					bo.setLayoutParams(params);
 					bo.setGravity(Gravity.CENTER);
