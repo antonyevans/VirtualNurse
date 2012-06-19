@@ -10,6 +10,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.Service;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,6 +19,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
@@ -61,7 +63,7 @@ import com.senstore.alice.views.ChatListView;
 
 public class Alice extends Activity implements AsyncTasksListener {
 	private ResponseReceiver receiver;
-	private String prevQuery=null;
+	private String prevQuery = null;
 
 	private static final int DIAGNOSIS_DIALOG = 0;
 	private ProgressDialog mProgressDialog;
@@ -107,12 +109,12 @@ public class Alice extends Activity implements AsyncTasksListener {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		//Set Full Screen Since we have a Tittle Bar
+
+		// Set Full Screen Since we have a Tittle Bar
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        
-        
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
 		Registry.instance().put(Constants.REGISTRY_CONTEXT,
 				getApplicationContext());
 
@@ -135,16 +137,14 @@ public class Alice extends Activity implements AsyncTasksListener {
 		// load listview
 		chatlist = (ChatListView) chatview.findViewById(R.id.alice_chat_list);
 		chatlist.setFocusable(false);
-		
 
 		chatAdapter = new AliceChatAdapter(this);
-		
-		//Testing refresh
+
+		// Testing refresh
 		chatlist.destroyDrawingCache();
 		chatlist.setVisibility(ListView.INVISIBLE);
 		chatlist.setVisibility(ListView.VISIBLE);
-		
-		
+
 		chatlist.setAdapter(chatAdapter);
 
 		// Load the main menu
@@ -235,7 +235,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 	}
 
-	private void showAlert(String title, String message) {
+	private void showInfoAlert(String title, String message) {
 		AlertDialog alert = new AlertDialog.Builder(this).create();
 		alert.setTitle(title);
 		alert.setMessage(message);
@@ -244,6 +244,37 @@ public class Alice extends Activity implements AsyncTasksListener {
 				return;
 			}
 		});
+		alert.show();
+	}
+
+	private void showCallAlert(String title, String message) {
+		AlertDialog alert = new AlertDialog.Builder(this).create();
+		alert.setTitle(title);
+		alert.setMessage(message);
+
+		alert.setButton(getString(R.string.call_doctor_cancel),
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						return;
+					}
+				});
+		alert.setButton2(getString(R.string.call_doctor_ok),
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+
+						// TODO call actual doctor
+
+						try {
+							Intent callIntent = new Intent(Intent.ACTION_CALL);
+							callIntent.setData(Uri.parse("tel:"
+									+ getString(R.string.call_doctor_number)));
+							startActivity(callIntent);
+						} catch (ActivityNotFoundException activityException) {
+							Log.e(Constants.TAG, "Call failed",
+									activityException);
+						}
+					}
+				});
 		alert.show();
 	}
 
@@ -283,6 +314,10 @@ public class Alice extends Activity implements AsyncTasksListener {
 			Drawable btnBg = getResources().getDrawable(
 					R.drawable.btn_orange);
 
+			// Drawable btnBg =
+			// getResources().getDrawable(R.drawable.btn_orange);
+
+			Drawable btnBg = getResources().getDrawable(R.drawable.radio_btn);
 
 			b.setBackgroundDrawable(btnBg);
 
@@ -430,7 +465,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 				// TODO Show Alert Dialog that the server could not
 				// understand their request
 
-				showAlert(getString(R.string.alert_dialog_title),
+				showInfoAlert(getString(R.string.alert_dialog_title),
 						result.getInput() + "\n" + result.getReply());
 
 				Log.i(Constants.TAG, "Hapa Tu : " + result.getReply());
@@ -570,8 +605,6 @@ public class Alice extends Activity implements AsyncTasksListener {
 			return 0;
 		}
 
-		
-
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -608,17 +641,15 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 					@Override
 					public void onClick(View v) {
-						
+
 						removeItem(mposition);
-						
-						
 
 						if (listitems.size() == 0) {
 							removeDiagnosisView(flipper.getCurrentView());
 						} else {
 							notifyDataSetChanged();
 							chatlist.setSelectionFromTop(
-									chatAdapter.getCount()-1, 10);
+									chatAdapter.getCount() - 1, 10);
 						}
 
 					}
@@ -691,13 +722,13 @@ public class Alice extends Activity implements AsyncTasksListener {
 					@Override
 					public void onClick(View v) {
 						removeItem(mposition);
-						
+
 						if (listitems.size() == 0) {
 							removeDiagnosisView(flipper.getCurrentView());
 						} else {
 							notifyDataSetChanged();
 							chatlist.setSelectionFromTop(
-									chatAdapter.getCount()-1, 10);
+									chatAdapter.getCount() - 1, 10);
 						}
 
 					}
@@ -748,14 +779,13 @@ public class Alice extends Activity implements AsyncTasksListener {
 					@Override
 					public void onClick(View v) {
 						removeItem(mposition);
-						
 
 						if (listitems.size() == 0) {
 							removeDiagnosisView(flipper.getCurrentView());
 						} else {
 							notifyDataSetChanged();
 							chatlist.setSelectionFromTop(
-									chatAdapter.getCount()-1, 10);
+									chatAdapter.getCount() - 1, 10);
 						}
 
 					}
@@ -767,8 +797,9 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 					@Override
 					public void onClick(View v) {
-						Toast.makeText(context, "Calling Doctor now",
-								Toast.LENGTH_SHORT).show();
+
+						showCallAlert(getString(R.string.app_name),
+								getString(R.string.call_doctor_text));
 
 					}
 				});
@@ -796,7 +827,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 						} else {
 							notifyDataSetChanged();
 							chatlist.setSelectionFromTop(
-									chatAdapter.getCount()-1, 10);
+									chatAdapter.getCount() - 1, 10);
 						}
 
 					}
@@ -972,7 +1003,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 				// TODO
 				Log.i(Constants.TAG, detail + "\n" + suggestion);
 
-				showAlert("Error", detail + "\n" + suggestion);
+				showInfoAlert("Error", detail + "\n" + suggestion);
 
 			}
 
