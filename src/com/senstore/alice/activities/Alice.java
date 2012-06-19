@@ -16,7 +16,6 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.DataSetObserver;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -26,9 +25,10 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -61,6 +61,7 @@ import com.senstore.alice.views.ChatListView;
 
 public class Alice extends Activity implements AsyncTasksListener {
 	private ResponseReceiver receiver;
+	private String prevQuery=null;
 
 	private static final int DIAGNOSIS_DIALOG = 0;
 	private ProgressDialog mProgressDialog;
@@ -106,7 +107,12 @@ public class Alice extends Activity implements AsyncTasksListener {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		
+		//Set Full Screen Since we have a Tittle Bar
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        
+        
 		Registry.instance().put(Constants.REGISTRY_CONTEXT,
 				getApplicationContext());
 
@@ -650,7 +656,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 						@Override
 						public void onClick(View v) {
 
-							mDiagnosis.setQuery_string(key);
+							//mDiagnosis.setQuery_string(key);
+							Alice.this.prevQuery = key;
 							Log.v(Constants.TAG, "POS ->" + currPos
 									+ "Just set ->" + key + " ");
 							Log.i(Constants.TAG,

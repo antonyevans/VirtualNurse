@@ -3,6 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
+    
 
     <com.senstore.alice.views.ChatListView
         android:id="@+id/alice_chat_list"
