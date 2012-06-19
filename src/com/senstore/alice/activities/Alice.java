@@ -309,15 +309,11 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 			b.setPadding(10, 10, 10, 10);
 			
-			//Drawable btnBg = getResources().getDrawable(R.drawable.btn_orange);
 			
 			Drawable btnBg = getResources().getDrawable(
 					R.drawable.btn_orange);
 
-			// Drawable btnBg =
-			// getResources().getDrawable(R.drawable.btn_orange);
 
-			Drawable btnBg = getResources().getDrawable(R.drawable.radio_btn);
 
 			b.setBackgroundDrawable(btnBg);
 
