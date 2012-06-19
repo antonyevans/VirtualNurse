@@ -628,7 +628,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 	// custom adapter for the chat listview
 	public class AliceChatAdapter extends BaseAdapter {
-		private ArrayList<Diagnosis> listitems;
+		private List<Diagnosis> listitems;
 		private LayoutInflater inflater;
 		private Context context;
 
@@ -934,7 +934,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 		public void removeItem(int position) {
 			stopTTS();
-			listitems.remove(position);
+			listitems = listitems.subList(0, position);
 			notifyDataSetChanged();
 		}
 

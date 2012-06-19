@@ -26,23 +26,42 @@
         android:orientation="horizontal" >
 
         <RelativeLayout
-            android:id="@+id/layout_query_parent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
 
-            <LinearLayout
-                android:id="@+id/input_text_query_linear"
-                android:layout_width="fill_parent"
+            <ImageView
+                android:id="@+id/tri_left"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_marginBottom="5dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/bubble_right"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="30dp"
+                android:contentDescription="@string/left_triangle"
+                android:src="@drawable/tri_left" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true" >
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:orientation="vertical" >
 
-                <TextView
+                <LinearLayout
+                    android:id="@+id/options_text_response"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/bubble_left"
+                    android:orientation="vertical" >
+
+                    <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
@@ -50,28 +69,16 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:paddingBottom="10dp"
-                android:paddingLeft="15dp"
+                android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:paddingTop="10dp"
                 android:text="@string/hello"
                 android:textColor="@android:color/black" />
-            </LinearLayout>
-        </RelativeLayout>
+                </LinearLayout>
+            </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-
-            <ImageView
-                android:id="@+id/tri_right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="30dp"
-                android:contentDescription="@string/right_triangle"
-                android:src="@drawable/tri_right" />
         </RelativeLayout>
+        
     </LinearLayout>
 
         
