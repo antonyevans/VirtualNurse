@@ -3,6 +3,7 @@ package com.senstore.alice.activities;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map.Entry;
 
 import android.app.Activity;
@@ -60,8 +61,14 @@ import com.senstore.alice.tasks.DiagnosisAsyncTask;
 import com.senstore.alice.utils.Constants;
 import com.senstore.alice.utils.Registry;
 import com.senstore.alice.views.ChatListView;
+import android.speech.tts.TextToSpeech;
 
-public class Alice extends Activity implements AsyncTasksListener {
+public class Alice extends Activity implements AsyncTasksListener,
+		TextToSpeech.OnInitListener {
+
+	private TextToSpeech mTts;
+	private boolean isTTSReady = false;
+
 	private ResponseReceiver receiver;
 	private String prevQuery = null;
 
@@ -163,6 +170,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 		}// else proceed with the normal app flow
 
+		initAndroidTTS();
+
 		// set volume control to media
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
@@ -213,6 +222,15 @@ public class Alice extends Activity implements AsyncTasksListener {
 		}
 
 		// speakReply("Welcome to the Pocket Doctor. I am Alice, how can I help you today? You can click on the microphone to talk to me.");
+
+	}
+
+	private void initAndroidTTS() {
+		// Initialize text-to-speech. This is an asynchronous operation.
+		// The OnInitListener (second argument) is called after initialization
+		// completes.
+		mTts = new TextToSpeech(this, this // TextToSpeech.OnInitListener
+		);
 
 	}
 
@@ -548,21 +566,22 @@ public class Alice extends Activity implements AsyncTasksListener {
 		savedInstanceState.putInt("FLIPPER_POSITION", position);
 	}
 
-	public void killVocalizer() {
-		_destroyed = true;
-		if (_currentRecognizer != null) {
-			_currentRecognizer.cancel();
-			_currentRecognizer = null;
+	public void stopTTS() {
+		if (mTts != null) {
+			mTts.stop();
 		}
-		if (_vocalizer != null) {
-			_vocalizer.cancel();
-			_vocalizer = null;
+	}
+
+	public void killTTS() {
+		if (mTts != null) {
+			mTts.stop();
+			mTts.shutdown();
 		}
 	}
 
 	@Override
 	protected void onPause() {
-		killVocalizer();
+		stopTTS();
 		super.onPause();
 	}
 
@@ -574,9 +593,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 	@Override
 	protected void onDestroy() {
 		unregisterReceiver(receiver);
-
-		killVocalizer();
-
+		killTTS();
 		super.onDestroy();
 	}
 
@@ -725,17 +742,9 @@ public class Alice extends Activity implements AsyncTasksListener {
 						@Override
 						public void onClick(View v) {
 
-							Log.i(Constants.TAG,
-									"Before drawing row, Updating object {"
-											+ mDiagnosis.getId() + "} with "
-											+ key);
-
 							Alice.this.prevQuery = key;
 
-							Log.i(Constants.TAG, "After Updating object {"
-									+ mDiagnosis.getId() + "} with " + key);
-
-							killVocalizer();
+							stopTTS();
 
 							doTouchDiagnosis(mDiagnosis.getGuide(),
 									mDiagnosis.getCurrent_query(), value);
@@ -837,7 +846,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 					@Override
 					public void onClick(View v) {
 
-						killVocalizer();
+						stopTTS();
 
 						showCallAlert(getString(R.string.app_name),
 								getString(R.string.call_doctor_text));
@@ -924,7 +933,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 		}
 
 		public void removeItem(int position) {
-			killVocalizer();
+			stopTTS();
 			listitems.remove(position);
 			notifyDataSetChanged();
 		}
@@ -1095,13 +1104,12 @@ public class Alice extends Activity implements AsyncTasksListener {
 	}
 
 	private void speakReply(String reply) {
-		_lastTtsContext = new Object();
-		if (_vocalizer != null) {
-			_vocalizer.speakString(reply, _lastTtsContext);
-		} else {
-			initVocalizer();
-			_vocalizer.speakString(reply, _lastTtsContext);
-		}
+		
+        Log.i(Constants.TAG, "reply = "+reply);
+		
+		mTts.speak(reply, TextToSpeech.QUEUE_FLUSH, // Drop all pending entries
+													// in the playback queue.
+				null);
 	}
 
 	private void createListeningDialog() {
@@ -1123,6 +1131,39 @@ public class Alice extends Activity implements AsyncTasksListener {
 				}
 			}
 		});
+	}
+
+	// Implements TextToSpeech.OnInitListener.
+	public void onInit(int status) {
+		// status can be either TextToSpeech.SUCCESS or TextToSpeech.ERROR.
+		if (status == TextToSpeech.SUCCESS) {
+			// Set preferred language to US english.
+			// Note that a language may not be available, and the result will
+			// indicate this.
+			int result = mTts.setLanguage(Locale.US);
+			// Try this someday for some interesting results.
+			// int result mTts.setLanguage(Locale.FRANCE);
+			if (result == TextToSpeech.LANG_MISSING_DATA
+					|| result == TextToSpeech.LANG_NOT_SUPPORTED) {
+				// Language data is missing or the language is not supported.
+				isTTSReady = false;
+				Log.e(Constants.TAG, "Language is not available.");
+			} else {
+				// Check the documentation for other possible result codes.
+				// For example, the language may be available for the locale,
+				// but not for the specified country and variant.
+
+				// The TTS engine has been successfully initialized.
+
+				// It is ok to proceed with normal app flow
+
+				isTTSReady = true;
+			}
+		} else {
+			// Initialization failed.
+			isTTSReady = false;
+			Log.e(Constants.TAG, "Could not initialize TextToSpeech.");
+		}
 	}
 
 }
