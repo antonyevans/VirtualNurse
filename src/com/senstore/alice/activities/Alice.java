@@ -546,7 +546,6 @@ public class Alice extends Activity implements AsyncTasksListener {
 		private ArrayList<Diagnosis> listitems;
 		private LayoutInflater inflater;
 		private Context context;
-		private int currPos;
 
 		public AliceChatAdapter(Context context) {
 			this.context = context;
@@ -571,20 +570,14 @@ public class Alice extends Activity implements AsyncTasksListener {
 			return 0;
 		}
 
-		private int getCurrPos() {
-			return currPos;
-		}
-
-		private void setCurrPos(int currPos) {
-			this.currPos = currPos;
-		}
+		
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
 			// retrieve currently selected item
 			mDiagnosis = listitems.get(position);
-			setCurrPos(position);
+			final int mposition = position;
 			View row = null;
 
 			TextView queryTxt = null;
@@ -616,11 +609,9 @@ public class Alice extends Activity implements AsyncTasksListener {
 					@Override
 					public void onClick(View v) {
 						
-						removeItem(currPos);
-						if (currPos > 0) {
-							Diagnosis tmpDiag = listitems.get(currPos - 1);
-							tmpDiag.setQuery_string(null);
-						}
+						removeItem(mposition);
+						
+						
 
 						if (listitems.size() == 0) {
 							removeDiagnosisView(flipper.getCurrentView());
@@ -699,12 +690,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 					@Override
 					public void onClick(View v) {
-						removeItem(currPos);
-						if (currPos > 0) {
-							Diagnosis tmpDiag = listitems.get(currPos - 1);
-							tmpDiag.setQuery_string(null);
-						}
-
+						removeItem(mposition);
+						
 						if (listitems.size() == 0) {
 							removeDiagnosisView(flipper.getCurrentView());
 						} else {
@@ -760,11 +747,8 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 					@Override
 					public void onClick(View v) {
-						removeItem(currPos);
-						if (currPos > 0) {
-							Diagnosis tmpDiag = listitems.get(currPos - 1);
-							tmpDiag.setQuery_string(null);
-						}
+						removeItem(mposition);
+						
 
 						if (listitems.size() == 0) {
 							removeDiagnosisView(flipper.getCurrentView());
@@ -805,11 +789,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 					@Override
 					public void onClick(View v) {
-						removeItem(currPos);
-						if (currPos > 0) {
-							Diagnosis tmpDiag = listitems.get(currPos - 1);
-							tmpDiag.setQuery_string(null);
-						}
+						removeItem(mposition);
 
 						if (listitems.size() == 0) {
 							removeDiagnosisView(flipper.getCurrentView());
@@ -870,6 +850,7 @@ public class Alice extends Activity implements AsyncTasksListener {
 
 		public void removeItem(int position) {
 			listitems.remove(position);
+			notifyDataSetChanged();
 		}
 
 	}
