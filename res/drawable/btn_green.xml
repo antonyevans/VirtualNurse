@@ -4,5 +4,5 @@
     <item android:drawable="@drawable/btn_green_sel" android:state_pressed="true"/>
     <item android:drawable="@drawable/btn_green_sel" android:state_focused="true"/>
     <item android:drawable="@drawable/btn_green_def"/>
-
+    
 </selector>

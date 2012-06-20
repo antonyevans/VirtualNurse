@@ -36,6 +36,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -471,6 +472,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		switch (id) {
 		case DIAGNOSIS_DIALOG:
 			return _diagnosisDialog;
+			
 		case LISTENING_DIALOG:
 			return _listeningDialog;
 		}

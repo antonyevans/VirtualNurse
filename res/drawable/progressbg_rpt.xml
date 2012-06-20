@@ -2,4 +2,6 @@
 <bitmap xmlns:android="http://schemas.android.com/apk/res/android"
     android:src="@drawable/progressbg"
     android:gravity="left"
-    android:dither="true" />
+    android:tileMode="repeat"
+    
+     />
