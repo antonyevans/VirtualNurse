@@ -4,7 +4,8 @@
     android:layout_height="wrap_content"
     android:layout_gravity="bottom|center_horizontal"
     android:gravity="center_vertical|center_horizontal"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/progressbg_rpt">
 
     <TextView
         android:id="@+id/text_listeningStatus"
@@ -28,8 +29,12 @@
 
     <Button
         android:id="@+id/btn_listeningStop"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:gravity="center_horizontal"
+        android:minWidth="100dp"
+        android:background="@drawable/btn_stop_orange"
         
         android:text="stop" >
     </Button>
