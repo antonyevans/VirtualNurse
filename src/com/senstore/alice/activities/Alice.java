@@ -67,8 +67,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 	private ResponseReceiver receiver;
 	private String chatQuery = null;
-	
-	private String prevCurQuery=null;
+
+	private String prevCurQuery = null;
 
 	private static final int DIAGNOSIS_DIALOG = 0;
 
@@ -435,7 +435,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		diagnosisTask = new DiagnosisAsyncTask();
 		diagnosisTask.setVoice(false);
 		diagnosisTask.setListener(listener);
-		diagnosisTask.setLast_query(prevCurQuery);
+		diagnosisTask.setLast_query(last_query);
 		diagnosisTask.setHealth_guide(health_guide);
 		diagnosisTask.setInput_text(input_text);
 		diagnosisTask.execute();
@@ -455,7 +455,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		diagnosisTask = new DiagnosisAsyncTask();
 		diagnosisTask.setVoice(true);
 		diagnosisTask.setListener(listener);
-		diagnosisTask.setLast_query(prevCurQuery);
+		diagnosisTask.setLast_query(last_query);
 		diagnosisTask.setHealth_guide(health_guide);
 		diagnosisTask.setInput_text(input_text);
 		diagnosisTask.execute();
@@ -767,7 +767,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 							stopTTS();
 
 							doTouchDiagnosis(mDiagnosis.getGuide(),
-									mDiagnosis.getCurrent_query(), value);
+									prevCurQuery, value);
 						}
 					});
 
@@ -803,13 +803,13 @@ public class Alice extends Activity implements AsyncTasksListener,
 					}
 				});
 
-				Button mapBtn = (Button)row.findViewById(R.id.emergency_btn);
+				Button mapBtn = (Button) row.findViewById(R.id.emergency_btn);
 				mapBtn.setOnClickListener(new OnClickListener() {
-					
+
 					@Override
 					public void onClick(View v) {
 						// TODO Auto-generated method stub
-						
+
 					}
 				});
 
@@ -1169,7 +1169,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 				chatQuery = mDiagnosis.getGuide();
 
 				doVoiceDiagnosis(mDiagnosis.getGuide(),
-						mDiagnosis.getCurrent_query(), t);
+						prevCurQuery, t);
 
 			} else {
 				doVoiceDiagnosis("null",
