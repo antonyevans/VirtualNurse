@@ -514,14 +514,15 @@ public class Alice extends Activity implements AsyncTasksListener,
 				// understand their request
 
 				showInfoAlert(getString(R.string.alert_dialog_title),
-						result.getInput() + "\n" + result.getReply());
+						result.getReply() + "\n" + "(" + result.getInput()
+								+ ")");
 
 			} else {
 
 				if (result.getLast_query().equalsIgnoreCase(
 						Constants.VOICE_DEFAULT_LAST_QUERY)) {
 
-					result.setQuery_string(prevQuery);
+					prevQuery = result.getGuide();
 				}
 
 				// add diagnosis object to adapter
@@ -979,7 +980,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 							stopTTS();
 
 							chatAdapter.resetAdapter();
-							
+
 							doTouchDiagnosis(value,
 									Constants.VOICE_DEFAULT_LAST_QUERY, value);
 						}
@@ -1000,8 +1001,6 @@ public class Alice extends Activity implements AsyncTasksListener,
 				queryTxt.setText(mDiagnosis.getQuery_string());
 				responseTxt.setText(Html.fromHtml(mDiagnosis.getReply()
 						.toString()));
-
-				row.setTag(mDiagnosis.getReply());
 
 			}
 
@@ -1142,7 +1141,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 				// TODO
 				Log.i(Constants.TAG, detail + "\n" + suggestion);
 
-				showInfoAlert("Error", detail + "\n" + suggestion);
+				showInfoAlert(getString(R.string.app_name), suggestion);
 
 			}
 
