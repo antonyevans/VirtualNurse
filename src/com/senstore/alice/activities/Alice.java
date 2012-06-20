@@ -66,7 +66,9 @@ public class Alice extends Activity implements AsyncTasksListener,
 	private boolean isTTSReady = false;
 
 	private ResponseReceiver receiver;
-	private String prevQuery = null;
+	private String chatQuery = null;
+	
+	private String prevCurQuery=null;
 
 	private static final int DIAGNOSIS_DIALOG = 0;
 
@@ -376,7 +378,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 					stopTTS();
 
-					prevQuery = name;
+					chatQuery = name;
 
 					doTouchDiagnosis(guide,
 							Constants.DIAGNOSIS_DEFAULT_LAST_QUERY, start_input);
@@ -433,7 +435,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		diagnosisTask = new DiagnosisAsyncTask();
 		diagnosisTask.setVoice(false);
 		diagnosisTask.setListener(listener);
-		diagnosisTask.setLast_query(last_query);
+		diagnosisTask.setLast_query(prevCurQuery);
 		diagnosisTask.setHealth_guide(health_guide);
 		diagnosisTask.setInput_text(input_text);
 		diagnosisTask.execute();
@@ -453,7 +455,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		diagnosisTask = new DiagnosisAsyncTask();
 		diagnosisTask.setVoice(true);
 		diagnosisTask.setListener(listener);
-		diagnosisTask.setLast_query(last_query);
+		diagnosisTask.setLast_query(prevCurQuery);
 		diagnosisTask.setHealth_guide(health_guide);
 		diagnosisTask.setInput_text(input_text);
 		diagnosisTask.execute();
@@ -512,7 +514,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 						&& select_type
 								.equalsIgnoreCase(Constants.DIAGNOSIS_VOICE)) {
 
-					prevQuery = result.getGuide();
+					chatQuery = result.getGuide();
 				}
 
 				// add diagnosis object to adapter
@@ -760,7 +762,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 						@Override
 						public void onClick(View v) {
 
-							Alice.this.prevQuery = key;
+							Alice.this.chatQuery = key;
 
 							stopTTS();
 
@@ -962,7 +964,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 						@Override
 						public void onClick(View v) {
 
-							Alice.this.prevQuery = key;
+							Alice.this.chatQuery = key;
 
 							stopTTS();
 
@@ -997,7 +999,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 		public void addItem(Diagnosis diagnosis) {
 
-			diagnosis.setQuery_string(prevQuery);
+			diagnosis.setQuery_string(chatQuery);
+			prevCurQuery = diagnosis.getCurrent_query();
 
 			talkResp = diagnosis.getReply().replaceAll("<(.|\n)*?>", "");
 			listitems.add(diagnosis);
@@ -1163,7 +1166,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 				// option, rather than the input text (sometimes the input text
 				// looks wrong or is badly spelled)
 
-				prevQuery = mDiagnosis.getGuide();
+				chatQuery = mDiagnosis.getGuide();
 
 				doVoiceDiagnosis(mDiagnosis.getGuide(),
 						mDiagnosis.getCurrent_query(), t);
