@@ -21,12 +21,19 @@ public class Utils {
 				.getSystemService(Context.TELEPHONY_SERVICE);
 		String uid = tManager.getLine1Number();
 
-		boolean hasText = !"".equals(uid);
+		String imei = tManager.getDeviceId();
 
-		if (uid != null && hasText) {
+		boolean uidHasText = !"".equals(uid);
+		boolean imeiHasText = !"".equals(imei);
+
+		if (uid != null && uidHasText) {
 			userNumber = uid;
+		} else if (imei != null && imeiHasText) {
+			// Use the IMEI
+			userNumber = imei;
 		} else {
-			// Since it returned null, Generate a random number/value
+			// Since both uid and imei returned null, Generate a random
+			// number/value and use it
 			RandomStr generator = new RandomStr();
 			userNumber = generator.get(5);
 
