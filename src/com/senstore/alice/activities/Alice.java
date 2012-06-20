@@ -296,6 +296,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		alert.setButton(getString(R.string.call_doctor_cancel),
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
+						doLog(Constants.LOG_CALL_DOCTOR_REJECT);
 						return;
 					}
 				});
@@ -303,6 +304,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 
+						doLog(Constants.LOG_CALL_DOCTOR_ACCEPT);
+						
 						// TODO call actual doctor
 
 						try {
@@ -853,8 +856,11 @@ public class Alice extends Activity implements AsyncTasksListener,
 					@Override
 					public void onClick(View v) {
 
+						
 						stopTTS();
 
+						doLog(Integer.toString(Constants.LOG_CALL_DOCTOR));
+						
 						showCallAlert(getString(R.string.app_name),
 								getString(R.string.call_doctor_text));
 
