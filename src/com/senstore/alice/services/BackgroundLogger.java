@@ -3,13 +3,12 @@
  */
 package com.senstore.alice.services;
 
+import android.app.IntentService;
+import android.content.Intent;
+
 import com.senstore.alice.api.LogRESTHandler;
 import com.senstore.alice.models.ActionLog;
 import com.senstore.alice.utils.Constants;
-
-import android.app.IntentService;
-import android.content.Intent;
-import android.util.Log;
 
 /**
  * @author Muniu Kariuki - muniu@bityarn.co.ke
@@ -51,8 +50,6 @@ public class BackgroundLogger extends IntentService {
 	@Override
 	protected void onHandleIntent(Intent intent) {
 
-		Log.i(Constants.TAG, "onHandleIntent() called");
-
 		msg = intent.getStringExtra(Constants.LOG_SERVICE_IN_MSG);
 		LogRESTHandler handler = new LogRESTHandler();
 
@@ -61,7 +58,6 @@ public class BackgroundLogger extends IntentService {
 			break;
 		}
 		case REGISTER:
-			Log.i(Constants.TAG, "onHandleIntent() REGISTER");
 			ActionLog log = handler.log(msg);
 
 			if (log != null) {
@@ -75,7 +71,6 @@ public class BackgroundLogger extends IntentService {
 			}
 			break;
 		case LOCATION:
-			Log.i(Constants.TAG, "onHandleIntent() LOCATION");
 			ActionLog logloc = handler.log(msg);
 			if (logloc != null) {
 				Intent locIntent = new Intent();
@@ -87,7 +82,6 @@ public class BackgroundLogger extends IntentService {
 			}
 			break;
 		case CALL_DOCTOR:
-			Log.i(Constants.TAG, "onHandleIntent() CALL_DOCTOR");
 			ActionLog logcd = handler.log(msg);
 			if (logcd != null) {
 				Intent cdIntent = new Intent();
@@ -99,7 +93,6 @@ public class BackgroundLogger extends IntentService {
 			}
 			break;
 		case CALL_DOCTOR_ACCEPT:
-			Log.i(Constants.TAG, "onHandleIntent() CALL_DOCTOR_ACCEPT");
 			ActionLog logcda = handler.log(msg);
 			if (logcda != null) {
 				Intent cdaIntent = new Intent();
@@ -111,7 +104,6 @@ public class BackgroundLogger extends IntentService {
 			}
 			break;
 		case CALL_DOCTOR_REJECT:
-			Log.i(Constants.TAG, "onHandleIntent() CALL_DOCTOR_REJECT");
 			ActionLog logcdr = handler.log(msg);
 			if (logcdr != null) {
 				Intent cdrIntent = new Intent();

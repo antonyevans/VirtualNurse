@@ -7,16 +7,11 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-import com.commonsware.cwac.locpoll.LocationPoller;
-import com.commonsware.cwac.locpoll.LocationReceiver;
 import com.senstore.alice.R;
 import com.senstore.alice.utils.Constants;
 import com.senstore.alice.utils.Registry;
@@ -43,7 +38,6 @@ public class APITester extends Activity {
 
 		setContentView(R.layout.api_test_main);
 		
-		initLocationService();
 		
 		((Button) findViewById(R.id.button_logger))
 				.setOnClickListener(new OnClickListener() {
@@ -66,18 +60,7 @@ public class APITester extends Activity {
 
 	}
 
-	private void initLocationService() {
-		mgr = (AlarmManager) getSystemService(ALARM_SERVICE);
-		Intent i = new Intent(this, LocationPoller.class);
-		i.putExtra(LocationPoller.EXTRA_INTENT, new Intent(this,
-				LocationReceiver.class));
-		i.putExtra(LocationPoller.EXTRA_PROVIDER, LocationManager.GPS_PROVIDER);
-		pi = PendingIntent.getBroadcast(this, 0, i, 0);
-		mgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-				SystemClock.elapsedRealtime(), PERIOD, pi);
-
-		Log.i(Constants.TAG, "Location polling every 2 minutes begun");
-	}
+	
 
 	@Override
 	protected void onPause() {

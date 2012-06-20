@@ -16,8 +16,13 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
-    
-    <supports-screens android:smallScreens="false" android:anyDensity="true" android:resizeable="true" android:largeScreens="false" android:normalScreens="true"/>
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="false"
+        android:normalScreens="true"
+        android:resizeable="true"
+        android:smallScreens="false" />
 
     <application
         android:icon="@drawable/ic_alicepic"
@@ -48,11 +53,6 @@
         <receiver android:name=".activities.ResponseReceiver" />
 
         <service android:name=".services.BackgroundLogger" />
-
-        <receiver android:name=".LocationReceiver" />
-        <receiver android:name="com.commonsware.cwac.locpoll.LocationPoller" />
-
-        <service android:name="com.commonsware.cwac.locpoll.LocationPollerService" />
 
         <uses-library android:name="com.google.android.maps" />
     </application>
