@@ -700,7 +700,6 @@ public class Alice extends Activity implements AsyncTasksListener,
 				// ignored for now
 				break;
 			case 2:
-
 				// Response Type 2 - Show Options Dialog
 				row = inflater.inflate(R.layout.diagnosis_options_chat, null);
 
@@ -775,6 +774,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 				}
 				break;
+
 			case 3:
 				// Response Type 3 - EMERGENCY - Map with nearest
 				// hospital/doctor
@@ -908,28 +908,87 @@ public class Alice extends Activity implements AsyncTasksListener,
 				break;
 
 			case 6:
-				// TODO Response Type 6 - EXIT THE CURRENT GUIDE - Text
-				row = inflater.inflate(
-						R.layout.diagnosis_information_close_chat, null);
+
+				// Response Type 6 - Exit current guide and open new one. In the
+				// options array you should have just one option, which the link
+				// name will contain the name of the guide to link to. You
+				// should then respond with the start of that guide (you have
+				// already the codes to do this).
+				row = inflater.inflate(R.layout.diagnosis_options_chat, null);
 
 				queryTxt = (TextView) row.findViewById(R.id.options_text_query);
 
 				responseTxt = (TextView) row
-						.findViewById(R.id.info_close_txt_response);
-				Button info_exit = (Button) row
-						.findViewById(R.id.info_exit_btn);
-				info_exit.setOnClickListener(new OnClickListener() {
+						.findViewById(R.id.options_txt_response);
+
+				Button opt6_close = (Button) row
+						.findViewById(R.id.options_close);
+				opt6_close.setOnClickListener(new OnClickListener() {
 
 					@Override
 					public void onClick(View v) {
-						listitems = new ArrayList<Diagnosis>();
-						removeDiagnosisView(flipper.getCurrentView());
+
+						removeItem(mposition);
+
+						if (listitems.size() == 0) {
+							removeDiagnosisView(flipper.getCurrentView());
+						} else {
+							notifyDataSetChanged();
+							chatlist.setSelectionFromTop(
+									chatAdapter.getCount() - 1, 10);
+						}
 
 					}
 				});
 
-				break;
+				LinearLayout _optGroup = (LinearLayout) row
+						.findViewById(R.id.options_response_options);
 
+				HashMap<String, String> _respOpts = mDiagnosis
+						.getReply_options();
+
+				for (Entry<String, String> entry : _respOpts.entrySet()) {
+					final String key = entry.getKey();
+					final String value = entry.getValue();
+
+					Button bo = new Button(this.context);
+
+					LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+							LinearLayout.LayoutParams.FILL_PARENT,
+							LinearLayout.LayoutParams.WRAP_CONTENT);
+					params.setMargins(15, 5, 0, 5);
+					params.gravity = Gravity.CENTER;
+					bo.setLayoutParams(params);
+					bo.setGravity(Gravity.CENTER);
+
+					bo.setPadding(10, 10, 10, 10);
+					Drawable btnBg = getResources().getDrawable(
+							R.drawable.btn_orange);
+
+					bo.setBackgroundDrawable(btnBg);
+
+					bo.setText(key);
+
+					bo.setOnClickListener(new OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+
+							Alice.this.prevQuery = key;
+
+							stopTTS();
+
+							chatAdapter.resetAdapter();
+							
+							doTouchDiagnosis(value,
+									Constants.VOICE_DEFAULT_LAST_QUERY, value);
+						}
+					});
+
+					_optGroup.addView(bo);
+
+				}
+				break;
 			default:
 				break;
 			}
@@ -1206,12 +1265,12 @@ public class Alice extends Activity implements AsyncTasksListener,
 		public void gotLocation(Location location) {
 			// Got the location!
 			if (location != null) {
-				String loc = location.getLatitude() + " , "
+				String loc = location.getLatitude() + ","
 						+ location.getLongitude();
 				Log.i(Constants.TAG, "Logging location " + loc);
 				Registry.instance().put(Constants.REGISTRY_LOCATION, loc);
 
-				doLog(Integer.toString(Constants.LOG_REGISTER));
+				doLog(Integer.toString(Constants.LOG_LOCATION));
 
 			}
 
