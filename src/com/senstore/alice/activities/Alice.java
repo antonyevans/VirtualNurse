@@ -38,6 +38,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.nuance.nmdp.speechkit.Prompt;
@@ -644,6 +645,23 @@ public class Alice extends Activity implements AsyncTasksListener,
 		flipper.removeView(view);
 	}
 
+	private void showMap() {
+
+		Object loc = Registry.instance().get(Constants.REGISTRY_LOCATION);
+		if (loc != null) {
+
+			String uri = "geo:"
+					+ Registry.instance().get(Constants.REGISTRY_LOCATION)
+							.toString() + "?q=emergency+room";
+			startActivity(new Intent(android.content.Intent.ACTION_VIEW,
+					Uri.parse(uri)));
+		} else {
+			// Location is not available. Opt to show alert dialog or ignore
+			Toast.makeText(this, "Location currently unavailable", Toast.LENGTH_LONG);
+		}
+
+	}
+
 	// custom adapter for the chat listview
 	public class AliceChatAdapter extends BaseAdapter {
 		private List<Diagnosis> listitems;
@@ -805,7 +823,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 					@Override
 					public void onClick(View v) {
-						// TODO Auto-generated method stub
+						showMap();
 
 					}
 				});
