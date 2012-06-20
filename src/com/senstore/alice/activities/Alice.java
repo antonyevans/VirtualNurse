@@ -305,7 +305,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 					public void onClick(DialogInterface dialog, int which) {
 
 						doLog(Constants.LOG_CALL_DOCTOR_ACCEPT);
-						
+
 						// TODO call actual doctor
 
 						try {
@@ -856,11 +856,10 @@ public class Alice extends Activity implements AsyncTasksListener,
 					@Override
 					public void onClick(View v) {
 
-						
 						stopTTS();
 
 						doLog(Integer.toString(Constants.LOG_CALL_DOCTOR));
-						
+
 						showCallAlert(getString(R.string.app_name),
 								getString(R.string.call_doctor_text));
 
@@ -942,7 +941,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 		public void addItem(Diagnosis diagnosis) {
 			diagnosis.setQuery_string(prevQuery);
-			talkResp = diagnosis.getReply();
+
+			talkResp = diagnosis.getReply().replaceAll("<(.|\n)*?>", "");
 			listitems.add(diagnosis);
 		}
 
@@ -1157,10 +1157,10 @@ public class Alice extends Activity implements AsyncTasksListener,
 			// Set preferred language to US english.
 			// Note that a language may not be available, and the result will
 			// indicate this.
-			//int result = mTts.setLanguage(Locale.US);
-			
-			int result =mTts.setLanguage(Locale.ENGLISH);
-			
+			// int result = mTts.setLanguage(Locale.US);
+
+			int result = mTts.setLanguage(Locale.ENGLISH);
+
 			// Try this someday for some interesting results.
 			// int result mTts.setLanguage(Locale.FRANCE);
 			if (result == TextToSpeech.LANG_MISSING_DATA
