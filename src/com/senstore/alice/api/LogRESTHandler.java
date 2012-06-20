@@ -40,13 +40,7 @@ public class LogRESTHandler {
 			req.addParam("location",
 					Registry.instance().get(Constants.REGISTRY_LOCATION)
 							.toString());
-			Log.i(Constants.TAG, "location in logger "
-					+ Registry.instance().get(Constants.REGISTRY_LOCATION)
-							.toString());
 		}
-
-		// req.addParam("location", "Nairobi");
-
 		req.addParam("security", Constants.SECURITY_HASH);
 
 		try {
