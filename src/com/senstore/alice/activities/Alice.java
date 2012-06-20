@@ -103,8 +103,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 	private Vocalizer _vocalizer;
 	private Object _lastTtsContext = null;
-	
-	private String talkResp="";
+
+	private String talkResp = "";
 
 	private LayoutInflater inflator;
 
@@ -379,7 +379,6 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 			lightbox.addView(b);
 
-			Log.i(Constants.TAG, hg.officialName() + " :: " + hg.guideName());
 		}
 	}
 
@@ -508,11 +507,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 				showInfoAlert(getString(R.string.alert_dialog_title),
 						result.getInput() + "\n" + result.getReply());
 
-				Log.i(Constants.TAG, "Hapa Tu : " + result.getReply());
-
 			} else {
-
-				Log.i(Constants.TAG, "Adding : " + result.getInput());
 
 				if (result.getLast_query().equalsIgnoreCase(
 						Constants.VOICE_DEFAULT_LAST_QUERY)) {
@@ -534,8 +529,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						//chatlist.setSelection(chatAdapter.getCount() - 1);
-						
+						// chatlist.setSelection(chatAdapter.getCount() - 1);
+
 						scrollToLastItem();
 
 					}
@@ -590,28 +585,9 @@ public class Alice extends Activity implements AsyncTasksListener,
 	public void scrollToLastItem() {
 
 		int lastPosition = chatAdapter.getCount() - 1;
-		
-		Log.i(Constants.TAG, "Last Position = "+lastPosition);
 
 		chatlist.setSelection(lastPosition);
-		
-		Log.i(Constants.TAG, "Tag is = " + talkResp);
 		speakReply(talkResp);
-
-		
-//		View lastRow = chatlist.getChildAt(lastPosition);
-//		
-//
-//		if (lastRow != null) {
-//
-//			String text = lastRow.getTag().toString();
-//
-//			Log.i(Constants.TAG, "Tag is = " + text);
-//			
-//			//TODO Then start tts on the last row's data
-//			// Alice says......
-//			speakReply(text);
-//		}
 
 	}
 
@@ -641,8 +617,6 @@ public class Alice extends Activity implements AsyncTasksListener,
 			if (intent != null) {
 				String text = intent
 						.getStringExtra(Constants.LOG_SERVICE_OUT_MSG);
-
-				Log.i(Constants.TAG, "onReceive under ResponseReceiver " + text);
 
 				// Check if Log Type is register, and if so, mark is first run
 				// to
@@ -955,11 +929,10 @@ public class Alice extends Activity implements AsyncTasksListener,
 				queryTxt.setText(mDiagnosis.getQuery_string());
 				responseTxt.setText(Html.fromHtml(mDiagnosis.getReply()
 						.toString()));
-				talkResp=mDiagnosis.getReply();
+				talkResp = mDiagnosis.getReply();
 
 				row.setTag(mDiagnosis.getReply());
 
-				
 			}
 
 			return row;
@@ -1119,8 +1092,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		if (results.length > 0) {
 			String t = results[0].getText();
 
-			Log.i(Constants.TAG, t);
-			// speakReply(askAlice(t));
+			Log.i(Constants.TAG, "Voice Results : " + t);
 
 			if (mDiagnosis != null) {
 				// Set the voice input as the query string in the Diagnosis
@@ -1144,7 +1116,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 	private void speakReply(String reply) {
 
-		//Log.i(Constants.TAG, "reply = " + reply);
+		// Log.i(Constants.TAG, "reply = " + reply);
 
 		if (isTTSReady) {
 			mTts.speak(reply, TextToSpeech.QUEUE_FLUSH, // Drop all pending
