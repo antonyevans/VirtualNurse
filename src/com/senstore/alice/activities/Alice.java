@@ -23,6 +23,7 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.speech.tts.TextToSpeech;
 import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
@@ -32,14 +33,11 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.google.android.maps.GeoPoint;
@@ -63,7 +61,6 @@ import com.senstore.alice.tasks.DiagnosisAsyncTask;
 import com.senstore.alice.utils.Constants;
 import com.senstore.alice.utils.Registry;
 import com.senstore.alice.views.ChatListView;
-import android.speech.tts.TextToSpeech;
 
 public class Alice extends Activity implements AsyncTasksListener,
 		TextToSpeech.OnInitListener {
@@ -105,8 +102,6 @@ public class Alice extends Activity implements AsyncTasksListener,
 	private Object _lastTtsContext = null;
 
 	private String talkResp = "";
-
-	private LayoutInflater inflator;
 
 	public Alice() {
 		super();
@@ -175,9 +170,6 @@ public class Alice extends Activity implements AsyncTasksListener,
 		}// else proceed with the normal app flow
 
 		initAndroidTTS();
-
-		// Speak the welcome text
-		speakText(getString(R.string.hello));
 
 		// set volume control to media
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
@@ -591,7 +583,6 @@ public class Alice extends Activity implements AsyncTasksListener,
 		int lastPosition = chatAdapter.getCount() - 1;
 
 		chatlist.setSelection(lastPosition);
-		Log.i(Constants.TAG, "SPEAKING ->" + talkResp);
 		speakText(talkResp);
 
 	}
@@ -1160,7 +1151,10 @@ public class Alice extends Activity implements AsyncTasksListener,
 			// Set preferred language to US english.
 			// Note that a language may not be available, and the result will
 			// indicate this.
-			int result = mTts.setLanguage(Locale.US);
+			//int result = mTts.setLanguage(Locale.US);
+			
+			int result =mTts.setLanguage(Locale.UK);
+			
 			// Try this someday for some interesting results.
 			// int result mTts.setLanguage(Locale.FRANCE);
 			if (result == TextToSpeech.LANG_MISSING_DATA
@@ -1178,6 +1172,9 @@ public class Alice extends Activity implements AsyncTasksListener,
 				// It is ok to proceed with normal app flow
 
 				isTTSReady = true;
+
+				// Speak the welcome text
+				speakText(getString(R.string.hello));
 			}
 		} else {
 			// Initialization failed.
