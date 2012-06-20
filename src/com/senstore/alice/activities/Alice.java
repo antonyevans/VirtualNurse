@@ -40,11 +40,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
-import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapController;
-import com.google.android.maps.MapView;
-import com.google.android.maps.Overlay;
-import com.google.android.maps.OverlayItem;
 import com.nuance.nmdp.speechkit.Prompt;
 import com.nuance.nmdp.speechkit.Recognition;
 import com.nuance.nmdp.speechkit.Recognizer;
@@ -57,7 +52,6 @@ import com.senstore.alice.listeners.AsyncTasksListener;
 import com.senstore.alice.location.AliceLocation;
 import com.senstore.alice.location.AliceLocation.LocationResult;
 import com.senstore.alice.models.Diagnosis;
-import com.senstore.alice.overlays.AliceItemizedOverlay;
 import com.senstore.alice.services.BackgroundLogger;
 import com.senstore.alice.tasks.DiagnosisAsyncTask;
 import com.senstore.alice.utils.Constants;
@@ -807,32 +801,15 @@ public class Alice extends Activity implements AsyncTasksListener,
 					}
 				});
 
-				MapView mapView = (MapView) row.findViewById(R.id.mapview);
-
-				mapView.setBuiltInZoomControls(true);
-
-				List<Overlay> mapOverlays = mapView.getOverlays();
-				Drawable drawable = context.getResources().getDrawable(
-						R.drawable.hospital);
-				AliceItemizedOverlay itemizedoverlay = new AliceItemizedOverlay(
-						drawable, context);
-				GeoPoint point = new GeoPoint((int) -1.297322, (int) 36.792344);
-				OverlayItem overlayitem = new OverlayItem(point,
-						"Health Centre Location",
-						"This is the nearest health centre");
-
-				itemizedoverlay.addOverlay(overlayitem);
-
-				mapOverlays.add(itemizedoverlay);
-
-				MapController mapController = mapView.getController();
-
-				mapController.animateTo(point); // attempt to center map
-
-				mapController.setZoom(14); // this needs some
-											// investigation
-											// to realise best zoom
-											// level
+				Button mapBtn = (Button)row.findViewById(R.id.emergency_btn);
+				mapBtn.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						
+					}
+				});
 
 				break;
 			case 4:

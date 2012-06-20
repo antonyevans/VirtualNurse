@@ -144,14 +144,19 @@
         	android:layout_marginBottom="5dp">
             
         
-        <com.google.android.maps.MapView
-			 xmlns:android="http://schemas.android.com/apk/res/android"
-			 android:id="@+id/mapview"
-			 android:layout_width="fill_parent"
-			 android:layout_height="100dp"
-			 android:clickable="true"
-			 android:apiKey="00NLBX7xqYbhVdILAM1_yeCtZI165D-Tnc9fE5w"
-			/>
+        <Button
+            android:id="@+id/emergency_btn"
+            android:layout_width="fill_parent"
+            android:layout_height="70dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/btn_green"
+            android:gravity="center"
+            android:text="Click To Open Map"
+            android:textSize="25dp"
+            android:textStyle="bold" />
         	
         
             
