@@ -627,8 +627,12 @@ public class Alice extends Activity implements AsyncTasksListener,
 					setNotFirstRun();
 				}
 				if (text != null && text.equalsIgnoreCase("2")) {
-					canCallDoctor = Boolean.getBoolean(Registry.instance()
-							.get(Constants.REGISTRY_CALL).toString());
+
+					/*canCallDoctor = ((Boolean) Registry.instance().get(
+							Constants.REGISTRY_CALL)).booleanValue();*/
+					canCallDoctor = Boolean.parseBoolean(Registry.instance().get(Constants.REGISTRY_CALL).toString());
+					Log.i(Constants.TAG, "Setting canCallDoctor to "
+							+ canCallDoctor);
 				}
 
 				Log.i(Constants.TAG, "Successfully logged type " + text);
@@ -848,13 +852,20 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 						stopTTS();
 
-						doLog(Integer.toString(Constants.LOG_CALL_DOCTOR));
+						Log.i(Constants.TAG, "Before eval " + canCallDoctor);
 
 						if (canCallDoctor) {
+							Log.i(Constants.TAG, "After eval (if true) "
+									+ canCallDoctor);
+							doLog(Integer.toString(Constants.LOG_CALL_DOCTOR));
 							showCallAlert(getString(R.string.app_name),
 									getString(R.string.call_doctor_text));
 
 						} else {
+
+							Log.i(Constants.TAG, "After eval (if false) "
+									+ canCallDoctor);
+
 							showInfoAlert(getString(R.string.app_name),
 									getString(R.string.call_doctor_unavailable));
 						}
@@ -1164,8 +1175,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 				chatQuery = mDiagnosis.getGuide();
 
-				doVoiceDiagnosis(mDiagnosis.getGuide(),
-						prevCurQuery, t);
+				doVoiceDiagnosis(mDiagnosis.getGuide(), prevCurQuery, t);
 
 			} else {
 				doVoiceDiagnosis("null",
