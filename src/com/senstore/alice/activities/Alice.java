@@ -995,8 +995,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 			if (queryTxt != null && responseTxt != null) {
 
 				queryTxt.setText(mDiagnosis.getQuery_string());
-				responseTxt.setText(Html.fromHtml(mDiagnosis.getReply()
-						.toString()));
+				String toTrim = mDiagnosis.getReply().trim();
+				responseTxt.setText(Html.fromHtml(toTrim));
 
 			}
 

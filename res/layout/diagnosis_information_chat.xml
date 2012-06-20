@@ -119,6 +119,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:background="@drawable/bubble_close"
+                android:layout_marginRight="30dp"
                 android:gravity="center_vertical|center_horizontal" />
         </RelativeLayout>
     </LinearLayout>
