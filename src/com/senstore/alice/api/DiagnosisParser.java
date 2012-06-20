@@ -81,7 +81,7 @@ public class DiagnosisParser {
 			String reply = jsonObj.getString("reply");
 			String response_type = jsonObj.getString("response_type");
 			String secret_hash = jsonObj.getString("secret_hash");
-			String select_type = null;
+			String select_type = jsonObj.getString("select_type");
 			String updated_at = jsonObj.getString("updated_at");
 			String user_id = jsonObj.getString("user_id");
 
