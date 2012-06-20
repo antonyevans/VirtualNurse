@@ -628,11 +628,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 				}
 				if (text != null && text.equalsIgnoreCase("2")) {
 
-					/*canCallDoctor = ((Boolean) Registry.instance().get(
-							Constants.REGISTRY_CALL)).booleanValue();*/
-					canCallDoctor = Boolean.parseBoolean(Registry.instance().get(Constants.REGISTRY_CALL).toString());
-					Log.i(Constants.TAG, "Setting canCallDoctor to "
-							+ canCallDoctor);
+					canCallDoctor = Boolean.parseBoolean(Registry.instance()
+							.get(Constants.REGISTRY_CALL).toString());
 				}
 
 				Log.i(Constants.TAG, "Successfully logged type " + text);
@@ -852,19 +849,13 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 						stopTTS();
 
-						Log.i(Constants.TAG, "Before eval " + canCallDoctor);
-
 						if (canCallDoctor) {
-							Log.i(Constants.TAG, "After eval (if true) "
-									+ canCallDoctor);
+
 							doLog(Integer.toString(Constants.LOG_CALL_DOCTOR));
 							showCallAlert(getString(R.string.app_name),
 									getString(R.string.call_doctor_text));
 
 						} else {
-
-							Log.i(Constants.TAG, "After eval (if false) "
-									+ canCallDoctor);
 
 							showInfoAlert(getString(R.string.app_name),
 									getString(R.string.call_doctor_unavailable));
@@ -1014,7 +1005,15 @@ public class Alice extends Activity implements AsyncTasksListener,
 		}
 
 		public void removeItem(int position) {
+
 			stopTTS();
+
+			if (position > 0) {
+				Diagnosis holder = listitems.get(position - 1);
+				prevCurQuery = holder.getCurrent_query();
+				talkResp = holder.getReply().replaceAll("<(.|\n)*?>", "");
+			}
+
 			listitems = listitems.subList(0, position);
 			notifyDataSetChanged();
 		}
@@ -1173,7 +1172,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 				// option, rather than the input text (sometimes the input text
 				// looks wrong or is badly spelled)
 
-				chatQuery = mDiagnosis.getGuide();
+				chatQuery = t + " (" + mDiagnosis.getGuide() + ")";
 
 				doVoiceDiagnosis(mDiagnosis.getGuide(), prevCurQuery, t);
 
