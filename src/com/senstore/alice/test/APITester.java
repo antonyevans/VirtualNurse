@@ -4,8 +4,6 @@
 package com.senstore.alice.test;
 
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -21,13 +19,6 @@ import com.senstore.alice.utils.Registry;
  * 
  */
 public class APITester extends Activity {
-	// 2 minutes(120000)
-	// 5 minutes(300000)
-	// 10 minutes(600000)
-	// 30 minutes(1800000)
-	private static final int PERIOD = 120000; // 2 minutes
-	private PendingIntent pi = null;
-	private AlarmManager mgr = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +28,7 @@ public class APITester extends Activity {
 				getApplicationContext());
 
 		setContentView(R.layout.api_test_main);
-		
-		
+
 		((Button) findViewById(R.id.button_logger))
 				.setOnClickListener(new OnClickListener() {
 
@@ -60,11 +50,8 @@ public class APITester extends Activity {
 
 	}
 
-	
-
 	@Override
 	protected void onPause() {
-		mgr.cancel(pi);
 		super.onPause();
 	}
 
@@ -75,7 +62,6 @@ public class APITester extends Activity {
 
 	@Override
 	protected void onDestroy() {
-		mgr.cancel(pi);
 		super.onDestroy();
 	}
 }

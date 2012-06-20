@@ -17,6 +17,7 @@ public class Constants {
 	
 	public static String REGISTRY_CONTEXT="context";
 	public static String REGISTRY_LOCATION="deviceLocation";
+	public static String REGISTRY_CALL="canCallDoctor";
 
 	// Do not forget to add the trailing '/'
 	public static String SERVER_URL = "http://www.senstore.com/";

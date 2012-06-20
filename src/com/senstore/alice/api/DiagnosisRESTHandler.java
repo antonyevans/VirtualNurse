@@ -36,6 +36,8 @@ public class DiagnosisRESTHandler {
 	 */
 	public Diagnosis touchDiagnosis(String guide,String last_query, String input_text) {
 
+		Log.i(Constants.TAG, "last_query(touch) "+last_query);
+		
 		String absoluteURL = Constants.SERVER_URL + "harvard.json";
 		RestClient req = new RestClient(absoluteURL);
 		req.addParam("user_id", Utils.getPhoneNumber());
@@ -76,6 +78,8 @@ public class DiagnosisRESTHandler {
 	 * 
 	 */
 	public Diagnosis voiceDiagnosis(String guide,String last_query, String input_text) {
+		
+		Log.i(Constants.TAG, "last_query(voice) "+last_query);
 
 		String absoluteURL = Constants.SERVER_URL + "harvard.json";
 		RestClient req = new RestClient(absoluteURL);

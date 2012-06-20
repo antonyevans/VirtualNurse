@@ -67,6 +67,7 @@ import com.senstore.alice.views.ChatListView;
 public class Alice extends Activity implements AsyncTasksListener,
 		TextToSpeech.OnInitListener {
 
+	private boolean canCallDoctor = false;
 	private TextToSpeech mTts;
 	private boolean isTTSReady = false;
 
@@ -629,6 +630,10 @@ public class Alice extends Activity implements AsyncTasksListener,
 				if (text != null && text.equalsIgnoreCase("1")) {
 					setNotFirstRun();
 				}
+				if (text != null && text.equalsIgnoreCase("2")) {
+					canCallDoctor = Boolean.getBoolean(Registry.instance()
+							.get(Constants.REGISTRY_CALL).toString());
+				}
 
 				Log.i(Constants.TAG, "Successfully logged type " + text);
 
@@ -679,7 +684,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		public View getView(int position, View convertView, ViewGroup parent) {
 
 			// retrieve currently selected item
-			mDiagnosis = listitems.get(position);
+			Alice.this.mDiagnosis = listitems.get(position);
 			final int mposition = position;
 			View row = null;
 
@@ -696,6 +701,10 @@ public class Alice extends Activity implements AsyncTasksListener,
 				// ignored for now
 				break;
 			case 2:
+
+				Log.i(Constants.TAG,
+						"mDiagnosis (case 2:) : " + mDiagnosis.getId());
+
 				// Response Type 2 - Show Options Dialog
 				row = inflater.inflate(R.layout.diagnosis_options_chat, null);
 
@@ -866,8 +875,14 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 						doLog(Integer.toString(Constants.LOG_CALL_DOCTOR));
 
-						showCallAlert(getString(R.string.app_name),
-								getString(R.string.call_doctor_text));
+						if (canCallDoctor) {
+							showCallAlert(getString(R.string.app_name),
+									getString(R.string.call_doctor_text));
+
+						} else {
+							showInfoAlert(getString(R.string.app_name),
+									getString(R.string.call_doctor_unavailable));
+						}
 
 					}
 				});
@@ -1004,6 +1019,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		}
 
 		public void addItem(Diagnosis diagnosis) {
+
 			diagnosis.setQuery_string(prevQuery);
 
 			talkResp = diagnosis.getReply().replaceAll("<(.|\n)*?>", "");
@@ -1174,6 +1190,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 				doVoiceDiagnosis(mDiagnosis.getGuide(),
 						mDiagnosis.getCurrent_query(), t);
+
 			} else {
 				doVoiceDiagnosis("null",
 						Constants.DIAGNOSIS_DEFAULT_LAST_QUERY, t);

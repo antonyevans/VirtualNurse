@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.senstore.alice.models.ActionLog;
 import com.senstore.alice.utils.Constants;
+import com.senstore.alice.utils.Registry;
 
 /**
  * @author Muniu Kariuki - muniu@bityarn.co.ke
@@ -45,6 +46,16 @@ public class LogParser {
 			String id = jsonObj.getString("id");
 			String location = jsonObj.getString("location");
 			String log_type = jsonObj.getString("log_type");
+
+			if (log_type.equalsIgnoreCase(Integer
+					.toString(Constants.LOG_LOCATION))) {
+				String call_ringadoc = jsonObj.getString("call_ringadoc");
+				log.setCalladoc(call_ringadoc);
+
+				Registry.instance().put(Constants.REGISTRY_CALL, call_ringadoc);
+
+			}
+
 			String secret_hash = jsonObj.getString("secret_hash");
 			String updated_at = jsonObj.getString("updated_at");
 			String user_id = jsonObj.getString("user_id");

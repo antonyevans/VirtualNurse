@@ -9,6 +9,16 @@ package com.senstore.alice.models;
  */
 public class ActionLog {
 
+	private String calladoc = null;
+
+	public String getCalladoc() {
+		return calladoc;
+	}
+
+	public void setCalladoc(String calladoc) {
+		this.calladoc = calladoc;
+	}
+
 	private String id = null;
 	private String userId = null;
 	private String logType = null;

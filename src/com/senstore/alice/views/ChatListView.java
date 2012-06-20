@@ -2,19 +2,13 @@ package com.senstore.alice.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.widget.ListView;
-
-
-
-
-
 
 /**
  * @author Mimano Muthondu gmimano@bityarn.co.ke
  * 
- * Trying to resolve some List selection issues via extending
- *
+ *         Trying to resolve some List selection issues via extending
+ * 
  */
 public class ChatListView extends ListView {
 
@@ -38,9 +32,10 @@ public class ChatListView extends ListView {
 		// TODO Auto-generated method stub
 		super.onScrollChanged(l, t, oldl, oldt);
 	}
-	
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see android.widget.AbsListView#smoothScrollToPosition(int)
 	 */
 	@Override
@@ -48,17 +43,5 @@ public class ChatListView extends ListView {
 		// TODO Auto-generated method stub
 		super.smoothScrollToPosition(position);
 	}
-	
-	
-	
-	
-
-	
-	
-	
-	
-	
-	
-	
 
 }
