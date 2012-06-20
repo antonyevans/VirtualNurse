@@ -22,4 +22,20 @@
 
     <!-- android:background="@drawable/btn_orange" -->
     
+
+    <Button
+        android:id="@+id/btn_dialogStop"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:gravity="center_horizontal"
+        android:background="@drawable/btn_stop_orange"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        
+        android:text="Stop" >
+    </Button>
+
+    <!-- android:background="@drawable/btn_orange" -->
+    
 </LinearLayout>
