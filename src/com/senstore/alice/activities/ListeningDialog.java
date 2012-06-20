@@ -23,7 +23,7 @@ class ListeningDialog extends Dialog {
 		_recording = false;
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.listening);
+		setContentView(R.layout.dialog_listening);
 		setOwnerActivity(owner);
 		setCancelable(true);
 

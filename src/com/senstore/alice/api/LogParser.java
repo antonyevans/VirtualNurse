@@ -23,10 +23,11 @@ public class LogParser {
 
 	/**
 	 * 
-	 * @param created_at
-	 *            : "2012-05-19T07:05:24Z", id: 18, location: "california",
-	 *            log_type: "1", secret_hash: null, updated_at:
-	 *            "2012-05-19T07:05:24Z", user_id: "1234"
+	 * @param { record: { address: { state: "Nairobi", country: "Kenya" },
+	 *        call_ringadoc: false, created_at: "2012-06-20T14:20:44Z", id: 44,
+	 *        location: "-1.2976496,36.7924558", log_type: "2", secret_hash:
+	 *        "701319fdb07288ca9f4bfae8b214b81d", updated_at:
+	 *        "2012-06-20T14:20:44Z", user_id: "1234" } }
 	 * @return {@link ActionLog} object
 	 */
 	public ActionLog parse(String jsonStr) {

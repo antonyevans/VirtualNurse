@@ -99,6 +99,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	private final Recognizer.Listener _listener;
 	private Recognizer _currentRecognizer;
 	private ListeningDialog _listeningDialog;
+	private DiagnosisDialog _diagnosisDialog;
 	private boolean _destroyed;
 
 	private Vocalizer _vocalizer;
@@ -111,6 +112,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		_listener = createListener();
 		_currentRecognizer = null;
 		_listeningDialog = null;
+		_diagnosisDialog = null;
 		_destroyed = true;
 	}
 
@@ -166,6 +168,9 @@ public class Alice extends Activity implements AsyncTasksListener,
 		// Register the Background Logger Broadcast Receiver
 		initLogBroadcastReceiver();
 
+		// Initialize the listening dialog
+		createDiagnosisDialog();
+
 		// Check if the app has been run before.
 		if (isFirstRun()) {
 			Log.i(Constants.TAG, "isFirstRun()");
@@ -212,7 +217,6 @@ public class Alice extends Activity implements AsyncTasksListener,
 			// recreated this activity, so restore the existing recognition
 			_currentRecognizer = savedState.Recognizer;
 			_listeningDialog.setText(savedState.DialogText);
-			// _listeningDialog.setLevel(savedState.DialogLevel);
 			_listeningDialog.setRecording(savedState.DialogRecording);
 			_handler = savedState.Handler;
 
@@ -466,20 +470,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
 		case DIAGNOSIS_DIALOG:
-			mProgressDialog = new ProgressDialog(this);
-			// mProgressDialog
-			// .setTitle(getString(R.string.diagnosis_dialog_title));
-			mProgressDialog
-					.setMessage(getString(R.string.diagnosis_dialog_text));
-			mProgressDialog.setIndeterminate(true);
-
-			mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			mProgressDialog.setCancelable(false);
-			WindowManager.LayoutParams layout = mProgressDialog.getWindow()
-					.getAttributes();
-			layout.width = WindowManager.LayoutParams.FILL_PARENT;
-			layout.gravity = Gravity.BOTTOM;
-			return mProgressDialog;
+			return _diagnosisDialog;
 		case LISTENING_DIALOG:
 			return _listeningDialog;
 		}
@@ -521,7 +512,6 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 				String last_query = result.getLast_query();
 				String select_type = result.getSelect_type();
-			
 
 				if (last_query
 						.equalsIgnoreCase(Constants.DIAGNOSIS_DEFAULT_LAST_QUERY)
@@ -1224,6 +1214,15 @@ public class Alice extends Activity implements AsyncTasksListener,
 					Alice.this.removeDialog(LISTENING_DIALOG);
 					createListeningDialog();
 				}
+			}
+		});
+	}
+
+	private void createDiagnosisDialog() {
+		_diagnosisDialog = new DiagnosisDialog(this);
+		_diagnosisDialog.setOnDismissListener(new OnDismissListener() {
+			public void onDismiss(DialogInterface dialog) {
+
 			}
 		});
 	}
