@@ -36,6 +36,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -468,6 +469,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		case DIAGNOSIS_DIALOG:
 			mProgressDialog = new ProgressDialog(this);
 			// mProgressDialog
+			
 			// .setTitle(getString(R.string.diagnosis_dialog_title));
 			mProgressDialog
 					.setMessage(getString(R.string.diagnosis_dialog_text));
