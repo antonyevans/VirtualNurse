@@ -1174,6 +1174,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 				doVoiceDiagnosis(mDiagnosis.getGuide(),
 						mDiagnosis.getCurrent_query(), t);
+
 			} else {
 				doVoiceDiagnosis("null",
 						Constants.DIAGNOSIS_DEFAULT_LAST_QUERY, t);

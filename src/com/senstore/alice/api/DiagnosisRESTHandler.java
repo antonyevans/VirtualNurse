@@ -76,6 +76,8 @@ public class DiagnosisRESTHandler {
 	 * 
 	 */
 	public Diagnosis voiceDiagnosis(String guide,String last_query, String input_text) {
+		
+		Log.i(Constants.TAG, "last_query "+last_query);
 
 		String absoluteURL = Constants.SERVER_URL + "harvard.json";
 		RestClient req = new RestClient(absoluteURL);
