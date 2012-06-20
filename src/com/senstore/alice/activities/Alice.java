@@ -32,6 +32,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -101,6 +103,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 	private Vocalizer _vocalizer;
 	private Object _lastTtsContext = null;
+	
+	private String talkResp="";
 
 	private LayoutInflater inflator;
 
@@ -530,7 +534,10 @@ public class Alice extends Activity implements AsyncTasksListener,
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						chatlist.setSelection(chatAdapter.getCount() - 1);
+						//chatlist.setSelection(chatAdapter.getCount() - 1);
+						
+						scrollToLastItem();
+
 					}
 				});
 
@@ -578,6 +585,34 @@ public class Alice extends Activity implements AsyncTasksListener,
 			mTts.stop();
 			mTts.shutdown();
 		}
+	}
+
+	public void scrollToLastItem() {
+
+		int lastPosition = chatAdapter.getCount() - 1;
+		
+		Log.i(Constants.TAG, "Last Position = "+lastPosition);
+
+		chatlist.setSelection(lastPosition);
+		
+		Log.i(Constants.TAG, "Tag is = " + talkResp);
+		speakReply(talkResp);
+
+		
+//		View lastRow = chatlist.getChildAt(lastPosition);
+//		
+//
+//		if (lastRow != null) {
+//
+//			String text = lastRow.getTag().toString();
+//
+//			Log.i(Constants.TAG, "Tag is = " + text);
+//			
+//			//TODO Then start tts on the last row's data
+//			// Alice says......
+//			speakReply(text);
+//		}
+
 	}
 
 	@Override
@@ -920,9 +955,11 @@ public class Alice extends Activity implements AsyncTasksListener,
 				queryTxt.setText(mDiagnosis.getQuery_string());
 				responseTxt.setText(Html.fromHtml(mDiagnosis.getReply()
 						.toString()));
+				talkResp=mDiagnosis.getReply();
 
-				// Alice says......
-				speakReply(mDiagnosis.getReply());
+				row.setTag(mDiagnosis.getReply());
+
+				
 			}
 
 			return row;
@@ -1107,7 +1144,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 	private void speakReply(String reply) {
 
-		Log.i(Constants.TAG, "reply = " + reply);
+		//Log.i(Constants.TAG, "reply = " + reply);
 
 		if (isTTSReady) {
 			mTts.speak(reply, TextToSpeech.QUEUE_FLUSH, // Drop all pending
