@@ -19,6 +19,7 @@ import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -54,6 +55,8 @@ import com.nuance.nmdp.speechkit.Vocalizer;
 import com.senstore.alice.R;
 import com.senstore.alice.api.HarvardGuide;
 import com.senstore.alice.listeners.AsyncTasksListener;
+import com.senstore.alice.location.AliceLocation;
+import com.senstore.alice.location.AliceLocation.LocationResult;
 import com.senstore.alice.models.Diagnosis;
 import com.senstore.alice.overlays.AliceItemizedOverlay;
 import com.senstore.alice.services.BackgroundLogger;
@@ -123,6 +126,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 		Registry.instance().put(Constants.REGISTRY_CONTEXT,
 				getApplicationContext());
+
+		initAliceLocation();
 
 		setContentView(R.layout.main);
 		inflater = getLayoutInflater();
@@ -220,6 +225,11 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 		}
 
+	}
+
+	private void initAliceLocation() {
+		AliceLocation myLocation = new AliceLocation();
+		myLocation.getLocation(this, locationResult);
 	}
 
 	private void initAndroidTTS() {
@@ -1188,5 +1198,22 @@ public class Alice extends Activity implements AsyncTasksListener,
 			Log.e(Constants.TAG, "Could not initialize TextToSpeech.");
 		}
 	}
+
+	LocationResult locationResult = new LocationResult() {
+		@Override
+		public void gotLocation(Location location) {
+			// Got the location!
+			if (location != null) {
+				String loc = location.getLatitude() + " , "
+						+ location.getLongitude();
+				Log.i(Constants.TAG, "Logging location " + loc);
+				Registry.instance().put(Constants.REGISTRY_LOCATION, loc);
+
+				doLog(Integer.toString(Constants.LOG_REGISTER));
+
+			}
+
+		}
+	};
 
 }

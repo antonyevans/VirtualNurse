@@ -9,6 +9,7 @@ import com.senstore.alice.http.RestClient;
 import com.senstore.alice.http.RestClient.RequestMethod;
 import com.senstore.alice.models.ActionLog;
 import com.senstore.alice.utils.Constants;
+import com.senstore.alice.utils.Registry;
 import com.senstore.alice.utils.Utils;
 
 /**
@@ -33,9 +34,18 @@ public class LogRESTHandler {
 		req.addParam("user_id", Utils.getPhoneNumber());
 		req.addParam("log_type", log_type);
 
-		//req.addParam("location",
-		//		Registry.instance().get(Constants.REGISTRY_LOCATION).toString());
-		req.addParam("location", "Nairobi");
+		Object loc = Registry.instance().get(Constants.REGISTRY_LOCATION);
+		//boolean hasText = !"".equals(loc);
+		if (loc != null) {
+			req.addParam("location",
+					Registry.instance().get(Constants.REGISTRY_LOCATION)
+							.toString());
+			Log.i(Constants.TAG, "location in logger "
+					+ Registry.instance().get(Constants.REGISTRY_LOCATION)
+							.toString());
+		}
+
+		// req.addParam("location", "Nairobi");
 
 		req.addParam("security", Constants.SECURITY_HASH);
 
