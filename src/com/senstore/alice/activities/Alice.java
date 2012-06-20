@@ -587,6 +587,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		int lastPosition = chatAdapter.getCount() - 1;
 
 		chatlist.setSelection(lastPosition);
+		Log.i(Constants.TAG, "SPEAKING ->"+talkResp);
 		speakReply(talkResp);
 
 	}
@@ -929,17 +930,19 @@ public class Alice extends Activity implements AsyncTasksListener,
 				queryTxt.setText(mDiagnosis.getQuery_string());
 				responseTxt.setText(Html.fromHtml(mDiagnosis.getReply()
 						.toString()));
-				talkResp = mDiagnosis.getReply();
+				
 
 				row.setTag(mDiagnosis.getReply());
 
 			}
+			
 
 			return row;
 		}
 
 		public void addItem(Diagnosis diagnosis) {
 			diagnosis.setQuery_string(prevQuery);
+			talkResp=diagnosis.getReply();
 			listitems.add(diagnosis);
 		}
 
@@ -1119,7 +1122,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 		// Log.i(Constants.TAG, "reply = " + reply);
 
 		if (isTTSReady) {
-			mTts.speak(reply, TextToSpeech.QUEUE_FLUSH, // Drop all pending
+			mTts.stop();
+			mTts.speak(reply, TextToSpeech.QUEUE_ADD, // Drop all pending
 														// entries
 					// in the playback queue.
 					null);
