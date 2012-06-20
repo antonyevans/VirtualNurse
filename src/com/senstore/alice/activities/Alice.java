@@ -9,7 +9,6 @@ import java.util.Map.Entry;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -36,7 +35,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -76,7 +74,6 @@ public class Alice extends Activity implements AsyncTasksListener,
 	private String prevQuery = null;
 
 	private static final int DIAGNOSIS_DIALOG = 0;
-	private ProgressDialog mProgressDialog;
 
 	final AsyncTasksListener listener = this;
 
@@ -472,7 +469,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		switch (id) {
 		case DIAGNOSIS_DIALOG:
 			return _diagnosisDialog;
-			
+
 		case LISTENING_DIALOG:
 			return _listeningDialog;
 		}
@@ -487,7 +484,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 	@Override
 	public void onTaskProgress(CharSequence message) {
-		mProgressDialog.setMessage(message);
+		_diagnosisDialog.setText(message.toString());
 	}
 
 	@Override
