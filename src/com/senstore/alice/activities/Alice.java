@@ -344,7 +344,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
 					LinearLayout.LayoutParams.FILL_PARENT,
 					LinearLayout.LayoutParams.WRAP_CONTENT);
-			//params.setMargins(0, 5, 0, 5);
+			// params.setMargins(0, 5, 0, 5);
 			params.setMargins(15, 5, 0, 5);
 			params.gravity = Gravity.CENTER;
 			// params.height = 35;
@@ -1088,10 +1088,11 @@ public class Alice extends Activity implements AsyncTasksListener,
 			if (mDiagnosis != null) {
 				// Set the voice input as the query string in the Diagnosis
 				// object
-				prevQuery = t;
-				Log.i(Constants.TAG,
-						"Query String(from voice) = "
-								+ mDiagnosis.getQuery_string());
+				// TODO Voice response should match with the selected guide
+				// option, rather than the input text (sometimes the input text
+				// looks wrong or is badly spelled)
+
+				prevQuery = mDiagnosis.getGuide();
 
 				doVoiceDiagnosis(mDiagnosis.getGuide(),
 						mDiagnosis.getCurrent_query(), t);
@@ -1105,12 +1106,18 @@ public class Alice extends Activity implements AsyncTasksListener,
 	}
 
 	private void speakReply(String reply) {
-		
-        Log.i(Constants.TAG, "reply = "+reply);
-		
-		mTts.speak(reply, TextToSpeech.QUEUE_FLUSH, // Drop all pending entries
-													// in the playback queue.
-				null);
+
+		Log.i(Constants.TAG, "reply = " + reply);
+
+		if (isTTSReady) {
+			mTts.speak(reply, TextToSpeech.QUEUE_FLUSH, // Drop all pending
+														// entries
+					// in the playback queue.
+					null);
+		} else {
+			// TODO Cannot speak
+		}
+
 	}
 
 	private void createListeningDialog() {
