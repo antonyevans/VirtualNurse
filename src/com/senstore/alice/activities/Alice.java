@@ -521,16 +521,12 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 				String last_query = result.getLast_query();
 				String select_type = result.getSelect_type();
-				Log.i(Constants.TAG, "last_query : " + last_query
-						+ " and select_type : " + select_type);
+			
 
 				if (last_query
 						.equalsIgnoreCase(Constants.DIAGNOSIS_DEFAULT_LAST_QUERY)
 						&& select_type
 								.equalsIgnoreCase(Constants.DIAGNOSIS_VOICE)) {
-
-					Log.i(Constants.TAG,
-							"last_query : start and select_type : voice");
 
 					prevQuery = result.getGuide();
 				}
