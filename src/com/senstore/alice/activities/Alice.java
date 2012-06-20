@@ -381,7 +381,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 					prevQuery = name;
 
-					doTouchDiagnosis(guide, Constants.VOICE_DEFAULT_LAST_QUERY,
+					doTouchDiagnosis(guide, Constants.DIAGNOSIS_DEFAULT_LAST_QUERY,
 							start_input);
 				}
 			});
@@ -520,8 +520,12 @@ public class Alice extends Activity implements AsyncTasksListener,
 			} else {
 
 				if (result.getLast_query().equalsIgnoreCase(
-						Constants.VOICE_DEFAULT_LAST_QUERY)) {
+						Constants.DIAGNOSIS_DEFAULT_LAST_QUERY)
+						&& result.getInput().equalsIgnoreCase(
+								Constants.DIAGNOSIS_VOICE)) {
 
+					Log.i(Constants.TAG, "last_query : start and select_type : voice");
+					
 					prevQuery = result.getGuide();
 				}
 
@@ -982,7 +986,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 							chatAdapter.resetAdapter();
 
 							doTouchDiagnosis(value,
-									Constants.VOICE_DEFAULT_LAST_QUERY, value);
+									Constants.DIAGNOSIS_DEFAULT_LAST_QUERY, value);
 						}
 					});
 
@@ -1139,7 +1143,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 				if (suggestion == null)
 					suggestion = "";
 				// TODO
-				Log.i(Constants.TAG, detail + "\n" + suggestion);
+				Log.i(Constants.TAG, detail + " - " + suggestion);
 
 				showInfoAlert(getString(R.string.app_name), suggestion);
 
@@ -1179,7 +1183,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 				doVoiceDiagnosis(mDiagnosis.getGuide(),
 						mDiagnosis.getCurrent_query(), t);
 			} else {
-				doVoiceDiagnosis("null", Constants.VOICE_DEFAULT_LAST_QUERY, t);
+				doVoiceDiagnosis("null", Constants.DIAGNOSIS_DEFAULT_LAST_QUERY, t);
 			}
 
 		} else {
