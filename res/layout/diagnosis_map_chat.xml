@@ -51,89 +51,82 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="20dp"
                 android:contentDescription="@string/right_triangle"
                 android:src="@drawable/tri_right" />
         </RelativeLayout>
     </LinearLayout>
 
     <!-- End Query -->
-    
     <LinearLayout
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal" 
-    android:layout_marginRight="20dp" >
-    
-        <RelativeLayout
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content">
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginRight="20dp" >
 
-    	        <ImageView
-    	            android:id="@+id/tri_right"
-    	            android:layout_width="wrap_content"
-    	            android:layout_height="wrap_content"
-    	            android:layout_alignParentLeft="true"
-    	            android:layout_alignParentTop="true"
-    	            android:layout_marginTop="30dp"
-    	            android:src="@drawable/tri_left" />
-        
-    	    </RelativeLayout>
-    	    
-    	<RelativeLayout
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:id="@+id/layout_left"
-		        android:layout_alignParentLeft="true" >
-		    <RelativeLayout
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <ImageView
+                android:id="@+id/tri_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="30dp"
+                android:contentDescription="@string/left_triangle"
+                android:src="@drawable/tri_left" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >  
-    	    <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/map_text_response"
-            android:layout_marginLeft="10dp"
-        	android:layout_marginRight="10dp"
-        	android:layout_marginTop="5dp"
-        	android:layout_marginBottom="5dp"
-        	android:background="@drawable/bubble_left"
-        	android:orientation="vertical" >
-            
-        <TextView
-            android:id="@+id/map_txt_response"
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:text=""
-	        android:layout_marginLeft="10dp"
-	        android:layout_marginRight="10dp"
-	       	android:layout_marginTop="10dp"
-	        android:layout_marginBottom="10dp"
-	        android:textColor="@android:color/black"
-	         />
-        
-        
-            
-        </LinearLayout>
-            </RelativeLayout>
-            <Button android:layout_alignParentRight="true"
-            android:id="@+id/map_close"
-	        android:background="@drawable/bubble_close"
-	        android:gravity="center_vertical|center_horizontal"
-	        android:layout_height="wrap_content"
-	        android:layout_width="wrap_content"
-	        android:layout_marginRight="20dp"/>
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="10dp" >
 
-    	    
-        
-    	    </RelativeLayout>
-    	    
-    	    
-    
-    
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:id="@+id/options_text_response"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="0dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="10dp"
+                    android:padding="0dp"
+                    android:background="@drawable/bubble_left"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/map_txt_response"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="10dp"
+                        android:padding="0dp"
+                        android:text=""
+                        android:textColor="@android:color/black" />
+                </LinearLayout>
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/map_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/bubble_close"
+                android:layout_marginRight="20dp"
+                android:gravity="center_vertical|center_horizontal" />
+        </RelativeLayout>
     </LinearLayout>
-        
-     
+    
     <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -161,6 +154,10 @@
         
             
         </LinearLayout>
+    
+        
+     
+    
     
     <include layout="@layout/query_text_view"/>
 
