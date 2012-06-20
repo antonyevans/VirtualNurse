@@ -967,6 +967,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 	// Start Voice Business
 
 	public void startDictation(View view) {
+		stopTTS();
+
 		_listeningDialog.setText("Initializing...");
 		showDialog(LISTENING_DIALOG);
 		_listeningDialog.setStoppable(false);
