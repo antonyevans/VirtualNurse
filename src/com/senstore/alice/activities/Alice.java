@@ -176,6 +176,9 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 		initAndroidTTS();
 
+		// Speak the welcome text
+		speakText(getString(R.string.hello));
+
 		// set volume control to media
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
@@ -224,8 +227,6 @@ public class Alice extends Activity implements AsyncTasksListener,
 			_currentRecognizer.setListener(_listener);
 
 		}
-
-		// speakReply("Welcome to the Pocket Doctor. I am Alice, how can I help you today? You can click on the microphone to talk to me.");
 
 	}
 
@@ -279,6 +280,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 			//
 
 		}
+		stopTTS();
 
 	}
 
@@ -369,6 +371,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 				public void onClick(View v) {
 
 					// firstQuery = name;
+
+					stopTTS();
 
 					prevQuery = name;
 
@@ -587,8 +591,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 		int lastPosition = chatAdapter.getCount() - 1;
 
 		chatlist.setSelection(lastPosition);
-		Log.i(Constants.TAG, "SPEAKING ->"+talkResp);
-		speakReply(talkResp);
+		Log.i(Constants.TAG, "SPEAKING ->" + talkResp);
+		speakText(talkResp);
 
 	}
 
@@ -634,6 +638,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	}
 
 	private void removeDiagnosisView(View view) {
+		stopTTS();
 		flipper.removeView(view);
 	}
 
@@ -930,19 +935,17 @@ public class Alice extends Activity implements AsyncTasksListener,
 				queryTxt.setText(mDiagnosis.getQuery_string());
 				responseTxt.setText(Html.fromHtml(mDiagnosis.getReply()
 						.toString()));
-				
 
 				row.setTag(mDiagnosis.getReply());
 
 			}
-			
 
 			return row;
 		}
 
 		public void addItem(Diagnosis diagnosis) {
 			diagnosis.setQuery_string(prevQuery);
-			talkResp=diagnosis.getReply();
+			talkResp = diagnosis.getReply();
 			listitems.add(diagnosis);
 		}
 
@@ -1117,18 +1120,14 @@ public class Alice extends Activity implements AsyncTasksListener,
 		}
 	}
 
-	private void speakReply(String reply) {
-
-		// Log.i(Constants.TAG, "reply = " + reply);
+	private void speakText(String text) {
 
 		if (isTTSReady) {
 			mTts.stop();
-			mTts.speak(reply, TextToSpeech.QUEUE_ADD, // Drop all pending
-														// entries
-					// in the playback queue.
-					null);
+			mTts.speak(text, TextToSpeech.QUEUE_ADD, null);
 		} else {
 			// TODO Cannot speak
+			Log.i(Constants.TAG, "Cannot speak. TTS Engine not ready");
 		}
 
 	}
