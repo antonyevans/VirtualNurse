@@ -148,7 +148,7 @@ public class DiagnosisParser {
 
 				options.put(text, link);
 
-				Log.i(Constants.TAG, text + " - " + link);
+				
 			}
 
 		} catch (JSONException e) {

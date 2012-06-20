@@ -4,12 +4,10 @@
 package com.senstore.alice.tasks;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.senstore.alice.api.DiagnosisRESTHandler;
 import com.senstore.alice.listeners.AsyncTasksListener;
 import com.senstore.alice.models.Diagnosis;
-import com.senstore.alice.utils.Constants;
 
 /**
  * @author Muniu Kariuki - muniu@bityarn.co.ke
@@ -74,10 +72,7 @@ public class DiagnosisAsyncTask extends AsyncTask<Void, String, Diagnosis> {
 	@Override
 	protected Diagnosis doInBackground(Void... params) {
 		Diagnosis diagnosis = null;
-		//publishProgress("Diagnosing on remote server");
 		DiagnosisRESTHandler handler = new DiagnosisRESTHandler();
-
-		Log.i(Constants.TAG, "Setting the last_query to : " + last_query);
 
 		if (isVoice()) {
 			diagnosis = handler.voiceDiagnosis(health_guide, last_query,

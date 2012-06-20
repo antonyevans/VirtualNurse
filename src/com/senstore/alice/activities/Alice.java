@@ -1153,7 +1153,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 			// indicate this.
 			//int result = mTts.setLanguage(Locale.US);
 			
-			int result =mTts.setLanguage(Locale.UK);
+			int result =mTts.setLanguage(Locale.ENGLISH);
 			
 			// Try this someday for some interesting results.
 			// int result mTts.setLanguage(Locale.FRANCE);
