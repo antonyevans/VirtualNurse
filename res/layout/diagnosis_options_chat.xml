@@ -33,9 +33,9 @@
                     android:id="@+id/options_text_query"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginBottom="5dp"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="5dp"
                     android:layout_marginTop="10dp"
                     android:textColor="@android:color/black" />
             </LinearLayout>
@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="15dp"
                 android:contentDescription="@string/right_triangle"
                 android:src="@drawable/tri_right" />
         </RelativeLayout>
@@ -95,7 +95,7 @@
                     android:id="@+id/options_text_response"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginBottom="0dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="5dp"
                     android:background="@drawable/bubble_left"
@@ -105,9 +105,9 @@
                         android:id="@+id/options_txt_response"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="3dp"
+                        android:layout_marginLeft="3dp"
+                        android:layout_marginRight="5dp"
                         android:layout_marginTop="10dp"
                         android:text=""
                         android:textColor="@android:color/black" />
