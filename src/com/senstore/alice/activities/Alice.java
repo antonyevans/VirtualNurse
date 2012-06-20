@@ -697,10 +697,6 @@ public class Alice extends Activity implements AsyncTasksListener,
 				// ignored for now
 				break;
 			case 2:
-
-				Log.i(Constants.TAG,
-						"mDiagnosis (case 2:) : " + mDiagnosis.getId());
-
 				// Response Type 2 - Show Options Dialog
 				row = inflater.inflate(R.layout.diagnosis_options_chat, null);
 
