@@ -1,7 +1,5 @@
 package com.senstore.alice.activities;
 
-import com.senstore.alice.R;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.view.Gravity;
@@ -9,6 +7,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.senstore.alice.R;
 
 class ListeningDialog extends Dialog {
 	private String _text;

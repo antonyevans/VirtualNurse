@@ -149,7 +149,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 		chatAdapter = new AliceChatAdapter(this);
 
-		// Testing refresh
+		// List refresh code
 		chatlist.destroyDrawingCache();
 		chatlist.setVisibility(ListView.INVISIBLE);
 		chatlist.setVisibility(ListView.VISIBLE);
@@ -274,12 +274,10 @@ public class Alice extends Activity implements AsyncTasksListener,
 			// this well
 
 		} else if (currentView.equals(chatview)) {
-			// TODO: Check if we really have to do nothing here
-			// perhaps scroll to the last item if layout does not handle
-			// this well
+
+			// moving to Home View. Clean the Chat list and remove the chat view
 			chatAdapter.resetAdapter();
 			flipper.removeView(currentView);
-			//
 
 		}
 		stopTTS();
@@ -352,13 +350,14 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 			Button b = new Button(this);
 
+			// Create Layout parameters object to dynamically
+			// style the button before plugging it to the view
 			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
 					LinearLayout.LayoutParams.FILL_PARENT,
 					LinearLayout.LayoutParams.WRAP_CONTENT);
-			// params.setMargins(0, 5, 0, 5);
+
 			params.setMargins(15, 5, 0, 5);
 			params.gravity = Gravity.CENTER;
-			// params.height = 35;
 			b.setLayoutParams(params);
 			b.setGravity(Gravity.CENTER);
 
@@ -386,6 +385,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 				}
 			});
 
+			// add each button to the layout
 			lightbox.addView(b);
 
 		}
@@ -510,6 +510,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 				String last_query = result.getLast_query();
 				String select_type = result.getSelect_type();
 
+				// This handles the selection of a guide via voice, from the
+				// first screen
 				if (last_query
 						.equalsIgnoreCase(Constants.DIAGNOSIS_DEFAULT_LAST_QUERY)
 						&& select_type
@@ -518,48 +520,56 @@ public class Alice extends Activity implements AsyncTasksListener,
 					chatQuery = result.getGuide();
 				}
 
-				// add diagnosis object to adapter
-				chatAdapter.addItem(result);
+				// Check if server has returned an unclear response(Unclear
+				// response, please try again.), and send the user a message.
+				// Also stop TTS
+				if (result.getReply().contains(
+						getString(R.string.unknown_response_phrase))) {
 
-				// tell listeners that underlying data has changed. Refresh the
-				// view
-				chatAdapter.notifyDataSetChanged();
+					showInfoAlert(getString(R.string.app_name),
+							getString(R.string.unknown_response_alert));
+				} else {
 
-				// chatlist.setSelectionFromTop(chatAdapter.getCount(), 10);
-				chatlist.clearFocus();
-				chatlist.post(new Runnable() {
+					// add diagnosis object to adapter
+				// The list will now be able to render the view based on the
+				// data model provided
+					chatAdapter.addItem(result);
 
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub
-						// chatlist.setSelection(chatAdapter.getCount() - 1);
+					chatlist.clearFocus();
+				
+				//After list is drawn, initiate a task to scroll to te item just added
+					chatlist.post(new Runnable() {
 
-						scrollToLastItem();
+						@Override
+						public void run() {
+							// 1);
+						
+							scrollToLastItem();
+
+						}
+					});
+
+					// identify the view on display currently
+					View currentView = flipper.getCurrentView();
+
+					if (currentView.equals(menuView)) {
+						// identify the number of children in the flipper
+						int childCount = flipper.getChildCount();
+						if (childCount > 1) {
+							flipper.showNext();
+						} else {
+							flipper.addView(chatview);
+							flipper.showNext();
+						}
+
+						// handle
+
+					} else if (currentView.equals(chatview)) {
+					
+					//Incidentally we do not have a case that makes use of this logic space
+						// handle
 
 					}
-				});
-
-				// identify the view on display currently
-				View currentView = flipper.getCurrentView();
-
-				if (currentView.equals(menuView)) {
-					// identify the number of children in the flipper
-					int childCount = flipper.getChildCount();
-					if (childCount > 1) {
-						flipper.showNext();
-					} else {
-						flipper.addView(chatview);
-						flipper.showNext();
-					}
-
-					// perhaps scroll to the last item if layout does not handle
-					// this well
-
-				} else if (currentView.equals(chatview)) {
-					// TODO: Check if we really have to do nothing here
-					// perhaps scroll to the last item if layout does not handle
-					// this well
-
 				}
 			}
 		}
@@ -586,10 +596,13 @@ public class Alice extends Activity implements AsyncTasksListener,
 	}
 
 	public void scrollToLastItem() {
-
+		
+		//Identify the last index in the data model 
 		int lastPosition = chatAdapter.getCount() - 1;
 
+		//move to that Item
 		chatlist.setSelection(lastPosition);
+		
 		speakText(talkResp);
 
 	}
@@ -621,9 +634,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 				String text = intent
 						.getStringExtra(Constants.LOG_SERVICE_OUT_MSG);
 
-				// Check if Log Type is register, and if so, mark is first run
-				// to
-				// false
+				// Check if Log Type is register, and if so, 
+				//mark is first run to false
 				if (text != null && text.equalsIgnoreCase("1")) {
 					setNotFirstRun();
 				}
@@ -652,17 +664,18 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 			String uri = "geo:"
 					+ Registry.instance().get(Constants.REGISTRY_LOCATION)
-							.toString() + "?q=emergency+room";
+							.toString() + "?q=Emergency+Room";
 			startActivity(new Intent(android.content.Intent.ACTION_VIEW,
 					Uri.parse(uri)));
 		} else {
 			// Location is not available. Opt to show alert dialog or ignore
-			Toast.makeText(this, "Location currently unavailable", Toast.LENGTH_LONG);
+			Toast.makeText(this, "Location currently unavailable",
+					Toast.LENGTH_LONG);
 		}
 
 	}
 
-	// custom adapter for the chat listview
+	// custom adapter for the ChatListview
 	public class AliceChatAdapter extends BaseAdapter {
 		private List<Diagnosis> listitems;
 		private LayoutInflater inflater;
@@ -672,6 +685,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 			this.context = context;
 			inflater = (LayoutInflater) context
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			
+			//init the data model
 			listitems = new ArrayList<Diagnosis>();
 
 		}
@@ -695,6 +710,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 			return 0;
 		}
 
+		//This function provides rendering logic for the different 
+		//items in the ChatList based on the data model
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -712,7 +729,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 			switch (diagnosisType) {
 			case 1:
-				// TODO Response Type 1 - Show Confirm Dialog . This is
+				//Response Type 1 - Show Confirm Dialog . This is
 				// ignored for now
 				break;
 			case 2:
@@ -737,6 +754,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 							removeDiagnosisView(flipper.getCurrentView());
 						} else {
 							notifyDataSetChanged();
+
 							chatlist.setSelectionFromTop(
 									chatAdapter.getCount() - 1, 10);
 						}
@@ -792,7 +810,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 				break;
 
 			case 3:
-				// Response Type 3 - EMERGENCY - Map with nearest
+				// Response Type 3 - EMERGENCY - Load Map with search results of nearest
 				// hospital/doctor
 				row = inflater.inflate(R.layout.diagnosis_map_chat, null);
 
@@ -811,6 +829,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 							removeDiagnosisView(flipper.getCurrentView());
 						} else {
 							notifyDataSetChanged();
+
 							chatlist.setSelectionFromTop(
 									chatAdapter.getCount() - 1, 10);
 						}
@@ -830,7 +849,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 				break;
 			case 4:
-				// TODO Response Type 4 - CALL DOCTOR - Text with button
+				//Response Type 4 - CALL DOCTOR - Text with button
 				// to call doctor.
 				row = inflater.inflate(R.layout.diagnosis_calldoc_chat, null);
 
@@ -851,6 +870,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 							removeDiagnosisView(flipper.getCurrentView());
 						} else {
 							notifyDataSetChanged();
+
 							chatlist.setSelectionFromTop(
 									chatAdapter.getCount() - 1, 10);
 						}
@@ -884,7 +904,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 				break;
 			case 5:
-				// TODO Response Type 5 - INFORMATION - Text
+				// Response Type 5 - INFORMATION - Text
 				row = inflater.inflate(R.layout.diagnosis_information_chat,
 						null);
 
@@ -904,6 +924,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 							removeDiagnosisView(flipper.getCurrentView());
 						} else {
 							notifyDataSetChanged();
+
 							chatlist.setSelectionFromTop(
 									chatAdapter.getCount() - 1, 10);
 						}
@@ -940,6 +961,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 							removeDiagnosisView(flipper.getCurrentView());
 						} else {
 							notifyDataSetChanged();
+
 							chatlist.setSelectionFromTop(
 									chatAdapter.getCount() - 1, 10);
 						}
@@ -1020,6 +1042,11 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 			talkResp = diagnosis.getReply().replaceAll("<(.|\n)*?>", "");
 			listitems.add(diagnosis);
+
+			// tell listeners that underlying data has changed. Refresh the
+			// view
+			chatAdapter.notifyDataSetChanged();
+
 		}
 
 		public void removeItem(int position) {
@@ -1039,7 +1066,6 @@ public class Alice extends Activity implements AsyncTasksListener,
 	}
 
 	// Start Voice Business
-
 	public void startDictation(View view) {
 		stopTTS();
 
@@ -1186,11 +1212,11 @@ public class Alice extends Activity implements AsyncTasksListener,
 			if (mDiagnosis != null) {
 				// Set the voice input as the query string in the Diagnosis
 				// object
-				// TODO Voice response should match with the selected guide
+				// Voice response should match with the selected guide
 				// option, rather than the input text (sometimes the input text
 				// looks wrong or is badly spelled)
 
-				chatQuery = t + " (" + mDiagnosis.getGuide() + ")";
+				chatQuery = t;
 
 				doVoiceDiagnosis(mDiagnosis.getGuide(), prevCurQuery, t);
 
@@ -1210,7 +1236,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 			mTts.stop();
 			mTts.speak(text, TextToSpeech.QUEUE_ADD, null);
 		} else {
-			// TODO Cannot speak
+			// TTS not ready so Cannot speak :-(
 			Log.i(Constants.TAG, "Cannot speak. TTS Engine not ready");
 		}
 
