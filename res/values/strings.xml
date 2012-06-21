@@ -22,11 +22,13 @@
     <string name="left_triangle">Left Chat Bubble Triangle</string>
     <string name="close_chat">Chat Close Button</string>
     <string name="call_doctor_text">This service will connect you to a real, Board certified, doctor and will cost $40 so please have a credit card ready.  Shall we proceed?</string>
-    <string name="call_doctor_unavailable">Im sorry, but this service is not yet available in your region</string>
+    <string name="call_doctor_unavailable">I\'m sorry, but this service is not yet available in your region</string>
     <string name="call_doctor_number">800-308-3112</string>
     <string name="call_doctor_ok">Yes</string>
     <string name="call_doctor_cancel">No</string>
     
     <string name="open_map">Click to find ER</string>
+    <string name="unknown_response_phrase">Unclear response, please try again.</string>
+    <string name="unknown_response_alert">Response could not be detected, please try again or try using touch</string>
 
 </resources>

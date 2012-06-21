@@ -496,9 +496,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 			// In cases where the server cannot understand/decipher
 			// input_text, we receive back a 'problem'. Test for the same
 			// here
-			if (result.getCurrent_query().equalsIgnoreCase("problem")
-					|| result.getQuery_string().equalsIgnoreCase(
-							"Unclear response, please try again.")) {
+			if (result.getCurrent_query().equalsIgnoreCase("problem")) {
 
 				// TODO Show Alert Dialog that the server could not
 				// understand their request
@@ -512,6 +510,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 				String last_query = result.getLast_query();
 				String select_type = result.getSelect_type();
 
+				// This handles the selection of a guide via voice, from the
+				// first screen
 				if (last_query
 						.equalsIgnoreCase(Constants.DIAGNOSIS_DEFAULT_LAST_QUERY)
 						&& select_type
@@ -520,48 +520,58 @@ public class Alice extends Activity implements AsyncTasksListener,
 					chatQuery = result.getGuide();
 				}
 
-				// add diagnosis object to adapter
-				chatAdapter.addItem(result);
+				// Check if server has returned an unclear response(Unclear
+				// response, please try again.), and send the user a message.
+				// Also stop TTS
+				if (result.getReply().contains(
+						getString(R.string.unknown_response_phrase))) {
 
-				// tell listeners that underlying data has changed. Refresh the
-				// view
-				chatAdapter.notifyDataSetChanged();
+					showInfoAlert(getString(R.string.app_name),
+							getString(R.string.unknown_response_alert));
+				} else {
 
-				// chatlist.setSelectionFromTop(chatAdapter.getCount(), 10);
-				chatlist.clearFocus();
-				chatlist.post(new Runnable() {
+					// add diagnosis object to adapter
+					chatAdapter.addItem(result);
 
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub
-						// chatlist.setSelection(chatAdapter.getCount() - 1);
+					// chatlist.setSelectionFromTop(chatAdapter.getCount(), 10);
+					chatlist.clearFocus();
+					chatlist.post(new Runnable() {
 
-						scrollToLastItem();
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							// chatlist.setSelection(chatAdapter.getCount() -
+							// 1);
+
+							scrollToLastItem();
+
+						}
+					});
+
+					// identify the view on display currently
+					View currentView = flipper.getCurrentView();
+
+					if (currentView.equals(menuView)) {
+						// identify the number of children in the flipper
+						int childCount = flipper.getChildCount();
+						if (childCount > 1) {
+							flipper.showNext();
+						} else {
+							flipper.addView(chatview);
+							flipper.showNext();
+						}
+
+						// perhaps scroll to the last item if layout does not
+						// handle
+						// this well
+
+					} else if (currentView.equals(chatview)) {
+						// TODO: Check if we really have to do nothing here
+						// perhaps scroll to the last item if layout does not
+						// handle
+						// this well
 
 					}
-				});
-
-				// identify the view on display currently
-				View currentView = flipper.getCurrentView();
-
-				if (currentView.equals(menuView)) {
-					// identify the number of children in the flipper
-					int childCount = flipper.getChildCount();
-					if (childCount > 1) {
-						flipper.showNext();
-					} else {
-						flipper.addView(chatview);
-						flipper.showNext();
-					}
-
-					// perhaps scroll to the last item if layout does not handle
-					// this well
-
-				} else if (currentView.equals(chatview)) {
-					// TODO: Check if we really have to do nothing here
-					// perhaps scroll to the last item if layout does not handle
-					// this well
-
 				}
 			}
 		}
@@ -654,7 +664,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 			String uri = "geo:"
 					+ Registry.instance().get(Constants.REGISTRY_LOCATION)
-							.toString() + "?q=emergency+room";
+							.toString() + "?q=Emergency+Room";
 			startActivity(new Intent(android.content.Intent.ACTION_VIEW,
 					Uri.parse(uri)));
 		} else {
@@ -1023,6 +1033,11 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 			talkResp = diagnosis.getReply().replaceAll("<(.|\n)*?>", "");
 			listitems.add(diagnosis);
+
+			// tell listeners that underlying data has changed. Refresh the
+			// view
+			chatAdapter.notifyDataSetChanged();
+
 		}
 
 		public void removeItem(int position) {
