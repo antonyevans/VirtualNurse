@@ -1,6 +1,6 @@
 package com.senstore.alice.utils;
 
-import java.util.*;
+import java.util.Random;
 
 /**
  * 
