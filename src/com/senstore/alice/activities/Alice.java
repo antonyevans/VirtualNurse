@@ -588,7 +588,9 @@ public class Alice extends Activity implements AsyncTasksListener,
 	public void scrollToLastItem() {
 
 		int lastPosition = chatAdapter.getCount() - 1;
-
+		
+		//Testing Smooth Scrolling
+		
 		chatlist.setSelection(lastPosition);
 		speakText(talkResp);
 
@@ -737,6 +739,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 							removeDiagnosisView(flipper.getCurrentView());
 						} else {
 							notifyDataSetChanged();
+							//Attempting Adjusting Smooth Scroll
+							
 							chatlist.setSelectionFromTop(
 									chatAdapter.getCount() - 1, 10);
 						}
@@ -811,6 +815,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 							removeDiagnosisView(flipper.getCurrentView());
 						} else {
 							notifyDataSetChanged();
+							
 							chatlist.setSelectionFromTop(
 									chatAdapter.getCount() - 1, 10);
 						}
@@ -851,6 +856,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 							removeDiagnosisView(flipper.getCurrentView());
 						} else {
 							notifyDataSetChanged();
+							
+							
 							chatlist.setSelectionFromTop(
 									chatAdapter.getCount() - 1, 10);
 						}
@@ -904,6 +911,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 							removeDiagnosisView(flipper.getCurrentView());
 						} else {
 							notifyDataSetChanged();
+							
+							
 							chatlist.setSelectionFromTop(
 									chatAdapter.getCount() - 1, 10);
 						}
@@ -940,6 +949,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 							removeDiagnosisView(flipper.getCurrentView());
 						} else {
 							notifyDataSetChanged();
+							
+							
 							chatlist.setSelectionFromTop(
 									chatAdapter.getCount() - 1, 10);
 						}
