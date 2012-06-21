@@ -496,7 +496,9 @@ public class Alice extends Activity implements AsyncTasksListener,
 			// In cases where the server cannot understand/decipher
 			// input_text, we receive back a 'problem'. Test for the same
 			// here
-			if (result.getCurrent_query().equalsIgnoreCase("problem")) {
+			if (result.getCurrent_query().equalsIgnoreCase("problem")
+					|| result.getQuery_string().equalsIgnoreCase(
+							"Unclear response, please try again.")) {
 
 				// TODO Show Alert Dialog that the server could not
 				// understand their request
@@ -657,7 +659,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 					Uri.parse(uri)));
 		} else {
 			// Location is not available. Opt to show alert dialog or ignore
-			Toast.makeText(this, "Location currently unavailable", Toast.LENGTH_LONG);
+			Toast.makeText(this, "Location currently unavailable",
+					Toast.LENGTH_LONG);
 		}
 
 	}
