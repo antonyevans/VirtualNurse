@@ -1190,7 +1190,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 				// option, rather than the input text (sometimes the input text
 				// looks wrong or is badly spelled)
 
-				chatQuery = t + " (" + mDiagnosis.getGuide() + ")";
+				chatQuery = t;
 
 				doVoiceDiagnosis(mDiagnosis.getGuide(), prevCurQuery, t);
 
