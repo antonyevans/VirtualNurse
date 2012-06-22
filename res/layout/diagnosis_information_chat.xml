@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="15dp"
                 android:contentDescription="@string/right_triangle"
                 android:src="@drawable/tri_right" />
         </RelativeLayout>
@@ -75,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="15dp"
                 android:src="@drawable/tri_left" />
         </RelativeLayout>
 

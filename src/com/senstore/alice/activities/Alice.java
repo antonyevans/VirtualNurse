@@ -726,7 +726,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 			// retrieve ID for discriminating the different views
 			String type = mDiagnosis.getResponse_type();
 			int diagnosisType = Integer.parseInt(type);
-
+			
 			switch (diagnosisType) {
 			case 1:
 				//Response Type 1 - Show Confirm Dialog . This is
