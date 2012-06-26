@@ -22,7 +22,7 @@ public class Constants {
 	// Do not forget to add the trailing '/'
 	public static String SERVER_URL = "http://www.senstore.com/";
 
-	public static String SECURITY_HASH = "701319fdb07288ca9f4bfae8b214b81d";
+	public static String SECURITY_HASH = "466c608460c08a33601114d141611fea";
 
 	public static String TYPE_JSON = "json";
 	public static String TYPE_XML = "xml";
