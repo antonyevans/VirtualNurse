@@ -35,6 +35,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -100,8 +101,16 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 	private Vocalizer _vocalizer;
 	private Object _lastTtsContext = null;
+	
+	private Drawable mic_start;
+	private Drawable mic_stop;
+	private ImageButton mic_action;
+	
+	private boolean canTalk =  true;
 
 	private String talkResp = "";
+	
+	private boolean isFirstTime=true;
 
 	public Alice() {
 		super();
@@ -128,10 +137,15 @@ public class Alice extends Activity implements AsyncTasksListener,
 		initAliceLocation();
 
 		setContentView(R.layout.main);
+		
+		mic_action = (ImageButton)findViewById(R.id.action_mic);
 		inflater = getLayoutInflater();
 
 		inflater = getLayoutInflater();
 
+		mic_start = getResources().getDrawable(R.drawable.mic_start);
+		mic_stop =  getResources().getDrawable(R.drawable.mic_stop);
+		
 		// inflate flipper to switch between menu and chat screen
 		flipper = (ViewFlipper) findViewById(R.id.alice_view_flipper);
 
@@ -189,7 +203,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 					AppInfo.SpeechKitServer, AppInfo.SpeechKitPort,
 					AppInfo.SpeechKitSsl, AppInfo.SpeechKitApplicationKey);
 			_speechKit.connect();
-			// TODO: Keep an eye out for audio prompts not working on the Droid
+			//Keep an eye out for audio prompts not working on the Droid
 			// 2 or other 2.2 devices.
 			Prompt beep = _speechKit.defineAudioPrompt(R.raw.beep);
 			_speechKit.setDefaultRecognizerPrompts(beep, Prompt.vibration(100),
@@ -224,6 +238,9 @@ public class Alice extends Activity implements AsyncTasksListener,
 			_currentRecognizer.setListener(_listener);
 
 		}
+		
+		
+		
 
 	}
 
@@ -262,6 +279,26 @@ public class Alice extends Activity implements AsyncTasksListener,
 		_vocalizer = Alice.getSpeechKit().createVocalizerWithLanguage("en_US",
 				vocalizerListener, new Handler());
 		_vocalizer.setVoice("Serena");
+	}
+	
+	
+	public void toggleTalk(View view) {
+		//do togling
+		canTalk = !canTalk;
+		
+		
+		if (canTalk) {
+			mTts = new TextToSpeech(this, this // TextToSpeech.OnInitListener
+					);
+			mic_action.setImageDrawable(mic_start);
+			
+		}else{
+			
+			mTts.stop();
+			mTts = null;
+			mic_action.setImageDrawable(mic_stop);
+			
+		}
 	}
 
 	public void onHome(View view) {
@@ -726,7 +763,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 			// retrieve ID for discriminating the different views
 			String type = mDiagnosis.getResponse_type();
 			int diagnosisType = Integer.parseInt(type);
-
+			
 			switch (diagnosisType) {
 			case 1:
 				//Response Type 1 - Show Confirm Dialog . This is
@@ -1231,7 +1268,10 @@ public class Alice extends Activity implements AsyncTasksListener,
 	}
 
 	private void speakText(String text) {
-
+		if (!canTalk) {
+			return;
+		}
+		
 		if (isTTSReady) {
 			mTts.stop();
 			mTts.speak(text, TextToSpeech.QUEUE_ADD, null);
@@ -1301,8 +1341,12 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 				isTTSReady = true;
 
-				// Speak the welcome text
-				speakText(getString(R.string.hello));
+				if (isFirstTime) {
+					isFirstTime=false;
+					// Speak the welcome text
+					speakText(getString(R.string.hello));
+					
+				}
 			}
 		} else {
 			// Initialization failed.

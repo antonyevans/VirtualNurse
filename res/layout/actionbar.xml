@@ -41,7 +41,28 @@
 			  android:paddingLeft="8dip"/>
     		   
 	
+			  
 	</LinearLayout>	
+	
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			  android:orientation="horizontal"
+			  android:layout_width = "fill_parent"
+			  android:layout_height="wrap_content"
+			  android:gravity="right"
+			  android:layout_gravity="right|center_vertical">
+			  
+    <ImageButton style="@style/TitleBarOperation"
+			android:id="@+id/action_mic"
+		   android:src="@drawable/mic_start"
+		   android:layout_marginTop = "6dp"
+		   android:layout_marginBottom = "6dp"
+		   android:onClick="toggleTalk"
+		   android:background="@android:color/transparent"
+		   android:layout_gravity="right|center_vertical"
+		   android:layout_marginRight="5dip"/>
+  
+			   
+	</LinearLayout>
 
 </LinearLayout>
     

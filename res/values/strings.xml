@@ -16,7 +16,7 @@
     <string name="api_test_diagnosis">Diagnosis API</string>
     <string name="api_test_diagnosis_desc">Test the various diagnosis API calls</string>
     <string name="diagnosis_dialog_title">Virtual Nurse</string>
-    <string name="diagnosis_dialog_text">Asking alice</string>
+    <string name="diagnosis_dialog_text">Asking Alice</string>
     <string name="alert_dialog_title">Virtual Nurse</string>
     <string name="right_triangle">Right Chat Bubble Triangle</string>
     <string name="left_triangle">Left Chat Bubble Triangle</string>
