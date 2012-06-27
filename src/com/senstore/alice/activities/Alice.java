@@ -318,6 +318,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 		}
 		stopTTS();
+		//Speak after returning to Home View
+		speakText(getString(R.string.hello));
 
 	}
 
@@ -622,6 +624,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	public void stopTTS() {
 		if (mTts != null) {
 			mTts.stop();
+			
 		}
 	}
 
