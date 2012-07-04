@@ -698,6 +698,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	private void removeDiagnosisView(View view) {
 		stopTTS();
 		flipper.removeView(view);
+		prevCurQuery = Constants.DIAGNOSIS_DEFAULT_LAST_QUERY;
 	}
 
 	private void showMap() {
@@ -1260,7 +1261,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 				// looks wrong or is badly spelled)
 
 				chatQuery = t;
-
+				
 				doVoiceDiagnosis(mDiagnosis.getGuide(), prevCurQuery, t);
 
 			} else {
