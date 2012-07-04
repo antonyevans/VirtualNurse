@@ -318,6 +318,9 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 		}
 		stopTTS();
+		prevCurQuery = Constants.DIAGNOSIS_DEFAULT_LAST_QUERY;
+		//Speak after returning to Home View
+		//speakText(getString(R.string.hello));
 
 	}
 
@@ -560,6 +563,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 				// Check if server has returned an unclear response(Unclear
 				// response, please try again.), and send the user a message.
 				// Also stop TTS
+				
+				
 				if (result.getReply().contains(
 						getString(R.string.unknown_response_phrase))) {
 
@@ -622,6 +627,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	public void stopTTS() {
 		if (mTts != null) {
 			mTts.stop();
+			
 		}
 	}
 
@@ -692,6 +698,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	private void removeDiagnosisView(View view) {
 		stopTTS();
 		flipper.removeView(view);
+		prevCurQuery = Constants.DIAGNOSIS_DEFAULT_LAST_QUERY;
 	}
 
 	private void showMap() {
@@ -1254,7 +1261,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 				// looks wrong or is badly spelled)
 
 				chatQuery = t;
-
+				
 				doVoiceDiagnosis(mDiagnosis.getGuide(), prevCurQuery, t);
 
 			} else {
