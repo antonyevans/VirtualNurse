@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/background"
+    android:orientation="vertical" >
+    
+    <include layout="@layout/actionbar"/>
+
+    <LinearLayout
+        android:id="@+id/linear_flipper"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/footer_mic"
+        android:layout_below="@+id/layout_actionbar">
+
+        <ViewFlipper
+            android:id="@+id/alice_view_flipper"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+        </ViewFlipper>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/alice_footer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/barbottom"
+        android:orientation="horizontal" >
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/footer_mic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:contentDescription="TODO"
+        android:onClick="startDictation"
+        android:src="@drawable/micbtn" />
+
+</RelativeLayout>

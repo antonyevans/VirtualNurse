@@ -60,7 +60,17 @@
 		   android:background="@android:color/transparent"
 		   android:layout_gravity="right|center_vertical"
 		   android:layout_marginRight="5dip"/>
-  
+  	
+  	<ImageButton style="@style/TitleBarOperation"
+			android:id="@+id/info_btn"
+		   android:src="@drawable/info_btn"
+		   android:layout_marginTop = "6dp"
+		   android:layout_marginBottom = "6dp"		   
+  		   android:layout_height="match_parent"
+		   android:onClick="toggleTalk"
+		   android:background="@android:color/transparent"
+		   android:layout_gravity="right|center_vertical"
+		   android:layout_marginRight="5dip"/>
 			   
 	</LinearLayout>
 
