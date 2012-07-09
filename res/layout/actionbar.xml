@@ -68,6 +68,7 @@
 		   android:layout_marginBottom = "6dp"		   
   		   android:layout_height="match_parent"
 		   android:onClick="toggleTalk"
+		   android:scaleType="centerCrop"
 		   android:background="@android:color/transparent"
 		   android:layout_gravity="right|center_vertical"
 		   android:layout_marginRight="5dip"/>
