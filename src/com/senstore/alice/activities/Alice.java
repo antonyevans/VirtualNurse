@@ -323,7 +323,12 @@ public class Alice extends Activity implements AsyncTasksListener,
 			
 			flipper.removeView(currentView);
 			
-			
+			//This code checks to see if we are back at home yet, and if not sends to home
+			View updatedView = flipper.getCurrentView();
+			if (updatedView.equals(chatview)) {
+				chatAdapter.resetAdapter();
+				flipper.removeView(updatedView);
+			}
 
 		}
 		stopTTS();
