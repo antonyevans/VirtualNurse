@@ -44,11 +44,6 @@
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".activities.AboutActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/app_name" >
-        </activity>
-        <activity
             android:name=".test.APITester"
             android:label="@string/app_name" >
         </activity>
