@@ -20,7 +20,7 @@ import android.view.WindowManager;
  */
 public class SplashActivity extends Activity {
 	
-	private long splashDelay = 3000; //3 seconds
+	private long splashDelay = 1500; //1.5 seconds
 	
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
