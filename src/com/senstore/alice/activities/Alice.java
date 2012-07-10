@@ -322,6 +322,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 			// moving to Home View. Clean the Chat list and remove the chat view
 			
 			flipper.removeView(currentView);
+			
+			
 
 		}
 		stopTTS();
