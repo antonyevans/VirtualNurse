@@ -320,8 +320,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		} else if (currentView.equals(aboutView)) {
 
 			// moving to Home View. Clean the Chat list and remove the chat view
-			chatAdapter.resetAdapter();
-			flipper.removeView(currentView);
+			flipper.setDisplayedChild(0);
 
 		}
 		stopTTS();
@@ -334,7 +333,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	public void onAbout(View view) {
 		// This should open up the About view
 		//setContentView(R.layout.about_screen);
-		aboutView = inflater.inflate(R.layout.alice_chat_list_layout, null);
+		aboutView = inflater.inflate(R.layout.about_screen, null);
 		flipper.addView(aboutView);
 		flipper.showNext();
 		

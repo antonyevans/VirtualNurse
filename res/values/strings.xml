@@ -30,5 +30,6 @@
     <string name="open_map">Click to find ER</string>
     <string name="unknown_response_phrase">Unclear response, please try again.</string>
     <string name="unknown_response_alert">Response could not be detected, please try again or try using touch</string>
+    <string name="about">This app was developed by Senstore, for more information about the team and our medical partners please visit www.senstore.com</string>
 
 </resources>
