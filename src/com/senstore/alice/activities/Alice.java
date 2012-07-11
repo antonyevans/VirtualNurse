@@ -85,6 +85,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	private AliceChatAdapter chatAdapter;
 
 	private View menuView;
+	private View aboutView;
 
 	private LayoutInflater inflater;
 
@@ -101,16 +102,16 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 	private Vocalizer _vocalizer;
 	private Object _lastTtsContext = null;
-	
+
 	private Drawable mic_start;
 	private Drawable mic_stop;
 	private ImageButton mic_action;
-	
-	private boolean canTalk =  true;
+
+	private boolean canTalk = true;
 
 	private String talkResp = "";
-	
-	private boolean isFirstTime=true;
+
+	private boolean isFirstTime = true;
 
 	public Alice() {
 		super();
@@ -137,15 +138,15 @@ public class Alice extends Activity implements AsyncTasksListener,
 		initAliceLocation();
 
 		setContentView(R.layout.main);
-		
-		mic_action = (ImageButton)findViewById(R.id.action_mic);
+
+		mic_action = (ImageButton) findViewById(R.id.action_mic);
 		inflater = getLayoutInflater();
 
 		inflater = getLayoutInflater();
 
 		mic_start = getResources().getDrawable(R.drawable.mic_start);
-		mic_stop =  getResources().getDrawable(R.drawable.mic_stop);
-		
+		mic_stop = getResources().getDrawable(R.drawable.mic_stop);
+
 		// inflate flipper to switch between menu and chat screen
 		flipper = (ViewFlipper) findViewById(R.id.alice_view_flipper);
 
@@ -203,7 +204,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 					AppInfo.SpeechKitServer, AppInfo.SpeechKitPort,
 					AppInfo.SpeechKitSsl, AppInfo.SpeechKitApplicationKey);
 			_speechKit.connect();
-			//Keep an eye out for audio prompts not working on the Droid
+			// Keep an eye out for audio prompts not working on the Droid
 			// 2 or other 2.2 devices.
 			Prompt beep = _speechKit.defineAudioPrompt(R.raw.beep);
 			_speechKit.setDefaultRecognizerPrompts(beep, Prompt.vibration(100),
@@ -238,9 +239,6 @@ public class Alice extends Activity implements AsyncTasksListener,
 			_currentRecognizer.setListener(_listener);
 
 		}
-		
-		
-		
 
 	}
 
@@ -280,24 +278,22 @@ public class Alice extends Activity implements AsyncTasksListener,
 				vocalizerListener, new Handler());
 		_vocalizer.setVoice("Serena");
 	}
-	
-	
+
 	public void toggleTalk(View view) {
-		//do togling
+		// do togling
 		canTalk = !canTalk;
-		
-		
+
 		if (canTalk) {
 			mTts = new TextToSpeech(this, this // TextToSpeech.OnInitListener
-					);
+			);
 			mic_action.setImageDrawable(mic_start);
-			
-		}else{
-			
+
+		} else {
+
 			mTts.stop();
 			mTts = null;
 			mic_action.setImageDrawable(mic_stop);
-			
+
 		}
 	}
 
@@ -315,12 +311,47 @@ public class Alice extends Activity implements AsyncTasksListener,
 			// moving to Home View. Clean the Chat list and remove the chat view
 			chatAdapter.resetAdapter();
 			flipper.removeView(currentView);
+			
+
+		} else if (currentView.equals(aboutView)) {
+
+			// moving to Home View. Clean the Chat list and remove the chat view
+
+			flipper.removeView(currentView);
+
+			// This code checks to see if we are back at home yet, and if not
+			// sends to home
+			// Commented out till bug is fixed meaning voice works in chat view
+			// without this
+			// View updatedView = flipper.getCurrentView();
+			// if (updatedView.equals(chatview)) {
+			// chatAdapter.resetAdapter();
+			// flipper.removeView(updatedView);
+			// }
 
 		}
 		stopTTS();
-		prevCurQuery = Constants.DIAGNOSIS_DEFAULT_LAST_QUERY;
-		//Speak after returning to Home View
-		//speakText(getString(R.string.hello));
+		
+		int chcount = flipper.getChildCount();
+		
+		if (chcount==1) {
+			prevCurQuery = Constants.DIAGNOSIS_DEFAULT_LAST_QUERY;
+		}
+		
+		// Speak after returning to Home View
+		// speakText(getString(R.string.hello));
+
+	}
+
+	public void onAbout(View view) {
+
+		View currentView = flipper.getCurrentView();
+		if (!currentView.equals(aboutView)) {
+			aboutView = inflater.inflate(R.layout.about_screen, null);
+			flipper.addView(aboutView);
+			flipper.showNext();
+		}
+		stopTTS();
 
 	}
 
@@ -563,8 +594,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 				// Check if server has returned an unclear response(Unclear
 				// response, please try again.), and send the user a message.
 				// Also stop TTS
-				
-				
+
 				if (result.getReply().contains(
 						getString(R.string.unknown_response_phrase))) {
 
@@ -573,19 +603,20 @@ public class Alice extends Activity implements AsyncTasksListener,
 				} else {
 
 					// add diagnosis object to adapter
-				// The list will now be able to render the view based on the
-				// data model provided
+					// The list will now be able to render the view based on the
+					// data model provided
 					chatAdapter.addItem(result);
 
 					chatlist.clearFocus();
-				
-				//After list is drawn, initiate a task to scroll to te item just added
+
+					// After list is drawn, initiate a task to scroll to te item
+					// just added
 					chatlist.post(new Runnable() {
 
 						@Override
 						public void run() {
 							// 1);
-						
+
 							scrollToLastItem();
 
 						}
@@ -607,8 +638,9 @@ public class Alice extends Activity implements AsyncTasksListener,
 						// handle
 
 					} else if (currentView.equals(chatview)) {
-					
-					//Incidentally we do not have a case that makes use of this logic space
+
+						// Incidentally we do not have a case that makes use of
+						// this logic space
 						// handle
 
 					}
@@ -627,7 +659,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	public void stopTTS() {
 		if (mTts != null) {
 			mTts.stop();
-			
+
 		}
 	}
 
@@ -639,13 +671,13 @@ public class Alice extends Activity implements AsyncTasksListener,
 	}
 
 	public void scrollToLastItem() {
-		
-		//Identify the last index in the data model 
+
+		// Identify the last index in the data model
 		int lastPosition = chatAdapter.getCount() - 1;
 
-		//move to that Item
+		// move to that Item
 		chatlist.setSelection(lastPosition);
-		
+
 		speakText(talkResp);
 
 	}
@@ -677,8 +709,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 				String text = intent
 						.getStringExtra(Constants.LOG_SERVICE_OUT_MSG);
 
-				// Check if Log Type is register, and if so, 
-				//mark is first run to false
+				// Check if Log Type is register, and if so,
+				// mark is first run to false
 				if (text != null && text.equalsIgnoreCase("1")) {
 					setNotFirstRun();
 				}
@@ -729,8 +761,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 			this.context = context;
 			inflater = (LayoutInflater) context
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			
-			//init the data model
+
+			// init the data model
 			listitems = new ArrayList<Diagnosis>();
 
 		}
@@ -754,8 +786,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 			return 0;
 		}
 
-		//This function provides rendering logic for the different 
-		//items in the ChatList based on the data model
+		// This function provides rendering logic for the different
+		// items in the ChatList based on the data model
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -770,10 +802,10 @@ public class Alice extends Activity implements AsyncTasksListener,
 			// retrieve ID for discriminating the different views
 			String type = mDiagnosis.getResponse_type();
 			int diagnosisType = Integer.parseInt(type);
-			
+
 			switch (diagnosisType) {
 			case 1:
-				//Response Type 1 - Show Confirm Dialog . This is
+				// Response Type 1 - Show Confirm Dialog . This is
 				// ignored for now
 				break;
 			case 2:
@@ -854,7 +886,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 				break;
 
 			case 3:
-				// Response Type 3 - EMERGENCY - Load Map with search results of nearest
+				// Response Type 3 - EMERGENCY - Load Map with search results of
+				// nearest
 				// hospital/doctor
 				row = inflater.inflate(R.layout.diagnosis_map_chat, null);
 
@@ -893,7 +926,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 				break;
 			case 4:
-				//Response Type 4 - CALL DOCTOR - Text with button
+				// Response Type 4 - CALL DOCTOR - Text with button
 				// to call doctor.
 				row = inflater.inflate(R.layout.diagnosis_calldoc_chat, null);
 
@@ -1261,7 +1294,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 				// looks wrong or is badly spelled)
 
 				chatQuery = t;
-				
+
 				doVoiceDiagnosis(mDiagnosis.getGuide(), prevCurQuery, t);
 
 			} else {
@@ -1278,7 +1311,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		if (!canTalk) {
 			return;
 		}
-		
+
 		if (isTTSReady) {
 			mTts.stop();
 			mTts.speak(text, TextToSpeech.QUEUE_ADD, null);
@@ -1349,10 +1382,10 @@ public class Alice extends Activity implements AsyncTasksListener,
 				isTTSReady = true;
 
 				if (isFirstTime) {
-					isFirstTime=false;
+					isFirstTime = false;
 					// Speak the welcome text
 					speakText(getString(R.string.hello));
-					
+
 				}
 			}
 		} else {
