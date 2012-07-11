@@ -311,6 +311,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 			// moving to Home View. Clean the Chat list and remove the chat view
 			chatAdapter.resetAdapter();
 			flipper.removeView(currentView);
+			
 
 		} else if (currentView.equals(aboutView)) {
 
@@ -330,7 +331,13 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 		}
 		stopTTS();
-		prevCurQuery = Constants.DIAGNOSIS_DEFAULT_LAST_QUERY;
+		
+		int chcount = flipper.getChildCount();
+		
+		if (chcount==1) {
+			prevCurQuery = Constants.DIAGNOSIS_DEFAULT_LAST_QUERY;
+		}
+		
 		// Speak after returning to Home View
 		// speakText(getString(R.string.hello));
 
