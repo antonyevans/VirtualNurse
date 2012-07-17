@@ -184,7 +184,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 		// Check if the app has been run before.
 		if (isFirstRun()) {
-			Log.i(Constants.TAG, "isFirstRun()");
+			//Log.i(Constants.TAG, "isFirstRun()");
 			// Start a background Task, to register the current user/device
 			doLog(Integer.toString(Constants.LOG_REGISTER));
 
@@ -720,7 +720,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 							.get(Constants.REGISTRY_CALL).toString());
 				}
 
-				Log.i(Constants.TAG, "Successfully logged type " + text);
+				//Log.i(Constants.TAG, "Successfully logged type " + text);
 
 			}
 		}
@@ -1258,7 +1258,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 				if (suggestion == null)
 					suggestion = "";
 				// TODO
-				Log.i(Constants.TAG, detail + " - " + suggestion);
+				//Log.i(Constants.TAG, detail + " - " + suggestion);
 
 				showInfoAlert(getString(R.string.app_name), suggestion);
 
@@ -1284,7 +1284,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		if (results.length > 0) {
 			String t = results[0].getText();
 
-			Log.i(Constants.TAG, "Voice Results : " + t);
+			//Log.i(Constants.TAG, "Voice Results : " + t);
 
 			if (mDiagnosis != null) {
 				// Set the voice input as the query string in the Diagnosis
@@ -1317,7 +1317,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 			mTts.speak(text, TextToSpeech.QUEUE_ADD, null);
 		} else {
 			// TTS not ready so Cannot speak :-(
-			Log.i(Constants.TAG, "Cannot speak. TTS Engine not ready");
+			//Log.i(Constants.TAG, "Cannot speak. TTS Engine not ready");
 		}
 
 	}
@@ -1402,7 +1402,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 			if (location != null) {
 				String loc = location.getLatitude() + ","
 						+ location.getLongitude();
-				Log.i(Constants.TAG, "Logging location " + loc);
+				//Log.i(Constants.TAG, "Logging location " + loc);
 				Registry.instance().put(Constants.REGISTRY_LOCATION, loc);
 
 				doLog(Integer.toString(Constants.LOG_LOCATION));
