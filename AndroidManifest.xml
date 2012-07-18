@@ -19,10 +19,10 @@
 
     <supports-screens
         android:anyDensity="true"
-        android:largeScreens="false"
+        android:largeScreens="true"
         android:normalScreens="true"
         android:resizeable="true"
-        android:smallScreens="false" />
+        android:smallScreens="true" />
 
     <application
         android:icon="@drawable/ic_alicepic"
