@@ -7,7 +7,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.senstore.alice.R;
+import com.senstore.alice.wsh.R;
 
 class DiagnosisDialog extends Dialog {
 	private String _text;

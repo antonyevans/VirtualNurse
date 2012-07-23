@@ -6,7 +6,7 @@ package com.senstore.alice.activities;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.senstore.alice.R;
+import com.senstore.alice.wsh.R;
 
 import android.app.Activity;
 import android.content.Intent;

@@ -8,7 +8,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.senstore.alice.R;
+import com.senstore.alice.wsh.R;
 
 class ListeningDialog extends Dialog {
 	private String _text;

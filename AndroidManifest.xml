@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.senstore.alice"
+    package="com.senstore.alice.wsh"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -28,7 +28,7 @@
         android:icon="@drawable/ic_alicepic"
         android:label="@string/app_name" >
         <activity
-            android:name=".activities.SplashActivity"
+            android:name="com.senstore.alice.activities.SplashActivity"
             android:screenOrientation="portrait"
             android:label="@string/app_name" >
             <intent-filter>
@@ -39,26 +39,26 @@
         </activity>
         
         <activity
-            android:name=".activities.Alice"
+            android:name="com.senstore.alice.activities.Alice"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".test.APITester"
+            android:name="com.senstore.alice.test.APITester"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".test.DiagnosisAPITester"
+            android:name="com.senstore.alice.test.DiagnosisAPITester"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".test.LoggingAPITester"
+            android:name="com.senstore.alice.test.LoggingAPITester"
             android:label="@string/app_name" >
         </activity>
 
-        <receiver android:name=".activities.ResponseReceiver" />
+        <receiver android:name="com.senstore.alice.activities.ResponseReceiver" />
 
-        <service android:name=".services.BackgroundLogger" />
+        <service android:name="com.senstore.alice.services.BackgroundLogger" />
 
         <uses-library android:name="com.google.android.maps" />
     </application>
