@@ -33,6 +33,7 @@ public class LogRESTHandler {
 		RestClient req = new RestClient(absoluteURL);
 		req.addParam("user_id", Utils.getPhoneNumber());
 		req.addParam("log_type", log_type);
+		req.addParam("app_name", Constants.APP_NAME);
 
 		Object loc = Registry.instance().get(Constants.REGISTRY_LOCATION);
 		//boolean hasText = !"".equals(loc);

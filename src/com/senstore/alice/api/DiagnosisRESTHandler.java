@@ -47,6 +47,7 @@ public class DiagnosisRESTHandler {
 		req.addParam("input", input_text);
 		req.addParam("select_type", Constants.DIAGNOSIS_TOUCH);
 		req.addParam("security", Constants.SECURITY_HASH);
+		req.addParam("app_name", Constants.APP_NAME);
 
 		try {
 			req.execute(RequestMethod.GET);
