@@ -239,6 +239,11 @@ public class Alice extends Activity implements AsyncTasksListener,
 			_currentRecognizer.setListener(_listener);
 
 		}
+		
+		chatQuery = "Birth Control for Women";
+
+		doTouchDiagnosis("birthControlForWomen",
+				Constants.DIAGNOSIS_DEFAULT_LAST_QUERY, "birthcontrol_oct3");
 
 	}
 
