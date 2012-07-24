@@ -1389,7 +1389,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 				if (isFirstTime) {
 					isFirstTime = false;
 					// Speak the welcome text
-					speakText(getString(R.string.hello));
+					//speakText(getString(R.string.hello));
 
 				}
 			}
