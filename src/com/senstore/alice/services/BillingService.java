@@ -5,7 +5,8 @@ import com.android.vending.billing.IMarketBillingService;
 import com.senstore.alice.utils.Constants.PurchaseState;
 import com.senstore.alice.utils.Constants.ResponseCode;
 import com.senstore.alice.utils.Constants;
-//import com.example.dungeons.Security.VerifiedPurchase;
+import com.senstore.alice.billing.BillingSecurity.VerifiedPurchase;
+import com.senstore.alice.billing.BillingSecurity;
 
 import android.app.PendingIntent;
 import android.app.Service;
@@ -252,7 +253,7 @@ public class BillingService extends Service implements ServiceConnection {
 
         @Override
         protected long run() throws RemoteException {
-            mNonce = Security.generateNonce();
+            mNonce = BillingSecurity.generateNonce();
 
             Bundle request = makeRequestBundle("GET_PURCHASE_INFORMATION");
             request.putLong(Constants.BILLING_REQUEST_NONCE, mNonce);
@@ -266,7 +267,7 @@ public class BillingService extends Service implements ServiceConnection {
         @Override
         protected void onRemoteException(RemoteException e) {
             super.onRemoteException(e);
-            Security.removeNonce(mNonce);
+            BillingSecurity.removeNonce(mNonce);
         }
     }
 
