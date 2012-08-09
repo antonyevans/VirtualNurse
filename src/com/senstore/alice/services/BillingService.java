@@ -5,7 +5,7 @@ import com.android.vending.billing.IMarketBillingService;
 import com.senstore.alice.utils.Constants.PurchaseState;
 import com.senstore.alice.utils.Constants.ResponseCode;
 import com.senstore.alice.utils.Constants;
-import com.example.dungeons.Security.VerifiedPurchase;
+//import com.example.dungeons.Security.VerifiedPurchase;
 
 import android.app.PendingIntent;
 import android.app.Service;
@@ -159,53 +159,6 @@ public class BillingService extends Service implements ServiceConnection {
         }
     }
 
-    /**
-     * Wrapper class that checks if in-app billing is supported.
-     *
-     * Note: Support for subscriptions implies support for one-time purchases. However, the opposite
-     * is not true.
-     *
-     * Developers may want to perform two checks if both one-time and subscription products are
-     * available.
-     */
-    class CheckBillingSupported extends BillingRequest {
-        public String mProductType = null;
-
-
-
-        /** Constructor
-         *
-         * Note: Support for subscriptions implies support for one-time purchases. However, the
-         * opposite is not true.
-         *
-         * Developers may want to perform two checks if both one-time and subscription products are
-         * available.
-         *
-         * @pram itemType Either Constants.ITEM_TYPE_INAPP or Constants.ITEM_TYPE_SUBSCRIPTION, indicating
-         * the type of item support is being checked for.
-         */
-        public CheckBillingSupported(String itemType) {
-            super(-1);
-            mProductType = itemType;
-        }
-        
-        @Override
-        protected long run() throws RemoteException {
-            Bundle request = makeRequestBundle("CHECK_BILLING_SUPPORTED");
-            if (mProductType != null) {
-                request.putString(Constants.BILLING_REQUEST_ITEM_TYPE, mProductType);
-            }
-            Bundle response = mService.sendBillingRequest(request);
-            int responseCode = response.getInt(Constants.BILLING_RESPONSE_RESPONSE_CODE);
-            if (Constants.DEBUG) {
-                Log.i(TAG, "CheckBillingSupported response code: " +
-                        ResponseCode.valueOf(responseCode));
-            }
-            boolean billingSupported = (responseCode == ResponseCode.RESULT_OK.ordinal());
-            ResponseHandler.checkBillingSupportedResponse(billingSupported, mProductType);
-            return Constants.BILLING_RESPONSE_INVALID_REQUEST_ID;
-        }
-    }
 
     /**
      * Wrapper class that requests a purchase.
@@ -317,42 +270,6 @@ public class BillingService extends Service implements ServiceConnection {
         }
     }
 
-    /**
-     * Wrapper class that sends a RESTORE_TRANSACTIONS message to the server.
-     */
-    class RestoreTransactions extends BillingRequest {
-        long mNonce;
-
-        public RestoreTransactions() {
-            // This object is never created as a side effect of starting this
-            // service so we pass -1 as the startId to indicate that we should
-            // not stop this service after executing this request.
-            super(-1);
-        }
-
-        @Override
-        protected long run() throws RemoteException {
-            mNonce = Security.generateNonce();
-
-            Bundle request = makeRequestBundle("RESTORE_TRANSACTIONS");
-            request.putLong(Constants.BILLING_REQUEST_NONCE, mNonce);
-            Bundle response = mService.sendBillingRequest(request);
-            logResponseCode("restoreTransactions", response);
-            return response.getLong(Constants.BILLING_RESPONSE_REQUEST_ID,
-                    Constants.BILLING_RESPONSE_INVALID_REQUEST_ID);
-        }
-
-        @Override
-        protected void onRemoteException(RemoteException e) {
-            super.onRemoteException(e);
-            Security.removeNonce(mNonce);
-        }
-
-        @Override
-        protected void responseCodeReceived(ResponseCode responseCode) {
-            ResponseHandler.responseCodeReceived(BillingService.this, this, responseCode);
-        }
-    }
 
     public BillingService() {
         super();
@@ -393,9 +310,11 @@ public class BillingService extends Service implements ServiceConnection {
             String notifyId = intent.getStringExtra(Constants.NOTIFICATION_ID);
             getPurchaseInformation(startId, new String[] { notifyId });
         } else if (Constants.ACTION_PURCHASE_STATE_CHANGED.equals(action)) {
-            String signedData = intent.getStringExtra(Constants.INAPP_SIGNED_DATA);
-            String signature = intent.getStringExtra(Constants.INAPP_SIGNATURE);
-            purchaseStateChanged(startId, signedData, signature);
+            /*  Not currently handling this scenario 
+            * String signedData = intent.getStringExtra(Constants.INAPP_SIGNED_DATA);
+            * String signature = intent.getStringExtra(Constants.INAPP_SIGNATURE);
+            * purchaseStateChanged(startId, signedData, signature);
+            */
         } else if (Constants.ACTION_RESPONSE_CODE.equals(action)) {
             long requestId = intent.getLongExtra(Constants.INAPP_REQUEST_ID, -1);
             int responseCodeIndex = intent.getIntExtra(Constants.INAPP_RESPONSE_CODE,
@@ -433,16 +352,6 @@ public class BillingService extends Service implements ServiceConnection {
 
 
     /**
-     * Checks if in-app billing is supported.
-     * @pram itemType Either Constants.ITEM_TYPE_INAPP or Constants.ITEM_TYPE_SUBSCRIPTION, indicating the
-     *                type of item support is being checked for.
-     * @return true if supported; false otherwise
-     */
-    public boolean checkBillingSupported(String itemType) {
-        return new CheckBillingSupported(itemType).runRequest();
-    }
-
-    /**
      * Requests that the given item be offered to the user for purchase. When
      * the purchase succeeds (or is canceled) the {@link BillingReceiver}
      * receives an intent with the action {@link Constants#ACTION_NOTIFY}.
@@ -458,15 +367,6 @@ public class BillingService extends Service implements ServiceConnection {
         return new RequestPurchase(productId, itemType, developerPayload).runRequest();
     }
 
-    /**
-     * Requests transaction information for all managed items. Call this only when the
-     * application is first installed or after a database wipe. Do NOT call this
-     * every time the application starts up.
-     * @return false if there was an error connecting to Android Market
-     */
-    public boolean restoreTransactions() {
-        return new RestoreTransactions().runRequest();
-    }
 
     /**
      * Confirms receipt of a purchase state change. Each {@code notifyId} is
@@ -500,34 +400,6 @@ public class BillingService extends Service implements ServiceConnection {
         return new GetPurchaseInformation(startId, notifyIds).runRequest();
     }
 
-    /**
-     * Verifies that the data was signed with the given signature, and calls
-     * {@link ResponseHandler#purchaseResponse(Context, PurchaseState, String, String, long)}
-     * for each verified purchase.
-     * @param startId an identifier for the invocation instance of this service
-     * @param signedData the signed JSON string (signed, not encrypted)
-     * @param signature the signature for the data, signed with the private key
-     */
-    private void purchaseStateChanged(int startId, String signedData, String signature) {
-        ArrayList<Security.VerifiedPurchase> purchases;
-        purchases = Security.verifyPurchase(signedData, signature);
-        if (purchases == null) {
-            return;
-        }
-
-        ArrayList<String> notifyList = new ArrayList<String>();
-        for (VerifiedPurchase vp : purchases) {
-            if (vp.notificationId != null) {
-                notifyList.add(vp.notificationId);
-            }
-            ResponseHandler.purchaseResponse(this, vp.purchaseState, vp.productId,
-                    vp.orderId, vp.purchaseTime, vp.developerPayload);
-        }
-        if (!notifyList.isEmpty()) {
-            String[] notifyIds = notifyList.toArray(new String[notifyList.size()]);
-            confirmNotifications(startId, notifyIds);
-        }
-    }
 
     /**
      * This is called when we receive a response code from Android Market for a request
