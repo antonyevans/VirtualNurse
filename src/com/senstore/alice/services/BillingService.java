@@ -206,14 +206,14 @@ public class BillingService extends Service implements ServiceConnection {
             }
 
             Intent intent = new Intent();
-            ResponseHandler.buyPageIntentResponse(pendingIntent, intent);
+            //ResponseHandler.buyPageIntentResponse(pendingIntent, intent);
             return response.getLong(Constants.BILLING_RESPONSE_REQUEST_ID,
                     Constants.BILLING_RESPONSE_INVALID_REQUEST_ID);
         }
 
         @Override
         protected void responseCodeReceived(ResponseCode responseCode) {
-            ResponseHandler.responseCodeReceived(BillingService.this, this, responseCode);
+            //ResponseHandler.responseCodeReceived(BillingService.this, this, responseCode);
         }
     }
 
