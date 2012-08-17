@@ -9,7 +9,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.senstore.alice.models.Diagnosis;
 import com.senstore.alice.utils.Constants;
@@ -66,42 +68,53 @@ public class DiagnosisParser {
 
 		Diagnosis diag = new Diagnosis();
 
-		JSONObject api;
+		JSONObject JSONresponse;
+		
 		try {
-			api = new JSONObject(jsonStr);
+			JSONresponse = new JSONObject(jsonStr);
+			
+			if (JSONresponse.has("api")) {
+				
+				JSONObject jsonObj = JSONresponse.getJSONObject("api");
+	
+				String created_at = jsonObj.getString("created_at");
+				String current_query = jsonObj.getString("current_query");
+				String guide = jsonObj.getString("guide");
+				String id = jsonObj.getString("id");
+				String input = jsonObj.getString("input");
+				String last_query = jsonObj.getString("last_query");
+				String reply = jsonObj.getString("reply");
+				String response_type = jsonObj.getString("response_type");
+				String secret_hash = jsonObj.getString("secret_hash");
+				String select_type = jsonObj.getString("select_type");
+				String updated_at = jsonObj.getString("updated_at");
+				String user_id = jsonObj.getString("user_id");
+				Boolean purchased = true;
+	
+				diag.setCreated_at(created_at);
+				diag.setCurrent_query(current_query);
+				diag.setGuide(guide);
+				diag.setId(id);
+				diag.setInput(input);
+				diag.setPurchased(purchased);
+	
+				if (hasOptions(jsonObj)) {
+					diag.setReply_options(getReplyOptions(jsonObj));
+				}
+				diag.setLast_query(last_query);
+				diag.setReply(reply);
+				diag.setResponse_type(response_type);
+				diag.setSecret_hash(secret_hash);
+				diag.setSelect_type(select_type);
+				diag.setUpdated_at(updated_at);
+				diag.setUser_id(user_id);
 
-			JSONObject jsonObj = api.getJSONObject("api");
-
-			String created_at = jsonObj.getString("created_at");
-			String current_query = jsonObj.getString("current_query");
-			String guide = jsonObj.getString("guide");
-			String id = jsonObj.getString("id");
-			String input = jsonObj.getString("input");
-			String last_query = jsonObj.getString("last_query");
-			String reply = jsonObj.getString("reply");
-			String response_type = jsonObj.getString("response_type");
-			String secret_hash = jsonObj.getString("secret_hash");
-			String select_type = jsonObj.getString("select_type");
-			String updated_at = jsonObj.getString("updated_at");
-			String user_id = jsonObj.getString("user_id");
-
-			diag.setCreated_at(created_at);
-			diag.setCurrent_query(current_query);
-			diag.setGuide(guide);
-			diag.setId(id);
-			diag.setInput(input);
-
-			if (hasOptions(jsonObj)) {
-				diag.setReply_options(getReplyOptions(jsonObj));
+			} else {
+				Boolean purchased = false;
+				diag.setPurchased(purchased);
+				
+				Log.i(Constants.TAG, "Guide Not Purchased");
 			}
-			diag.setLast_query(last_query);
-			diag.setReply(reply);
-			diag.setResponse_type(response_type);
-			diag.setSecret_hash(secret_hash);
-			diag.setSelect_type(select_type);
-			diag.setUpdated_at(updated_at);
-			diag.setUser_id(user_id);
-
 		} catch (JSONException e) {
 			Log.e(Constants.TAG, e.getMessage());
 		}
@@ -109,6 +122,10 @@ public class DiagnosisParser {
 		return diag;
 	}
 
+	private boolean checkPurchaseError(String error) {
+		return true;
+	}
+	
 	private boolean hasOptions(JSONObject obj) {
 		boolean hasOptions = false;
 		Object optionsObject;

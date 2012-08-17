@@ -24,6 +24,7 @@ public class Diagnosis {
 	private String select_type = null;
 	private String updated_at = null;
 	private String user_id = null;
+	private Boolean purchased = false;
 
 	private String query_string = null;
 
@@ -43,6 +44,10 @@ public class Diagnosis {
 		return created_at;
 	}
 
+	public void setPurchased(Boolean purchased) {
+		this.purchased = purchased;
+	}
+	
 	public void setCreated_at(String created_at) {
 		this.created_at = created_at;
 	}

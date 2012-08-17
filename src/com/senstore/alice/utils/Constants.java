@@ -56,6 +56,7 @@ public class Constants {
 	public static int RESPONSE_CALLDOCTOR = 4;// Call doctor(text+button)
 	public static int RESPONSE_INFORMATION = 5;// Information(text)
 	
+	public static String NOT_PURCHASED_API_RESPONSE = "422 - {\"Status\":\"Please purchase the guide\"}";
 	
 	public static  String INFLATOR_SERVICE = "inflator_service";
 	
