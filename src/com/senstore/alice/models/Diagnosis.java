@@ -35,6 +35,10 @@ public class Diagnosis {
 	public void setQuery_string(String query_string) {
 		this.query_string = query_string;
 	}
+	
+	public Boolean getPurchasedState() {
+		return purchased;
+	}
 
 	public Diagnosis() {
 

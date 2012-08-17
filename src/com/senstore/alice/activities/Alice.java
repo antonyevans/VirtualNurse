@@ -576,7 +576,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 						result.getReply() + "\n" + "(" + result.getInput()
 								+ ")");
 
-			} else {
+			} else if (result.getPurchasedState()) {
 
 				String last_query = result.getLast_query();
 				String select_type = result.getSelect_type();
@@ -645,6 +645,9 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 					}
 				}
+			} else {
+				//this means they haven't purchased guide yet
+				Log.i(Constants.TAG, "Guide Not Purchased");
 			}
 		}
 

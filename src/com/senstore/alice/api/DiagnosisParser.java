@@ -112,8 +112,6 @@ public class DiagnosisParser {
 			} else {
 				Boolean purchased = false;
 				diag.setPurchased(purchased);
-				
-				Log.i(Constants.TAG, "Guide Not Purchased");
 			}
 		} catch (JSONException e) {
 			Log.e(Constants.TAG, e.getMessage());
