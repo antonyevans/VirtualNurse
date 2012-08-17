@@ -59,6 +59,7 @@ import com.senstore.alice.tasks.DiagnosisAsyncTask;
 import com.senstore.alice.utils.Constants;
 import com.senstore.alice.utils.Registry;
 import com.senstore.alice.views.ChatListView;
+import com.senstore.alice.services.BillingService;
 
 public class Alice extends Activity implements AsyncTasksListener,
 		TextToSpeech.OnInitListener {
@@ -112,6 +113,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 	private String talkResp = "";
 
 	private boolean isFirstTime = true;
+	
+	private BillingService mBillingService;
 
 	public Alice() {
 		super();
@@ -136,6 +139,9 @@ public class Alice extends Activity implements AsyncTasksListener,
 				getApplicationContext());
 
 		initAliceLocation();
+		
+		mBillingService = new BillingService();
+        mBillingService.setContext(this);
 
 		setContentView(R.layout.main);
 
