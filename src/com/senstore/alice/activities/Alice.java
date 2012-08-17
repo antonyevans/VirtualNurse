@@ -562,7 +562,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 		Diagnosis result = (Diagnosis) obj;
 
-		if (result != null) {
+		if (result.getPurchasedState()) {
 
 			// In cases where the server cannot understand/decipher
 			// input_text, we receive back a 'problem'. Test for the same
@@ -576,7 +576,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 						result.getReply() + "\n" + "(" + result.getInput()
 								+ ")");
 
-			} else if (result.getPurchasedState()) {
+			} else  {
 
 				String last_query = result.getLast_query();
 				String select_type = result.getSelect_type();
@@ -645,10 +645,10 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 					}
 				}
-			} else {
-				//this means they haven't purchased guide yet
-				Log.i(Constants.TAG, "Guide Not Purchased");
-			}
+			} 
+		}  else  {
+			//this means they haven't purchased guide yet
+			Log.i(Constants.TAG, "Guide Not Purchased");
 		}
 
 	}
