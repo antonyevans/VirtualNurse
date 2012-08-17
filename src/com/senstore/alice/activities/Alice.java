@@ -74,6 +74,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 	private String prevCurQuery = null;
 
 	private static final int DIAGNOSIS_DIALOG = 0;
+	private static final int LISTENING_DIALOG = 1;
+	private static final int BILLING_NOT_WORKING_DIALOG = 2;
 
 	final AsyncTasksListener listener = this;
 
@@ -93,7 +95,6 @@ public class Alice extends Activity implements AsyncTasksListener,
 	private Diagnosis mDiagnosis;
 
 	private static SpeechKit _speechKit;
-	private static final int LISTENING_DIALOG = 1;
 	private Handler _handler = null;
 	private final Recognizer.Listener _listener;
 	private Recognizer _currentRecognizer;
@@ -547,6 +548,22 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 		case LISTENING_DIALOG:
 			return _listeningDialog;
+		case BILLING_NOT_WORKING_DIALOG:
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage("Purchase was not completed")
+			       .setCancelable(false)
+			       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			        	   dialog.cancel();
+			           }
+			       })
+			       .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			                dialog.cancel();
+			           }
+			       });
+			AlertDialog dialog = builder.create();
+			return dialog;
 		}
 
 		return null;
@@ -654,7 +671,10 @@ public class Alice extends Activity implements AsyncTasksListener,
 			} 
 		}  else  {
 			//this means they haven't purchased guide yet
-			Log.i(Constants.TAG, "Guide Not Purchased");
+			;
+			if (!mBillingService.requestPurchase("test", Constants.ITEM_TYPE_INAPP, "developerPayload")) {
+                showDialog(BILLING_NOT_WORKING_DIALOG);
+            }
 		}
 
 	}
@@ -705,6 +725,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	@Override
 	protected void onDestroy() {
 		unregisterReceiver(receiver);
+        mBillingService.unbind();
 		killTTS();
 		super.onDestroy();
 	}
