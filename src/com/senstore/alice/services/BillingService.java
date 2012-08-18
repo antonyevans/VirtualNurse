@@ -7,6 +7,7 @@ import com.senstore.alice.utils.Constants.ResponseCode;
 import com.senstore.alice.utils.Constants;
 import com.senstore.alice.billing.BillingSecurity.VerifiedPurchase;
 import com.senstore.alice.billing.BillingSecurity;
+import com.senstore.alice.billing.ResponseHandler;
 
 import android.app.PendingIntent;
 import android.app.Service;
@@ -206,15 +207,14 @@ public class BillingService extends Service implements ServiceConnection {
             }
 
             Intent intent = new Intent();
-            Log.i(Constants.TAG, "This is where response handler goes");
-            //ResponseHandler.buyPageIntentResponse(pendingIntent, intent);
+            ResponseHandler.buyPageIntentResponse(pendingIntent, intent);
             return response.getLong(Constants.BILLING_RESPONSE_REQUEST_ID,
                     Constants.BILLING_RESPONSE_INVALID_REQUEST_ID);
         }
 
         @Override
         protected void responseCodeReceived(ResponseCode responseCode) {
-            //ResponseHandler.responseCodeReceived(BillingService.this, this, responseCode);
+            ResponseHandler.responseCodeReceived(BillingService.this, this, responseCode);
         }
     }
 
