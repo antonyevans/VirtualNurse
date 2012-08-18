@@ -14,6 +14,7 @@ import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -55,11 +56,15 @@ import com.senstore.alice.location.AliceLocation;
 import com.senstore.alice.location.AliceLocation.LocationResult;
 import com.senstore.alice.models.Diagnosis;
 import com.senstore.alice.services.BackgroundLogger;
+import com.senstore.alice.services.BillingService.RequestPurchase;
 import com.senstore.alice.tasks.DiagnosisAsyncTask;
 import com.senstore.alice.utils.Constants;
 import com.senstore.alice.utils.Registry;
 import com.senstore.alice.views.ChatListView;
 import com.senstore.alice.services.BillingService;
+import com.senstore.alice.billing.PurchaseObserver;
+import com.senstore.alice.utils.Constants.PurchaseState;
+import com.senstore.alice.utils.Constants.ResponseCode;
 
 public class Alice extends Activity implements AsyncTasksListener,
 		TextToSpeech.OnInitListener {
@@ -76,6 +81,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	private static final int DIAGNOSIS_DIALOG = 0;
 	private static final int LISTENING_DIALOG = 1;
 	private static final int BILLING_NOT_WORKING_DIALOG = 2;
+	private static final int DIALOG_BILLING_NOT_SUPPORTED_ID = 3;
 
 	final AsyncTasksListener listener = this;
 
@@ -711,6 +717,82 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 	}
 
+	/**
+     * A {@link PurchaseObserver} is used to get callbacks when Android Market sends
+     * messages to this application so that we can update the UI.
+     */
+    private class AlicePurchaseObserver extends PurchaseObserver {
+        public AlicePurchaseObserver(Handler handler) {
+            super(Alice.this, handler);
+        }
+
+        @Override
+        public void onBillingSupported(boolean supported, String type) {
+            if (Constants.DEBUG) {
+                Log.i("Purchases", "supported: " + supported);
+            }
+            if (type == null || type.equals(Constants.ITEM_TYPE_INAPP)) {
+                if (supported) {
+                  //  restoreDatabase();
+                  //  mBuyButton.setEnabled(true);
+                  //  mEditPayloadButton.setEnabled(true);
+                } else {
+                    showDialog(BILLING_NOT_WORKING_DIALOG);
+                }
+            } else if (type.equals(Constants.ITEM_TYPE_SUBSCRIPTION)) {
+               // mCatalogAdapter.setSubscriptionsSupported(supported);
+            } else {
+                showDialog(BILLING_NOT_WORKING_DIALOG);
+            }
+        }
+
+        @Override
+        public void onPurchaseStateChange(PurchaseState purchaseState, String itemId,
+                int quantity, long purchaseTime, String developerPayload) {
+            if (Constants.DEBUG) {
+                Log.i("Purchases", "onPurchaseStateChange() itemId: " + itemId + " " + purchaseState);
+            }
+
+            if (developerPayload == null) {
+                Log.i("Purchases",itemId + purchaseState.toString());
+            } else {
+            	Log.i("Purchases",itemId + purchaseState + "\n\t" + developerPayload);
+            }
+            
+            if (purchaseState == PurchaseState.PURCHASED) {
+                //mOwnedItems.add(itemId);
+                
+            }
+            //mCatalogAdapter.setOwnedItems(mOwnedItems);
+            //mOwnedItemsCursor.requery();
+        }
+
+        @Override
+        public void onRequestPurchaseResponse(RequestPurchase request,
+                ResponseCode responseCode) {
+            if (Constants.DEBUG) {
+                Log.d("Purchases", request.mProductId + ": " + responseCode);
+            }
+            if (responseCode == ResponseCode.RESULT_OK) {
+                if (Constants.DEBUG) {
+                    Log.i("Purchases", "purchase was successfully sent to server");
+                }
+                Log.i("Purchases",request.mProductId + "sending purchase request");
+            } else if (responseCode == ResponseCode.RESULT_USER_CANCELED) {
+                if (Constants.DEBUG) {
+                    Log.i("Purchases", "user canceled purchase");
+                }
+                Log.i("Purchases", request.mProductId + "dismissed purchase dialog");
+            } else {
+                if (Constants.DEBUG) {
+                    Log.i("Purchases", "purchase failed");
+                }
+                Log.i("Purchases",request.mProductId + "request purchase returned " + responseCode);
+            }
+        }
+
+    }
+	
 	@Override
 	protected void onPause() {
 		stopTTS();
