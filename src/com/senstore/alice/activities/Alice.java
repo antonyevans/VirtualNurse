@@ -122,6 +122,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 	private boolean isFirstTime = true;
 	
 	private BillingService mBillingService;
+	private AlicePurchaseObserver mAlicePurchaseObserver;
+	private Handler mHandler;
 
 	public Alice() {
 		super();
@@ -149,6 +151,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 		
 		mBillingService = new BillingService();
         mBillingService.setContext(this);
+        mHandler = new Handler();
+        mAlicePurchaseObserver = new AlicePurchaseObserver(mHandler);
 
 		setContentView(R.layout.main);
 
