@@ -164,7 +164,7 @@ public class BillingService extends Service implements ServiceConnection {
     /**
      * Wrapper class that requests a purchase.
      */
-    class RequestPurchase extends BillingRequest {
+    public class RequestPurchase extends BillingRequest {
         public final String mProductId;
         public final String mDeveloperPayload;
         public final String mProductType;
