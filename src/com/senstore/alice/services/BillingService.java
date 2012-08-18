@@ -206,6 +206,7 @@ public class BillingService extends Service implements ServiceConnection {
             }
 
             Intent intent = new Intent();
+            Log.i(Constants.TAG, "This is where response handler goes");
             //ResponseHandler.buyPageIntentResponse(pendingIntent, intent);
             return response.getLong(Constants.BILLING_RESPONSE_REQUEST_ID,
                     Constants.BILLING_RESPONSE_INVALID_REQUEST_ID);

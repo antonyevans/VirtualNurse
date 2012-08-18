@@ -671,7 +671,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 			} 
 		}  else  {
 			//this means they haven't purchased guide yet
-			;
+			
 			if (!mBillingService.requestPurchase("test", Constants.ITEM_TYPE_INAPP, "developerPayload")) {
                 showDialog(BILLING_NOT_WORKING_DIALOG);
             }
