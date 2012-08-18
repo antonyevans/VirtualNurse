@@ -65,6 +65,7 @@ import com.senstore.alice.services.BillingService;
 import com.senstore.alice.billing.PurchaseObserver;
 import com.senstore.alice.utils.Constants.PurchaseState;
 import com.senstore.alice.utils.Constants.ResponseCode;
+import com.senstore.alice.billing.ResponseHandler;
 
 public class Alice extends Activity implements AsyncTasksListener,
 		TextToSpeech.OnInitListener {
@@ -256,6 +257,12 @@ public class Alice extends Activity implements AsyncTasksListener,
 			_currentRecognizer.setListener(_listener);
 
 		}
+		
+		// Check if billing is supported.
+        ResponseHandler.register(mAlicePurchaseObserver);
+        if (!mBillingService.checkBillingSupported("Test")) {
+            showDialog(BILLING_NOT_WORKING_DIALOG);
+        }
 
 	}
 
