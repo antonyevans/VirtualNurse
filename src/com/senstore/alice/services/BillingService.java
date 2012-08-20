@@ -103,6 +103,16 @@ public class BillingService extends Service implements ServiceConnection {
 
     
     /**
+     * Checks if in-app billing is supported.
+     * @pram itemType Either Consts.ITEM_TYPE_INAPP or Consts.ITEM_TYPE_SUBSCRIPTION, indicating the
+     *                type of item support is being checked for.
+     * @return true if supported; false otherwise
+     */
+    public boolean checkBillingSupported(String itemType) {
+        return new CheckBillingSupported(itemType).runRequest();
+    }
+    
+    /**
      * The base class for all requests that use the MarketBillingService.
      * Each derived class overrides the run() method to call the appropriate
      * service interface.  If we are already connected to the MarketBillingService,
@@ -328,15 +338,6 @@ public class BillingService extends Service implements ServiceConnection {
         attachBaseContext(context);
     }
 
-    /**
-     * Checks if in-app billing is supported.
-     * @pram itemType Either Consts.ITEM_TYPE_INAPP or Consts.ITEM_TYPE_SUBSCRIPTION, indicating the
-     *                type of item support is being checked for.
-     * @return true if supported; false otherwise
-     */
-    public boolean checkBillingSupported(String itemType) {
-        return new CheckBillingSupported(itemType).runRequest();
-    }
     
     /**
      * We don't support binding to this service, only starting the service.
