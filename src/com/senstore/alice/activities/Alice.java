@@ -82,7 +82,9 @@ public class Alice extends Activity implements AsyncTasksListener,
 	private static final int DIAGNOSIS_DIALOG = 0;
 	private static final int LISTENING_DIALOG = 1;
 	private static final int BILLING_NOT_WORKING_DIALOG = 2;
-	private static final int DIALOG_BILLING_NOT_SUPPORTED_ID = 3;
+	private static final int DIALOG_BILLING_NOT_SUPPORTED_ID = 3;	
+	private static final int BILLING_WORKING_DIALOG = 4;
+	
 
 	final AsyncTasksListener listener = this;
 
@@ -260,8 +262,10 @@ public class Alice extends Activity implements AsyncTasksListener,
 		
 		// Check if billing is supported.
         ResponseHandler.register(mAlicePurchaseObserver);
-        if (!mBillingService.checkBillingSupported("Test")) {
+        if (!mBillingService.checkBillingSupported(Constants.ITEM_TYPE_INAPP)) {
             showDialog(BILLING_NOT_WORKING_DIALOG);
+        } else {
+        	showDialog(BILLING_WORKING_DIALOG);
         }
 
 	}
@@ -567,7 +571,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 			return _listeningDialog;
 		case BILLING_NOT_WORKING_DIALOG:
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage("Purchase was not completed")
+			builder.setMessage("Problem with billing")
 			       .setCancelable(false)
 			       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
 			           public void onClick(DialogInterface dialog, int id) {
@@ -581,11 +585,23 @@ public class Alice extends Activity implements AsyncTasksListener,
 			       });
 			AlertDialog dialog = builder.create();
 			return dialog;
+		case BILLING_WORKING_DIALOG:
+			AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
+			builder2.setMessage("In-app billing supported")
+			       .setCancelable(false)
+			       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			        	   dialog.cancel();
+			           }
+			       });
+			AlertDialog dialog2 = builder2.create();
+			return dialog2;
 		}
 
 		return null;
 	}
 
+	
 	@Override
 	public void onTaskPreExecute() {
 		showDialog(DIAGNOSIS_DIALOG);
