@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-import com.senstore.alice.wsh.R;
+import com.senstore.alice.test.R;
 import com.senstore.alice.utils.Constants;
 import com.senstore.alice.utils.Registry;
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.senstore.alice.wsh"
+    package="com.senstore.alice.test"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -58,7 +58,7 @@
         </activity>
 
         <receiver android:name="com.senstore.alice.activities.ResponseReceiver" />
-        <receiver android:name="BillingReceiver">
+        <receiver android:name="com.senstore.alice.wsh.BillingReceiver">
 	      <intent-filter>
 	        <action android:name="com.android.vending.billing.IN_APP_NOTIFY" />
 	        <action android:name="com.android.vending.billing.RESPONSE_CODE" />
@@ -67,7 +67,7 @@
 	    </receiver>
 
         <service android:name="com.senstore.alice.services.BackgroundLogger" />
-        <service android:name="BillingService" />
+        <service android:name="com.senstore.alice.wsh.BillingService" />
         
 
         <uses-library android:name="com.google.android.maps" />
