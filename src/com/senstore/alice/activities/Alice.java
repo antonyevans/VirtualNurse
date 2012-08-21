@@ -259,14 +259,6 @@ public class Alice extends Activity implements AsyncTasksListener,
 			_currentRecognizer.setListener(_listener);
 
 		}
-		
-		// Check if billing is supported.
-        ResponseHandler.register(mAlicePurchaseObserver);
-        if (!mBillingService.checkBillingSupported(Constants.ITEM_TYPE_INAPP)) {
-            showDialog(BILLING_NOT_WORKING_DIALOG);
-        } else {
-        	showDialog(BILLING_WORKING_DIALOG);
-        }
 
 	}
 
