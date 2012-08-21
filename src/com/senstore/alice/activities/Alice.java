@@ -793,6 +793,11 @@ public class Alice extends Activity implements AsyncTasksListener,
                     Log.i("Purchases", "user canceled purchase");
                 }
                 Log.i("Purchases", request.mProductId + "dismissed purchase dialog");
+            } else if (responseCode == ResponseCode.RESULT_SERVICE_UNAVAILABLE) {
+                if (Constants.DEBUG) {
+                    Log.i("Purchases", "result service unavailable");
+                }
+                Log.i("Purchases", request.mProductId + "result service unavailable");
             } else {
                 if (Constants.DEBUG) {
                     Log.i("Purchases", "purchase failed");
