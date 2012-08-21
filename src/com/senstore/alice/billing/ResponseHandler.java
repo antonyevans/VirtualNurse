@@ -104,11 +104,6 @@ public class ResponseHandler {
             final Context context, final PurchaseState purchaseState, final String productId,
             final String orderId, final long purchaseTime, final String developerPayload) {
 
-        // Update the database with the purchase state. We shouldn't do that
-        // from the main thread so we do the work in a background thread.
-        // We don't update the UI here. We will update the UI after we update
-        // the database because we need to read and update the current quantity
-        // first.
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -134,6 +129,7 @@ public class ResponseHandler {
     public static void responseCodeReceived(Context context, RequestPurchase request,
             ResponseCode responseCode) {
         if (sPurchaseObserver != null) {
+        	Log.i(Constants.TAG,"Response Code Received");
             sPurchaseObserver.onRequestPurchaseResponse(request, responseCode);
         }
     }
