@@ -370,11 +370,9 @@ public class BillingService extends Service implements ServiceConnection {
             String notifyId = intent.getStringExtra(Constants.NOTIFICATION_ID);
             getPurchaseInformation(startId, new String[] { notifyId });
         } else if (Constants.ACTION_PURCHASE_STATE_CHANGED.equals(action)) {
-            /*  Not currently handling this scenario 
-            * String signedData = intent.getStringExtra(Constants.INAPP_SIGNED_DATA);
-            * String signature = intent.getStringExtra(Constants.INAPP_SIGNATURE);
-            * purchaseStateChanged(startId, signedData, signature);
-            */
+            String signedData = intent.getStringExtra(Constants.INAPP_SIGNED_DATA);
+            String signature = intent.getStringExtra(Constants.INAPP_SIGNATURE);
+            purchaseStateChanged(startId, signedData, signature);            
         } else if (Constants.ACTION_RESPONSE_CODE.equals(action)) {
             long requestId = intent.getLongExtra(Constants.INAPP_REQUEST_ID, -1);
             int responseCodeIndex = intent.getIntExtra(Constants.INAPP_RESPONSE_CODE,
@@ -460,7 +458,36 @@ public class BillingService extends Service implements ServiceConnection {
         return new GetPurchaseInformation(startId, notifyIds).runRequest();
     }
 
+    /**
+     * Verifies that the data was signed with the given signature, and calls
+     * {@link ResponseHandler#purchaseResponse(Context, PurchaseState, String, String, long)}
+     * for each verified purchase.
+     * @param startId an identifier for the invocation instance of this service
+     * @param signedData the signed JSON string (signed, not encrypted)
+     * @param signature the signature for the data, signed with the private key
+     */
+    private void purchaseStateChanged(int startId, String signedData, String signature) {
+        ArrayList<BillingSecurity.VerifiedPurchase> purchases;
+        purchases = BillingSecurity.verifyPurchase(signedData, signature);
+        if (purchases == null) {
+            return;
+        }
 
+        ArrayList<String> notifyList = new ArrayList<String>();
+        for (VerifiedPurchase vp : purchases) {
+            if (vp.notificationId != null) {
+                notifyList.add(vp.notificationId);
+            }
+            ResponseHandler.purchaseResponse(this, vp.purchaseState, vp.productId,
+                    vp.orderId, vp.purchaseTime, vp.developerPayload);
+        }
+        if (!notifyList.isEmpty()) {
+            String[] notifyIds = notifyList.toArray(new String[notifyList.size()]);
+            confirmNotifications(startId, notifyIds);
+        }
+    }
+    
+    
     /**
      * This is called when we receive a response code from Android Market for a request
      * that we made. This is used for reporting various errors and for
