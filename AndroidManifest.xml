@@ -58,7 +58,7 @@
         </activity>
 
         <receiver android:name="com.senstore.alice.activities.ResponseReceiver" />
-        <receiver android:name="com.senstore.alice.wsh.BillingReceiver">
+        <receiver android:name="com.senstore.alice.billing.BillingReceiver">
 	      <intent-filter>
 	        <action android:name="com.android.vending.billing.IN_APP_NOTIFY" />
 	        <action android:name="com.android.vending.billing.RESPONSE_CODE" />
