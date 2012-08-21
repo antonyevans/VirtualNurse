@@ -566,41 +566,29 @@ public class Alice extends Activity implements AsyncTasksListener,
 		switch (id) {
 		case DIAGNOSIS_DIALOG:
 			return _diagnosisDialog;
-
 		case LISTENING_DIALOG:
 			return _listeningDialog;
 		case BILLING_NOT_WORKING_DIALOG:
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage("Problem with billing")
-			       .setCancelable(false)
-			       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) {
-			        	   dialog.cancel();
-			           }
-			       })
-			       .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) {
-			                dialog.cancel();
-			           }
-			       });
-			AlertDialog dialog = builder.create();
-			return dialog;
+			return simpleMessage("Problem with billing");
 		case BILLING_WORKING_DIALOG:
-			AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
-			builder2.setMessage("In-app billing supported")
-			       .setCancelable(false)
-			       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) {
-			        	   dialog.cancel();
-			           }
-			       });
-			AlertDialog dialog2 = builder2.create();
-			return dialog2;
+			return simpleMessage("In-app billing supported");
 		}
 
 		return null;
 	}
 
+	public AlertDialog simpleMessage(String message) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(message)
+		       .setCancelable(false)
+		       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		        	   dialog.cancel();
+		           }
+		       });
+		AlertDialog dialog = builder.create();
+		return dialog;		
+	}
 	
 	@Override
 	public void onTaskPreExecute() {
