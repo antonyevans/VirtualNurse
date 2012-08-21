@@ -291,6 +291,9 @@ public class BillingService extends Service implements ServiceConnection {
             Bundle request = makeRequestBundle("CONFIRM_NOTIFICATIONS");
             request.putStringArray(Constants.BILLING_REQUEST_NOTIFY_IDS, mNotifyIds);
             Bundle response = mService.sendBillingRequest(request);
+            if (Constants.DEBUG) {
+                Log.i(TAG, "notifyId in BillingService: " + mNotifyIds);
+            }
             logResponseCode("confirmNotifications", response);
             return response.getLong(Constants.BILLING_RESPONSE_REQUEST_ID,
                     Constants.BILLING_RESPONSE_INVALID_REQUEST_ID);
@@ -367,8 +370,11 @@ public class BillingService extends Service implements ServiceConnection {
             String[] notifyIds = intent.getStringArrayExtra(Constants.NOTIFICATION_ID);
             confirmNotifications(startId, notifyIds);
         } else if (Constants.ACTION_GET_PURCHASE_INFORMATION.equals(action)) {
-            String notifyId = intent.getStringExtra(Constants.NOTIFICATION_ID);
+        	String notifyId = intent.getStringExtra(Constants.NOTIFICATION_ID);
             getPurchaseInformation(startId, new String[] { notifyId });
+            if (Constants.DEBUG) {
+                Log.i(TAG, "Get purchase info:" + notifyId);
+            }
         } else if (Constants.ACTION_PURCHASE_STATE_CHANGED.equals(action)) {
             String signedData = intent.getStringExtra(Constants.INAPP_SIGNED_DATA);
             String signature = intent.getStringExtra(Constants.INAPP_SIGNATURE);
@@ -502,6 +508,9 @@ public class BillingService extends Service implements ServiceConnection {
      */
     private void checkResponseCode(long requestId, ResponseCode responseCode) {
         BillingRequest request = mSentRequests.get(requestId);
+        if (Constants.DEBUG) {
+    		Log.i(TAG,"reached checkresponsecode");
+        }
         if (request != null) {
             if (Constants.DEBUG) {
                 Log.d(TAG, request.getClass().getSimpleName() + ": " + responseCode);
