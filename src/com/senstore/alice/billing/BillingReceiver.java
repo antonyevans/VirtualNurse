@@ -50,6 +50,9 @@ public class BillingReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
         if (Constants.ACTION_PURCHASE_STATE_CHANGED.equals(action)) {
+        	if (Constants.DEBUG) {
+        		Log.i(TAG,"ACTION_PURCHASE_STATE_CHANGED");
+            }
             String signedData = intent.getStringExtra(Constants.INAPP_SIGNED_DATA);
             String signature = intent.getStringExtra(Constants.INAPP_SIGNATURE);
             purchaseStateChanged(context, signedData, signature);
@@ -60,10 +63,13 @@ public class BillingReceiver extends BroadcastReceiver {
             }
             notify(context, notifyId);
         } else if (Constants.ACTION_RESPONSE_CODE.equals(action)) {
-            long requestId = intent.getLongExtra(Constants.INAPP_REQUEST_ID, -1);
+        	long requestId = intent.getLongExtra(Constants.INAPP_REQUEST_ID, -1);
             int responseCodeIndex = intent.getIntExtra(Constants.INAPP_RESPONSE_CODE,
                     ResponseCode.RESULT_ERROR.ordinal());
             checkResponseCode(context, requestId, responseCodeIndex);
+            if (Constants.DEBUG) {
+        		Log.i(TAG,"ACTION_RESPONSE_CODE:" + requestId);
+            }
         } else {
             Log.w(TAG, "unexpected action: " + action);
         }
