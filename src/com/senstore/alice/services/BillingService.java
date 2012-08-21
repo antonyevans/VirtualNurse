@@ -271,6 +271,7 @@ public class BillingService extends Service implements ServiceConnection {
 
         @Override
         protected void responseCodeReceived(ResponseCode responseCode) {
+        	Log.i(TAG,"responseCodeREceived");
             ResponseHandler.responseCodeReceived(BillingService.this, this, responseCode);
         }
     }
@@ -527,6 +528,8 @@ public class BillingService extends Service implements ServiceConnection {
                 Log.d(TAG, request.getClass().getSimpleName() + ": " + responseCode);
             }
             request.responseCodeReceived(responseCode);
+        } else {
+        	Log.i(TAG,"requestcode response is null");
         }
         mSentRequests.remove(requestId);
     }

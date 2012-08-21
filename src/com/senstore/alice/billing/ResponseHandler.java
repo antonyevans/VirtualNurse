@@ -129,7 +129,7 @@ public class ResponseHandler {
     public static void responseCodeReceived(Context context, RequestPurchase request,
             ResponseCode responseCode) {
         if (sPurchaseObserver != null) {
-        	Log.i(Constants.TAG,"Response Code Received");
+        	Log.i(Constants.TAG,"Response Code Received:" + responseCode);
             sPurchaseObserver.onRequestPurchaseResponse(request, responseCode);
         }
     }
