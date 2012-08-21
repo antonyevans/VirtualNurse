@@ -123,7 +123,7 @@ public class BillingSecurity {
              * Generally, encryption keys / passwords should only be kept in memory
              * long enough to perform the operation they need to perform.
              */
-            String base64EncodedPublicKey = "your public key here";
+            String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhCcRgVBxY4815eC544yVj4Y+peY9oXymuS+A+D8A7Kfo3lOkUUDPvTaqirZ7hL4PKuPC0y+6dNe6BmHjKh6zxTBHcraKuri4PpoEtM9/qn0ct9TTLvl+aXM4zEnQIZyklkQVOCwcPVvFUIEucrLV8lQZtOa2fK9UAuhdrLnxTS20AW1PbY7TJ9OW4X/vXu0R4GsXriOJ34TSJj9AR/R7ZgASypTmBnCsca6fMgpk6LHwuykK3dTDK2LxDKrMC/y74PzWWaW4B9tFzTleVjFfhSFi0YfVNvYDNmfEoQ9lsK4BUexK2EG5gmnOIBU5U6DcRjidYo1zKmqk4Ef+LBtl0QIDAQAB";
             PublicKey key = BillingSecurity.generatePublicKey(base64EncodedPublicKey);
             verified = BillingSecurity.verify(key, signedData, signature);
             if (!verified) {
@@ -204,7 +204,7 @@ public class BillingSecurity {
             Log.e(TAG, "Invalid key specification.");
             throw new IllegalArgumentException(e);
         } catch (Base64DecoderException e) {
-            Log.e(TAG, "Base64 decoding failed.");
+            Log.e(TAG, "Base64 decoding failed.#2");
             throw new IllegalArgumentException(e);
         }
     }
@@ -239,7 +239,7 @@ public class BillingSecurity {
         } catch (SignatureException e) {
             Log.e(TAG, "Signature exception.");
         } catch (Base64DecoderException e) {
-            Log.e(TAG, "Base64 decoding failed.");
+            Log.e(TAG, "Base64 decoding failed.#1");
         }
         return false;
     }
