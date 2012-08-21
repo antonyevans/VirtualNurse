@@ -104,7 +104,10 @@ public class BillingReceiver extends BroadcastReceiver {
      * @param notifyId the notification ID
      */
     private void notify(Context context, String notifyId) {
-        Intent intent = new Intent(Constants.ACTION_GET_PURCHASE_INFORMATION);
+    	if (Constants.DEBUG) {
+            Log.i(TAG, "notify run");
+        }
+    	Intent intent = new Intent(Constants.ACTION_GET_PURCHASE_INFORMATION);
         intent.setClass(context, BillingService.class);
         intent.putExtra(Constants.NOTIFICATION_ID, notifyId);
         context.startService(intent);

@@ -288,6 +288,9 @@ public class BillingService extends Service implements ServiceConnection {
 
         @Override
         protected long run() throws RemoteException {
+        	if (Constants.DEBUG) {
+                Log.i(TAG, "confirm notifications run");
+            }
             Bundle request = makeRequestBundle("CONFIRM_NOTIFICATIONS");
             request.putStringArray(Constants.BILLING_REQUEST_NOTIFY_IDS, mNotifyIds);
             Bundle response = mService.sendBillingRequest(request);
@@ -315,7 +318,9 @@ public class BillingService extends Service implements ServiceConnection {
         @Override
         protected long run() throws RemoteException {
             mNonce = BillingSecurity.generateNonce();
-
+            if (Constants.DEBUG) {
+                Log.i(TAG, "get purchaseinfo run");
+            }
             Bundle request = makeRequestBundle("GET_PURCHASE_INFORMATION");
             request.putLong(Constants.BILLING_REQUEST_NONCE, mNonce);
             request.putStringArray(Constants.BILLING_REQUEST_NOTIFY_IDS, mNotifyIds);
@@ -352,7 +357,10 @@ public class BillingService extends Service implements ServiceConnection {
 
     @Override
     public void onStart(Intent intent, int startId) {
-        handleCommand(intent, startId);
+    	if (Constants.DEBUG) {
+            Log.i(TAG, "billingreceiver onStart");
+        }
+    	handleCommand(intent, startId);
     }
 
     /**
@@ -369,6 +377,9 @@ public class BillingService extends Service implements ServiceConnection {
         if (Constants.ACTION_CONFIRM_NOTIFICATION.equals(action)) {
             String[] notifyIds = intent.getStringArrayExtra(Constants.NOTIFICATION_ID);
             confirmNotifications(startId, notifyIds);
+            if (Constants.DEBUG) {
+                Log.i(TAG, "ACTION_CONFIRM_NOTIFICATION");
+            }
         } else if (Constants.ACTION_GET_PURCHASE_INFORMATION.equals(action)) {
         	String notifyId = intent.getStringExtra(Constants.NOTIFICATION_ID);
             getPurchaseInformation(startId, new String[] { notifyId });

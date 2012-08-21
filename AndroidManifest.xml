@@ -67,7 +67,7 @@
 	    </receiver>
 
         <service android:name="com.senstore.alice.services.BackgroundLogger" />
-        <service android:name="com.senstore.alice.wsh.BillingService" />
+        <service android:name="com.senstore.alice.services.BillingService" />
         
 
         <uses-library android:name="com.google.android.maps" />
