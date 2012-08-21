@@ -156,6 +156,7 @@ public class Alice extends Activity implements AsyncTasksListener,
         mBillingService.setContext(this);
         mHandler = new Handler();
         mAlicePurchaseObserver = new AlicePurchaseObserver(mHandler);
+        ResponseHandler.register(mAlicePurchaseObserver);
 
 		setContentView(R.layout.main);
 
@@ -685,7 +686,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		}  else  {
 			//this means they haven't purchased guide yet
 			
-			if (!mBillingService.requestPurchase("test", Constants.ITEM_TYPE_INAPP, "developerPayload")) {
+			if (!mBillingService.requestPurchase("android.test.purchased", Constants.ITEM_TYPE_INAPP, "developerPayload")) {
                 showDialog(BILLING_NOT_WORKING_DIALOG);
             } else {
             	Log.i(Constants.TAG,"Billing test success");
@@ -817,6 +818,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	protected void onDestroy() {
 		unregisterReceiver(receiver);
         mBillingService.unbind();
+        ResponseHandler.unregister(mAlicePurchaseObserver); 
 		killTTS();
 		super.onDestroy();
 	}
