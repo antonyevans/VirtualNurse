@@ -396,6 +396,9 @@ public class BillingService extends Service implements ServiceConnection {
             int responseCodeIndex = intent.getIntExtra(Constants.INAPP_RESPONSE_CODE,
                     ResponseCode.RESULT_ERROR.ordinal());
             ResponseCode responseCode = ResponseCode.valueOf(responseCodeIndex);
+            if (Constants.DEBUG) {
+                Log.i(TAG, "ACTION_RESPONSE_CODE");
+            }
             checkResponseCode(requestId, responseCode);
         }
     }
