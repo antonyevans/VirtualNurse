@@ -115,6 +115,7 @@ public class ResponseHandler {
             	switch (purchaseState) {
             	case PURCHASED: {
             		PurchaseRESTHandler handler = new PurchaseRESTHandler();
+            		//in a future version could switch purchase_type for productID to enable puchase of different products
                 	Purchase purchase = handler.purchase(Constants.PURCHASE_TYPE);
             	}
             	case CANCELED: {
