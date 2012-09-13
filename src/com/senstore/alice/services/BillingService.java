@@ -493,7 +493,11 @@ public class BillingService extends Service implements ServiceConnection {
         if (purchases == null) {
             return;
         }
-
+        
+        if (Constants.DEBUG) {
+    		Log.i(TAG,"PurchaseStateChanged: Startid = " + startId);
+        }
+        
         ArrayList<String> notifyList = new ArrayList<String>();
         for (VerifiedPurchase vp : purchases) {
             if (vp.notificationId != null) {

@@ -108,7 +108,7 @@ public class ResponseHandler {
             @Override
             public void run() {
                 //this is where my code to implement the purchase on the remote server needs to go
-            	Log.i(Constants.TAG,"Purchase received");
+            	Log.i(Constants.TAG,"Purchase received OK");
             }
         }).start();
     }
