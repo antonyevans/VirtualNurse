@@ -213,7 +213,7 @@ public class BillingService extends Service implements ServiceConnection {
             ResponseCode responseCode = ResponseCode.valueOf(
                     response.getInt(Constants.BILLING_RESPONSE_RESPONSE_CODE));
             if (Constants.DEBUG) {
-                Log.e(TAG, method + " received " + responseCode.toString());
+                Log.i(TAG, method + " received " + responseCode.toString());
             }
         }
     }

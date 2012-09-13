@@ -112,8 +112,17 @@ public class ResponseHandler {
                 //this is where my code to implement the purchase on the remote server needs to go
             	Log.i(Constants.TAG,"Purchase received OK");
             	//run code to register purchase on remote server
-            	PurchaseRESTHandler handler = new PurchaseRESTHandler();
-            	Purchase purchase = handler.purchase(Constants.PURCHASE_TYPE);
+            	switch (purchaseState) {
+            	case PURCHASED: {
+            		PurchaseRESTHandler handler = new PurchaseRESTHandler();
+                	Purchase purchase = handler.purchase(Constants.PURCHASE_TYPE);
+            	}
+            	case CANCELED: {
+            		Log.i(Constants.TAG,"Purchase canceled");
+            	}
+            	break;
+            	}
+            	
             	//insert check to see if purchase was successful
             	
             	
