@@ -2,6 +2,8 @@
 
 package com.senstore.alice.billing;
 
+import com.senstore.alice.api.PurchaseRESTHandler;
+import com.senstore.alice.models.Purchase;
 import com.senstore.alice.services.BillingService.RequestPurchase;
 import com.senstore.alice.utils.Constants;
 import com.senstore.alice.utils.Constants.PurchaseState;
@@ -109,6 +111,14 @@ public class ResponseHandler {
             public void run() {
                 //this is where my code to implement the purchase on the remote server needs to go
             	Log.i(Constants.TAG,"Purchase received OK");
+            	//run code to register purchase on remote server
+            	PurchaseRESTHandler handler = new PurchaseRESTHandler();
+            	Purchase purchase = handler.purchase(Constants.PURCHASE_TYPE);
+            	//insert check to see if purchase was successful
+            	
+            	
+            	//open up the new guide
+
             }
         }).start();
     }
