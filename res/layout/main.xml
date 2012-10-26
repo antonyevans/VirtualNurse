@@ -7,6 +7,8 @@
     
     <include layout="@layout/actionbar"/>
 
+    <include layout="@layout/footerbar"/>
+    
     <LinearLayout
         android:id="@+id/linear_flipper"
         android:layout_width="fill_parent"
@@ -19,15 +21,6 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" >
         </ViewFlipper>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/alice_footer"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/barbottom"
-        android:orientation="horizontal" >
     </LinearLayout>
 
     <ImageView

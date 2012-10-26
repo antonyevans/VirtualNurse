@@ -43,7 +43,13 @@
         <item name="android:background">@drawable/bartop</item>
     </style>
     
-    
+    <style name="FooterBar">
+        <item name="android:id">@+id/footer_container</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">45dip</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:background">@drawable/barbottom</item>
+    </style>
     
     
 </resources>    
