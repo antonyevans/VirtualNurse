@@ -376,6 +376,15 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 	}
 
+	public void onAlphabet(View view) {
+		
+	}
+
+	public void onKeyboard(View view) {
+		
+	}
+	
+	
 	private void showInfoAlert(String title, String message) {
 		AlertDialog alert = new AlertDialog.Builder(this).create();
 		alert.setTitle(title);
