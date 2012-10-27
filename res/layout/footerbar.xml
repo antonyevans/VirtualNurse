@@ -11,7 +11,6 @@
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    android:orientation="vertical"
-	    android:gravity="bottom"
 	    android:layout_alignParentBottom="true" >
 	
 	    <RelativeLayout
@@ -29,25 +28,20 @@
 	            android:layout_height="wrap_content"
 	            android:gravity="left"
 	            android:orientation="horizontal" >
-	
+	
 	            <ImageButton
-	                style="@style/TitleBarOperation"
-	                android:layout_gravity="center"
-	                android:layout_marginBottom="4dip"
-	                android:layout_marginLeft="4dip"
-	                android:layout_marginRight="5dip"
-	                android:layout_marginTop="5dip"
-	                android:background="@drawable/home_bg"
-	                android:onClick="onHome"
-	                android:paddingBottom="3dip"
+	                android:id="@+id/athroughz"
+	                style="@style/FooterBarOperation"
+	                android:layout_width="60dip"
+	                android:layout_height="40dip"
+	                android:layout_gravity="right|center_vertical"
+	                android:layout_marginBottom="2dp"
+	                android:layout_marginLeft="40dip"
+	                android:layout_marginTop="0dp"	                
+	                android:scaleType="centerInside"
+	                android:background="@android:color/transparent"
+	                android:onClick="onAlphabet"
 	                android:src="@drawable/athroughz" />
-	
-	            <ImageView
-	                android:layout_width="1px"
-	                android:layout_height="fill_parent"
-	                android:layout_marginRight="5dip"
-	                android:background="@drawable/separator" />
-	
 	
 	        </LinearLayout>
 	
@@ -57,33 +51,23 @@
 	            android:layout_height="wrap_content"
 	            android:layout_gravity="right|center_vertical"
 	            android:gravity="right"
-	            android:orientation="horizontal" >
-	
-	            <ImageButton
-	                android:id="@+id/athroughz"
-	                style="@style/TitleBarOperation"
-	                android:layout_gravity="right|center_vertical"
-	                android:layout_marginBottom="6dp"
-	                android:layout_marginRight="5dip"
-	                android:layout_marginTop="6dp"
-	                android:background="@android:color/transparent"
-	                android:onClick="onAlphabet"
-	                android:src="@drawable/athroughz" />
-	
+	            android:orientation="horizontal" >	            
+	
 	            <ImageButton
 	                android:id="@+id/keyboard"
-	                style="@style/TitleBarOperation"
-	                android:layout_height="match_parent"
+	                android:layout_width="60dip"
+	                android:layout_height="40dip"
 	                android:layout_gravity="right|center_vertical"
-	                android:layout_marginBottom="6dp"
-	                android:layout_marginRight="5dip"
-	                android:layout_marginTop="6dp"
+	                android:layout_marginBottom="2dp"
+	                android:layout_marginRight="35dip"
+	                android:layout_marginTop="0dp"
 	                android:background="@android:color/transparent"
 	                android:onClick="onKeyboard"
-	                android:scaleType="centerCrop"
+	                android:scaleType="centerInside"
 	                android:src="@drawable/keyboard" />
+
 	        </LinearLayout>
-	    </RelativeLayout>
-	
+	        
+	    </RelativeLayout>	
 	</RelativeLayout>
 </LinearLayout>
