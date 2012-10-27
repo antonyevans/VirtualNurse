@@ -34,8 +34,10 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -381,6 +383,41 @@ public class Alice extends Activity implements AsyncTasksListener,
 	}
 
 	public void onKeyboard(View view) {
+		AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+		alert.setTitle("Text Entry");
+		alert.setMessage("Please enter your symptoms");
+
+		// Set an EditText view to get user input 
+		final EditText input = new EditText(this);
+		alert.setView(input);
+
+		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+		public void onClick(DialogInterface dialog, int whichButton) {
+		String value = input.getText().toString();
+		 // Do something with value!
+		 }
+		});
+
+		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		 public void onClick(DialogInterface dialog, int whichButton) {
+		     // Canceled.
+		}
+		});
+
+		
+		input.requestFocus();
+        input.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                InputMethodManager keyboard = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+                keyboard.showSoftInput(input, 0);
+            }
+        },200);
+		
+		alert.show();
+		
 		
 	}
 	
