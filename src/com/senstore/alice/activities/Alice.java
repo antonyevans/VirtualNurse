@@ -654,6 +654,15 @@ public class Alice extends Activity implements AsyncTasksListener,
 		removeDialog(DIAGNOSIS_DIALOG);
 
 		Diagnosis result = (Diagnosis) obj;
+		
+		if (result == null) {
+			// TODO: Something sensible to handle this
+			
+			Log.i("Alice","Diagnosis returned null");
+			
+			
+			return;
+		}
 
 		if (result.getPurchasedState()) {
 
