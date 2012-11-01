@@ -393,16 +393,26 @@ public class Alice extends Activity implements AsyncTasksListener,
 		alert.setView(input);
 
 		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-		public void onClick(DialogInterface dialog, int whichButton) {
-		String value = input.getText().toString();
-		 // Do something with value!
-		 }
+			public void onClick(DialogInterface dialog, int whichButton) {
+				String value = input.getText().toString();
+				if (mDiagnosis != null) {
+					//instance we have a previous query
+					doVoiceDiagnosis(mDiagnosis.getGuide(), prevCurQuery, value);
+
+				} else {
+					//instance we are starting the selection process
+					doVoiceDiagnosis("null",
+							Constants.DIAGNOSIS_DEFAULT_LAST_QUERY, value);
+				}
+					
+				
+			}
 		});
 
 		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 		 public void onClick(DialogInterface dialog, int whichButton) {
 		     // Canceled.
-		}
+		 }
 		});
 
 		
@@ -1276,7 +1286,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 			// TODO Set both the query and response Strings to the TextViews
 
 			if (queryTxt != null && responseTxt != null) {
-
+				
+				Log.i("Alice info", mDiagnosis.getQuery_string());
 				queryTxt.setText(mDiagnosis.getQuery_string());
 				String toTrim = mDiagnosis.getReply().trim();
 				responseTxt.setText(Html.fromHtml(toTrim));
