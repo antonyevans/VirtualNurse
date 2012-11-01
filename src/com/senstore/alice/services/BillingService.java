@@ -361,7 +361,9 @@ public class BillingService extends Service implements ServiceConnection {
     	if (Constants.DEBUG) {
             Log.i(TAG, "billingreceiver onStart");
         }
-    	handleCommand(intent, startId);
+    	if (intent != null) {
+    		handleCommand(intent, startId);
+    	}    		
     }
 
     /**
