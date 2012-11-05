@@ -751,7 +751,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		}  else  {
 			//this means they haven't purchased guide yet
 			
-			if (!mBillingService.requestPurchase("android.test.purchased", Constants.ITEM_TYPE_INAPP, "developerPayload")) {
+			if (!mBillingService.requestPurchase("womanssexualhealth", Constants.ITEM_TYPE_INAPP, "developerPayload")) {
                 showDialog(BILLING_NOT_WORKING_DIALOG);
             } else {
             	Log.i(Constants.TAG,"Billing request sent");
