@@ -311,6 +311,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		} else {
 
 			mTts.stop();
+			mTts.shutdown();
 			mTts = null;
 			mic_action.setImageDrawable(mic_stop);
 
