@@ -379,7 +379,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	}
 
 	public void onAlphabet(View view) {
-		
+		onHome(view);
 	}
 
 	public void onKeyboard(View view) {
