@@ -51,7 +51,7 @@ import com.nuance.nmdp.speechkit.Recognizer;
 import com.nuance.nmdp.speechkit.SpeechError;
 import com.nuance.nmdp.speechkit.SpeechKit;
 import com.nuance.nmdp.speechkit.Vocalizer;
-import com.senstore.alice.harvard.R;
+import com.senstore.alice.bc.R;
 import com.senstore.alice.api.HarvardGuide;
 import com.senstore.alice.listeners.AsyncTasksListener;
 import com.senstore.alice.location.AliceLocation;
