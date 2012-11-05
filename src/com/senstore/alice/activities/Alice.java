@@ -302,10 +302,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		_vocalizer.setVoice("Serena");
 	}
 
-	public void toggleTalk(View view) {
-		// do togling
-		canTalk = !canTalk;
-
+	public void setTalkSettings() {
 		if (canTalk) {
 			mTts = new TextToSpeech(this, this // TextToSpeech.OnInitListener
 			);
@@ -318,6 +315,13 @@ public class Alice extends Activity implements AsyncTasksListener,
 			mic_action.setImageDrawable(mic_stop);
 
 		}
+	}
+	
+	public void toggleTalk(View view) {
+		// do togling
+		canTalk = !canTalk;
+		setTalkSettings();
+		
 	}
 
 	public void onHome(View view) {
