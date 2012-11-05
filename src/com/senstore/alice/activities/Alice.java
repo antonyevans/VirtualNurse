@@ -318,7 +318,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	}
 	
 	public void toggleTalk(View view) {
-		// do togling
+		// do toggling
 		canTalk = !canTalk;
 		setTalkSettings();
 		
