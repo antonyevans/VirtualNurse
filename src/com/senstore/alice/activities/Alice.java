@@ -449,7 +449,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		if (currentView.equals(menuView)) {
 			// close the app
 			onStop();
-			finish();
+			moveTaskToBack(true);
 		} else if (currentView.equals(chatview)) {
 
 			// moving to Home View. Clean the Chat list and remove the chat view
