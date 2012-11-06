@@ -444,6 +444,28 @@ public class Alice extends Activity implements AsyncTasksListener,
 		
 	}
 	
+	@Override
+	public void onBackPressed() {
+		
+		View currentView = flipper.getCurrentView();
+		if (currentView.equals(menuView)) {
+			// close the app
+			onStop();
+			finish();
+		} else if (currentView.equals(chatview)) {
+
+			// moving to Home View. Clean the Chat list and remove the chat view
+			chatAdapter.resetAdapter();
+			flipper.removeView(currentView);
+			
+
+		} else if (currentView.equals(aboutView)) {
+
+			// moving to Home View. Clean the Chat list and remove the chat view
+
+			flipper.removeView(currentView);
+		}
+	}
 	
 	private void showInfoAlert(String title, String message) {
 		AlertDialog alert = new AlertDialog.Builder(this).create();
