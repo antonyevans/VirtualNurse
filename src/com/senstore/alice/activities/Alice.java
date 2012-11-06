@@ -69,6 +69,8 @@ import com.senstore.alice.utils.Constants.PurchaseState;
 import com.senstore.alice.utils.Constants.ResponseCode;
 import com.senstore.alice.billing.ResponseHandler;
 
+import com.flurry.android.FlurryAgent;
+
 public class Alice extends Activity implements AsyncTasksListener,
 		TextToSpeech.OnInitListener {
 
@@ -913,7 +915,15 @@ public class Alice extends Activity implements AsyncTasksListener,
 
     }
 	
-	@Override
+    @Override
+    protected void onStart()  {
+    	super.onStart();
+    	
+    	//start flurry agent
+    	FlurryAgent.onStartSession(this, Constants.FLURRY_API);
+    }
+    
+    @Override
 	protected void onPause() {
 		stopTTS();
 		super.onPause();
@@ -926,8 +936,11 @@ public class Alice extends Activity implements AsyncTasksListener,
 
     @Override
     protected void onStop(){
-       super.onStop();
+      super.onStop();
 
+      //stop the flurry agent
+      FlurryAgent.onEndSession(this);
+       
       // We need an Editor object to make preference changes.
       // All objects are from android.context.Context
       SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
