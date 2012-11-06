@@ -357,13 +357,11 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 			// This code checks to see if we are back at home yet, and if not
 			// sends to home
-			// Commented out till bug is fixed meaning voice works in chat view
-			// without this
-			// View updatedView = flipper.getCurrentView();
-			// if (updatedView.equals(chatview)) {
-			// chatAdapter.resetAdapter();
-			// flipper.removeView(updatedView);
-			// }
+			View updatedView = flipper.getCurrentView();
+			if (updatedView.equals(chatview)) {
+				chatAdapter.resetAdapter();
+			 	flipper.removeView(updatedView);
+			}
 
 		}
 		stopTTS();
