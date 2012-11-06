@@ -463,6 +463,13 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 			flipper.removeView(currentView);
 		}
+		stopTTS();
+		
+		int chcount = flipper.getChildCount();
+		
+		if (chcount==1) {
+			prevCurQuery = Constants.DIAGNOSIS_DEFAULT_LAST_QUERY;
+		}
 	}
 	
 	private void showInfoAlert(String title, String message) {
