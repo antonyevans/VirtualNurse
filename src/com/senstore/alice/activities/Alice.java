@@ -842,6 +842,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 			
 			if (!mBillingService.requestPurchase("womanssexualhealth", Constants.ITEM_TYPE_INAPP, "developerPayload")) {
                 showDialog(BILLING_NOT_WORKING_DIALOG);
+                FlurryAgent.onError("Billing Error", "App purchase failure" + System.currentTimeMillis(), "");
             } else {
             	Log.i(Constants.TAG,"Billing request sent");
             }
@@ -934,7 +935,8 @@ public class Alice extends Activity implements AsyncTasksListener,
         @Override
         public void onRequestPurchaseResponse(RequestPurchase request,
                 ResponseCode responseCode) {
-            if (Constants.DEBUG) {
+        	
+        	if (Constants.DEBUG) {
                 Log.d("Purchases", request.mProductId + ": " + responseCode);
             }
             if (responseCode == ResponseCode.RESULT_OK) {
@@ -942,21 +944,43 @@ public class Alice extends Activity implements AsyncTasksListener,
                     Log.i("Purchases", "purchase was successfully sent to server");
                 }
                 Log.i("Purchases",request.mProductId + "sending purchase request");
+                Map<String, String> flurryParams = new HashMap<String, String>(); 
+	    			flurryParams.put("Purchase Response Type", "Result OK");
+	    			flurryParams.put("Purchase Product ID", request.mProductId);
+	    			flurryParams.put("Purchase Developer Payload", request.mDeveloperPayload);
+	    			flurryParams.put("Purchase Product Type", request.mProductType);
+	    			
+	    		FlurryAgent.logEvent("Purchase Reponse", flurryParams);
             } else if (responseCode == ResponseCode.RESULT_USER_CANCELED) {
                 if (Constants.DEBUG) {
                     Log.i("Purchases", "user canceled purchase");
                 }
-                Log.i("Purchases", request.mProductId + "dismissed purchase dialog");
+                Map<String, String> flurryParams = new HashMap<String, String>(); 
+    				flurryParams.put("Purchase Response Type", "User Cancelled");
+    				flurryParams.put("Purchase Product ID", request.mProductId);
+	    			flurryParams.put("Purchase Developer Payload", request.mDeveloperPayload);
+	    			flurryParams.put("Purchase Product Type", request.mProductType);
+    			FlurryAgent.logEvent("Purchase Reponse", flurryParams);	
             } else if (responseCode == ResponseCode.RESULT_SERVICE_UNAVAILABLE) {
                 if (Constants.DEBUG) {
                     Log.i("Purchases", "result service unavailable");
                 }
-                Log.i("Purchases", request.mProductId + "result service unavailable");
+                Map<String, String> flurryParams = new HashMap<String, String>(); 
+    				flurryParams.put("Purchase Response Type", "Result service unavailable");
+    				flurryParams.put("Purchase Product ID", request.mProductId);
+	    			flurryParams.put("Purchase Developer Payload", request.mDeveloperPayload);
+	    			flurryParams.put("Purchase Product Type", request.mProductType);
+    			FlurryAgent.logEvent("Purchase Reponse", flurryParams);
             } else {
                 if (Constants.DEBUG) {
                     Log.i("Purchases", "purchase failed");
                 }
-                Log.i("Purchases",request.mProductId + "request purchase returned " + responseCode);
+                Map<String, String> flurryParams = new HashMap<String, String>(); 
+    				flurryParams.put("Purchase Response Type", "Purchase failed");
+    				flurryParams.put("Purchase Product ID", request.mProductId);
+	    			flurryParams.put("Purchase Developer Payload", request.mDeveloperPayload);
+	    			flurryParams.put("Purchase Product Type", request.mProductType);
+    			FlurryAgent.logEvent("Purchase Reponse", flurryParams);
             }
         }
 
