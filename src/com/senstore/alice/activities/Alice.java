@@ -658,7 +658,7 @@ public class Alice extends Activity implements AsyncTasksListener,
     		flurryParams.put("Input Text", input_text);
     		flurryParams.put("Diagnosis Type", "Touch");
     		
-    	FlurryAgent.logEvent("Diagnosis", flurryParams);
+    	FlurryAgent.logEvent("Start Diagnosis", flurryParams);
     	
 		diagnosisTask = new DiagnosisAsyncTask();
 		diagnosisTask.setVoice(false);
@@ -687,7 +687,7 @@ public class Alice extends Activity implements AsyncTasksListener,
     		flurryParams.put("Input Text", input_text);
     		flurryParams.put("Diagnosis Type", "Voice");
     		
-    	FlurryAgent.logEvent("Diagnosis", flurryParams);
+    	FlurryAgent.logEvent("Start Diagnosis", flurryParams);
 		    	
 		    	
 		diagnosisTask = new DiagnosisAsyncTask();
@@ -1160,7 +1160,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	    		flurryParams.put("Reply", reply);
 	    		flurryParams.put("Response Type", type);
 	    		
-	    	FlurryAgent.logEvent("Reponse", flurryParams);
+	    	FlurryAgent.logEvent("Response", flurryParams);
 			
 			int diagnosisType = Integer.parseInt(type);
 
@@ -1260,6 +1260,10 @@ public class Alice extends Activity implements AsyncTasksListener,
 				// Response Type 3 - EMERGENCY - Load Map with search results of
 				// nearest
 				// hospital/doctor
+				flurryParams.put("Recommendation", "Emergancy");
+	    		
+	    		FlurryAgent.logEvent("Recommendation", flurryParams);
+				
 				row = inflater.inflate(R.layout.diagnosis_map_chat, null);
 
 				queryTxt = (TextView) row.findViewById(R.id.options_text_query);
@@ -1321,6 +1325,10 @@ public class Alice extends Activity implements AsyncTasksListener,
 			case 4:
 				// Response Type 4 - CALL DOCTOR - Text with button
 				// to call doctor.
+				flurryParams.put("Recommendation", "Call Doctor");
+    		
+	    		FlurryAgent.logEvent("Recommendation", flurryParams);
+				
 				
 				row = inflater.inflate(R.layout.diagnosis_calldoc_chat, null);
 
@@ -1396,6 +1404,10 @@ public class Alice extends Activity implements AsyncTasksListener,
 				break;
 			case 5:
 				// Response Type 5 - INFORMATION - Text
+				flurryParams.put("Recommendation", "Information/pharmacy");
+	    		
+	    		FlurryAgent.logEvent("Recommendation", flurryParams);
+				
 				row = inflater.inflate(R.layout.diagnosis_information_chat,
 						null);
 
@@ -1443,6 +1455,10 @@ public class Alice extends Activity implements AsyncTasksListener,
 				// name will contain the name of the guide to link to. You
 				// should then respond with the start of that guide (you have
 				// already the codes to do this).
+				flurryParams.put("Recommendation", "Change Guide");
+	    		
+	    		FlurryAgent.logEvent("Change Guide", flurryParams);
+	    		
 				row = inflater.inflate(R.layout.diagnosis_options_chat, null);
 
 				queryTxt = (TextView) row.findViewById(R.id.options_text_query);
