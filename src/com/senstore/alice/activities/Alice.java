@@ -19,6 +19,7 @@ import android.content.SharedPreferences;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.media.AudioManager;
@@ -945,10 +946,21 @@ public class Alice extends Activity implements AsyncTasksListener,
     @Override
     protected void onStart()  {
     	super.onStart();
+    	String app_ver = "";
+    	try {
+    	    app_ver = this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionName;
+    	}
+    	catch (NameNotFoundException e)  {
+    	    Log.v("Alice", e.getMessage());
+    	}
     	
     	//start flurry agent
     	FlurryAgent.onStartSession(this, Constants.FLURRY_API);
     	FlurryAgent.setUserId(Utils.getUserID());
+    	FlurryAgent.setReportLocation(true);   	
+    	FlurryAgent.setVersionName(app_ver);
+    	FlurryAgent.setLogEnabled(true);
+    	FlurryAgent.setLogEvents(true);
     }
     
     @Override
