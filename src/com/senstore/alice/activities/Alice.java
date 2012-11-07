@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import android.app.Activity;
@@ -330,6 +331,18 @@ public class Alice extends Activity implements AsyncTasksListener,
 	}
 	
 	public void toggleTalk(View view) {
+		//usage tracking
+		String talkStatus = null;
+		if (canTalk) {
+			talkStatus = "Mute";
+		} else {
+			talkStatus = "Enable";
+		}
+		Map<String, String> flurryParams = new HashMap<String, String>();
+        	flurryParams.put("Talk status", talkStatus); // Capture status
+        
+		FlurryAgent.logEvent("toggleTalk", flurryParams);
+		
 		// do toggling
 		canTalk = !canTalk;
 		setTalkSettings();
@@ -337,6 +350,9 @@ public class Alice extends Activity implements AsyncTasksListener,
 	}
 
 	public void onHome(View view) {
+		//usage tracking
+		FlurryAgent.logEvent("onHome");
+		
 		// identify the view on display currently
 		View currentView = flipper.getCurrentView();
 
@@ -381,7 +397,9 @@ public class Alice extends Activity implements AsyncTasksListener,
 	}
 
 	public void onAbout(View view) {
-
+		//usage tracking
+		FlurryAgent.logEvent("onAbout");
+				
 		View currentView = flipper.getCurrentView();
 		if (!currentView.equals(aboutView)) {
 			aboutView = inflater.inflate(R.layout.about_screen, null);
@@ -393,10 +411,16 @@ public class Alice extends Activity implements AsyncTasksListener,
 	}
 
 	public void onAlphabet(View view) {
+		//usage tracking
+		FlurryAgent.logEvent("onAlphabet");
+		
 		onHome(view);
 	}
 
 	public void onKeyboard(View view) {
+		//usage tracking
+		FlurryAgent.logEvent("onKeyboard");
+		
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
 		alert.setTitle("Text Entry");
@@ -447,6 +471,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 	
 	@Override
 	public void onBackPressed() {
+		//usage tracking
+		FlurryAgent.logEvent("onBackPressed");
 		
 		View currentView = flipper.getCurrentView();
 		if (currentView.equals(menuView)) {
