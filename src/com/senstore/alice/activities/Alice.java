@@ -62,6 +62,7 @@ import com.senstore.alice.services.BillingService.RequestPurchase;
 import com.senstore.alice.tasks.DiagnosisAsyncTask;
 import com.senstore.alice.utils.Constants;
 import com.senstore.alice.utils.Registry;
+import com.senstore.alice.utils.Utils;
 import com.senstore.alice.views.ChatListView;
 import com.senstore.alice.services.BillingService;
 import com.senstore.alice.billing.PurchaseObserver;
@@ -921,6 +922,7 @@ public class Alice extends Activity implements AsyncTasksListener,
     	
     	//start flurry agent
     	FlurryAgent.onStartSession(this, Constants.FLURRY_API);
+    	FlurryAgent.setUserId(Utils.getUserID());
     }
     
     @Override
