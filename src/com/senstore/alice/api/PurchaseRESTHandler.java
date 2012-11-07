@@ -30,7 +30,7 @@ public class PurchaseRESTHandler {
 		
 		String absoluteURL = Constants.SERVER_URL + "purchase.json";
 		RestClient req = new RestClient(absoluteURL);
-		req.addParam("user_id", Utils.getPhoneNumber());
+		req.addParam("user_id", Utils.getUserID());
 		req.addParam("purchase", purchaseType);
 		req.addParam("app_name", Constants.APP_NAME);
 		req.addParam("security", Constants.SECURITY_HASH);

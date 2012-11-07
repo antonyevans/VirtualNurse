@@ -40,7 +40,7 @@ public class DiagnosisRESTHandler {
 		
 		String absoluteURL = Constants.SERVER_URL + "harvard.json";
 		RestClient req = new RestClient(absoluteURL);
-		req.addParam("user_id", Utils.getPhoneNumber());
+		req.addParam("user_id", Utils.getUserID());
 		req.addParam("user_text", input_text);
 		req.addParam("guide", guide);
 		req.addParam("last_query", last_query);
@@ -84,7 +84,7 @@ public class DiagnosisRESTHandler {
 
 		String absoluteURL = Constants.SERVER_URL + "harvard.json";
 		RestClient req = new RestClient(absoluteURL);
-		req.addParam("user_id", Utils.getPhoneNumber());
+		req.addParam("user_id", Utils.getUserID());
 		req.addParam("guide", guide);
 		req.addParam("last_query", last_query);
 		req.addParam("input", input_text);

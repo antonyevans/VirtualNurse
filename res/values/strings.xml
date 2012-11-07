@@ -2,7 +2,7 @@
 <resources>
 
     <string name="hello">Hi, my name is Alice. You can click on the microphone to talk to me or select your primary complaint by clicking on the buttons below</string>
-    <string name="app_name">Virtual Nurse</string>
+    <string name="app_name">Virtual Nurse (dev)</string>
 
     <!-- API tester resources -->
     <string name="api_test_desc">This is a utility to test the various ALICE API endpoints, and decision trees and workflows.</string>

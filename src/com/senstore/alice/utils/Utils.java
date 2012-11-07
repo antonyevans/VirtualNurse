@@ -17,6 +17,11 @@ public class Utils {
 	private static Context mContext = (Context) Registry.instance().get(
 			Constants.REGISTRY_CONTEXT);
 
+	public static String getUserID() {
+		String userID = getPhoneNumber();
+		return userID;
+	}
+	
 	public static String getPhoneNumber() {
 		String userNumber = null;
 		TelephonyManager tManager = (TelephonyManager) mContext

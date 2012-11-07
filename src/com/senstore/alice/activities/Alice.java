@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import android.app.Activity;
@@ -18,6 +19,7 @@ import android.content.SharedPreferences;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.media.AudioManager;
@@ -62,12 +64,15 @@ import com.senstore.alice.services.BillingService.RequestPurchase;
 import com.senstore.alice.tasks.DiagnosisAsyncTask;
 import com.senstore.alice.utils.Constants;
 import com.senstore.alice.utils.Registry;
+import com.senstore.alice.utils.Utils;
 import com.senstore.alice.views.ChatListView;
 import com.senstore.alice.services.BillingService;
 import com.senstore.alice.billing.PurchaseObserver;
 import com.senstore.alice.utils.Constants.PurchaseState;
 import com.senstore.alice.utils.Constants.ResponseCode;
 import com.senstore.alice.billing.ResponseHandler;
+
+import com.flurry.android.FlurryAgent;
 
 public class Alice extends Activity implements AsyncTasksListener,
 		TextToSpeech.OnInitListener {
@@ -87,6 +92,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	private static final int DIALOG_BILLING_NOT_SUPPORTED_ID = 3;	
 	private static final int BILLING_WORKING_DIALOG = 4;
 	
+	public static final String PREFS_NAME = "MyPrefsFile";
 
 	final AsyncTasksListener listener = this;
 
@@ -198,6 +204,11 @@ public class Alice extends Activity implements AsyncTasksListener,
 		createHarvardGuideWidget();
 
 		flipper.addView(menuView);
+		
+		// Restore preferences
+	       SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+	       canTalk = settings.getBoolean("canTalk", true);
+	       setTalkSettings();
 
 		// Register the Background Logger Broadcast Receiver
 		initLogBroadcastReceiver();
@@ -302,10 +313,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		_vocalizer.setVoice("Serena");
 	}
 
-	public void toggleTalk(View view) {
-		// do togling
-		canTalk = !canTalk;
-
+	public void setTalkSettings() {
 		if (canTalk) {
 			mTts = new TextToSpeech(this, this // TextToSpeech.OnInitListener
 			);
@@ -313,14 +321,39 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 		} else {
 
-			mTts.stop();
+			if (mTts != null) {
+				mTts.stop();
+				mTts.shutdown();
+			}			
 			mTts = null;
 			mic_action.setImageDrawable(mic_stop);
 
 		}
 	}
+	
+	public void toggleTalk(View view) {
+		//usage tracking
+		String talkStatus = null;
+		if (canTalk) {
+			talkStatus = "Mute";
+		} else {
+			talkStatus = "Enable";
+		}
+		Map<String, String> flurryParams = new HashMap<String, String>();
+        	flurryParams.put("Talk status", talkStatus); // Capture status
+        
+		FlurryAgent.logEvent("toggleTalk", flurryParams);
+		
+		// do toggling
+		canTalk = !canTalk;
+		setTalkSettings();
+		
+	}
 
 	public void onHome(View view) {
+		//usage tracking
+		FlurryAgent.logEvent("onHome");
+		
 		// identify the view on display currently
 		View currentView = flipper.getCurrentView();
 
@@ -344,13 +377,11 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 			// This code checks to see if we are back at home yet, and if not
 			// sends to home
-			// Commented out till bug is fixed meaning voice works in chat view
-			// without this
-			// View updatedView = flipper.getCurrentView();
-			// if (updatedView.equals(chatview)) {
-			// chatAdapter.resetAdapter();
-			// flipper.removeView(updatedView);
-			// }
+			View updatedView = flipper.getCurrentView();
+			if (updatedView.equals(chatview)) {
+				chatAdapter.resetAdapter();
+			 	flipper.removeView(updatedView);
+			}
 
 		}
 		stopTTS();
@@ -367,7 +398,9 @@ public class Alice extends Activity implements AsyncTasksListener,
 	}
 
 	public void onAbout(View view) {
-
+		//usage tracking
+		FlurryAgent.logEvent("onAbout");
+				
 		View currentView = flipper.getCurrentView();
 		if (!currentView.equals(aboutView)) {
 			aboutView = inflater.inflate(R.layout.about_screen, null);
@@ -379,10 +412,16 @@ public class Alice extends Activity implements AsyncTasksListener,
 	}
 
 	public void onAlphabet(View view) {
+		//usage tracking
+		FlurryAgent.logEvent("onAlphabet");
+		
 		onHome(view);
 	}
 
 	public void onKeyboard(View view) {
+		//usage tracking
+		FlurryAgent.logEvent("onKeyboard");
+		
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
 		alert.setTitle("Text Entry");
@@ -431,6 +470,37 @@ public class Alice extends Activity implements AsyncTasksListener,
 		
 	}
 	
+	@Override
+	public void onBackPressed() {
+		//usage tracking
+		FlurryAgent.logEvent("onBackPressed");
+		
+		View currentView = flipper.getCurrentView();
+		if (currentView.equals(menuView)) {
+			// close the app
+			onStop();
+			moveTaskToBack(true);
+		} else if (currentView.equals(chatview)) {
+
+			// moving to Home View. Clean the Chat list and remove the chat view
+			chatAdapter.resetAdapter();
+			flipper.removeView(currentView);
+			
+
+		} else if (currentView.equals(aboutView)) {
+
+			// moving to Home View. Clean the Chat list and remove the chat view
+
+			flipper.removeView(currentView);
+		}
+		stopTTS();
+		
+		int chcount = flipper.getChildCount();
+		
+		if (chcount==1) {
+			prevCurQuery = Constants.DIAGNOSIS_DEFAULT_LAST_QUERY;
+		}
+	}
 	
 	private void showInfoAlert(String title, String message) {
 		AlertDialog alert = new AlertDialog.Builder(this).create();
@@ -518,10 +588,10 @@ public class Alice extends Activity implements AsyncTasksListener,
 			b.setText(name);
 
 			b.setOnClickListener(new OnClickListener() {
-
+				
 				@Override
 				public void onClick(View v) {
-
+							        	
 					// firstQuery = name;
 
 					stopTTS();
@@ -581,6 +651,15 @@ public class Alice extends Activity implements AsyncTasksListener,
 	 */
 	public void doTouchDiagnosis(String health_guide, String last_query,
 			String input_text) {
+		//event tracking code
+		Map<String, String> flurryParams = new HashMap<String, String>(); 
+    		flurryParams.put("Guide", health_guide);
+    		flurryParams.put("Last Query", last_query);
+    		flurryParams.put("Input Text", input_text);
+    		flurryParams.put("Diagnosis Type", "Touch");
+    		
+    	FlurryAgent.logEvent("Start Diagnosis", flurryParams);
+    	
 		diagnosisTask = new DiagnosisAsyncTask();
 		diagnosisTask.setVoice(false);
 		diagnosisTask.setListener(listener);
@@ -601,6 +680,16 @@ public class Alice extends Activity implements AsyncTasksListener,
 	 */
 	public void doVoiceDiagnosis(String health_guide, String last_query,
 			String input_text) {
+		//event tracking code
+		Map<String, String> flurryParams = new HashMap<String, String>(); 
+    		flurryParams.put("Guide", health_guide);
+    		flurryParams.put("Last Query", last_query);
+    		flurryParams.put("Input Text", input_text);
+    		flurryParams.put("Diagnosis Type", "Voice");
+    		
+    	FlurryAgent.logEvent("Start Diagnosis", flurryParams);
+		    	
+		    	
 		diagnosisTask = new DiagnosisAsyncTask();
 		diagnosisTask.setVoice(true);
 		diagnosisTask.setListener(listener);
@@ -753,6 +842,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 			
 			if (!mBillingService.requestPurchase("womanssexualhealth", Constants.ITEM_TYPE_INAPP, "developerPayload")) {
                 showDialog(BILLING_NOT_WORKING_DIALOG);
+                FlurryAgent.onError("Billing Error", "App purchase failure" + System.currentTimeMillis(), "");
             } else {
             	Log.i(Constants.TAG,"Billing request sent");
             }
@@ -845,7 +935,8 @@ public class Alice extends Activity implements AsyncTasksListener,
         @Override
         public void onRequestPurchaseResponse(RequestPurchase request,
                 ResponseCode responseCode) {
-            if (Constants.DEBUG) {
+        	
+        	if (Constants.DEBUG) {
                 Log.d("Purchases", request.mProductId + ": " + responseCode);
             }
             if (responseCode == ResponseCode.RESULT_OK) {
@@ -853,27 +944,69 @@ public class Alice extends Activity implements AsyncTasksListener,
                     Log.i("Purchases", "purchase was successfully sent to server");
                 }
                 Log.i("Purchases",request.mProductId + "sending purchase request");
+                Map<String, String> flurryParams = new HashMap<String, String>(); 
+	    			flurryParams.put("Purchase Response Type", "Result OK");
+	    			flurryParams.put("Purchase Product ID", request.mProductId);
+	    			flurryParams.put("Purchase Developer Payload", request.mDeveloperPayload);
+	    			flurryParams.put("Purchase Product Type", request.mProductType);
+	    			
+	    		FlurryAgent.logEvent("Purchase Reponse", flurryParams);
             } else if (responseCode == ResponseCode.RESULT_USER_CANCELED) {
                 if (Constants.DEBUG) {
                     Log.i("Purchases", "user canceled purchase");
                 }
-                Log.i("Purchases", request.mProductId + "dismissed purchase dialog");
+                Map<String, String> flurryParams = new HashMap<String, String>(); 
+    				flurryParams.put("Purchase Response Type", "User Cancelled");
+    				flurryParams.put("Purchase Product ID", request.mProductId);
+	    			flurryParams.put("Purchase Developer Payload", request.mDeveloperPayload);
+	    			flurryParams.put("Purchase Product Type", request.mProductType);
+    			FlurryAgent.logEvent("Purchase Reponse", flurryParams);	
             } else if (responseCode == ResponseCode.RESULT_SERVICE_UNAVAILABLE) {
                 if (Constants.DEBUG) {
                     Log.i("Purchases", "result service unavailable");
                 }
-                Log.i("Purchases", request.mProductId + "result service unavailable");
+                Map<String, String> flurryParams = new HashMap<String, String>(); 
+    				flurryParams.put("Purchase Response Type", "Result service unavailable");
+    				flurryParams.put("Purchase Product ID", request.mProductId);
+	    			flurryParams.put("Purchase Developer Payload", request.mDeveloperPayload);
+	    			flurryParams.put("Purchase Product Type", request.mProductType);
+    			FlurryAgent.logEvent("Purchase Reponse", flurryParams);
             } else {
                 if (Constants.DEBUG) {
                     Log.i("Purchases", "purchase failed");
                 }
-                Log.i("Purchases",request.mProductId + "request purchase returned " + responseCode);
+                Map<String, String> flurryParams = new HashMap<String, String>(); 
+    				flurryParams.put("Purchase Response Type", "Purchase failed");
+    				flurryParams.put("Purchase Product ID", request.mProductId);
+	    			flurryParams.put("Purchase Developer Payload", request.mDeveloperPayload);
+	    			flurryParams.put("Purchase Product Type", request.mProductType);
+    			FlurryAgent.logEvent("Purchase Reponse", flurryParams);
             }
         }
 
     }
 	
-	@Override
+    @Override
+    protected void onStart()  {
+    	super.onStart();
+    	String app_ver = "";
+    	try {
+    	    app_ver = this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionName;
+    	}
+    	catch (NameNotFoundException e)  {
+    	    Log.v("Alice", e.getMessage());
+    	}
+    	
+    	//start flurry agent
+    	FlurryAgent.onStartSession(this, Constants.FLURRY_API);
+    	FlurryAgent.setUserId(Utils.getUserID());
+    	FlurryAgent.setReportLocation(true);   	
+    	FlurryAgent.setVersionName(app_ver);
+    	FlurryAgent.setLogEnabled(true);
+    	FlurryAgent.setLogEvents(true);
+    }
+    
+    @Override
 	protected void onPause() {
 		stopTTS();
 		super.onPause();
@@ -884,6 +1017,23 @@ public class Alice extends Activity implements AsyncTasksListener,
 		super.onResume();
 	}
 
+    @Override
+    protected void onStop(){
+      super.onStop();
+
+      //stop the flurry agent
+      FlurryAgent.onEndSession(this);
+       
+      // We need an Editor object to make preference changes.
+      // All objects are from android.context.Context
+      SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+      SharedPreferences.Editor editor = settings.edit();
+      editor.putBoolean("canTalk", canTalk);
+
+      // Commit the edits!
+      editor.commit();
+    }
+	
 	@Override
 	protected void onDestroy() {
 		unregisterReceiver(receiver);
@@ -993,7 +1143,25 @@ public class Alice extends Activity implements AsyncTasksListener,
 			TextView responseTxt = null;
 
 			// retrieve ID for discriminating the different views
-			String type = mDiagnosis.getResponse_type();
+			final String type = mDiagnosis.getResponse_type();
+			
+			
+			//event tracking code
+			final String guide = mDiagnosis.getGuide();
+			final String select_type = mDiagnosis.getSelect_type();
+			final String input = mDiagnosis.getInput();
+			final String reply = mDiagnosis.getReply();
+			
+			Map<String, String> flurryParams = new HashMap<String, String>(); 
+	    		flurryParams.put("Guide", guide);
+	    		flurryParams.put("Input", input);
+	    		flurryParams.put("Input Text", input);
+	    		flurryParams.put("Diagnosis Type", select_type);
+	    		flurryParams.put("Reply", reply);
+	    		flurryParams.put("Response Type", type);
+	    		
+	    	FlurryAgent.logEvent("Response", flurryParams);
+			
 			int diagnosisType = Integer.parseInt(type);
 
 			switch (diagnosisType) {
@@ -1016,7 +1184,17 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 					@Override
 					public void onClick(View v) {
-
+						//event tracking code
+						Map<String, String> flurryParams = new HashMap<String, String>(); 
+				    		flurryParams.put("Guide", guide);
+				    		flurryParams.put("Input", input);
+				    		flurryParams.put("Input Text", input);
+				    		flurryParams.put("Diagnosis Type", select_type);
+				    		flurryParams.put("Reply", reply);
+				    		flurryParams.put("Response Type", "X");
+			    		
+				    	FlurryAgent.logEvent("Remove response", flurryParams);
+						
 						removeItem(mposition);
 
 						if (listitems.size() == 0) {
@@ -1082,6 +1260,10 @@ public class Alice extends Activity implements AsyncTasksListener,
 				// Response Type 3 - EMERGENCY - Load Map with search results of
 				// nearest
 				// hospital/doctor
+				flurryParams.put("Recommendation", "Emergancy");
+	    		
+	    		FlurryAgent.logEvent("Recommendation", flurryParams);
+				
 				row = inflater.inflate(R.layout.diagnosis_map_chat, null);
 
 				queryTxt = (TextView) row.findViewById(R.id.options_text_query);
@@ -1093,7 +1275,18 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 					@Override
 					public void onClick(View v) {
-						removeItem(mposition);
+						//event tracking
+						Map<String, String> flurryParams = new HashMap<String, String>(); 
+				    		flurryParams.put("Guide", guide);
+				    		flurryParams.put("Input", input);
+				    		flurryParams.put("Input Text", input);
+				    		flurryParams.put("Diagnosis Type", select_type);
+				    		flurryParams.put("Reply", reply);
+				    		flurryParams.put("Response Type", "X");
+		    		
+			    		FlurryAgent.logEvent("Remove response", flurryParams);
+						
+			    		removeItem(mposition);
 
 						if (listitems.size() == 0) {
 							removeDiagnosisView(flipper.getCurrentView());
@@ -1112,6 +1305,17 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 					@Override
 					public void onClick(View v) {
+						//event tracking
+						Map<String, String> flurryParams = new HashMap<String, String>(); 
+				    		flurryParams.put("Guide", guide);
+				    		flurryParams.put("Input", input);
+				    		flurryParams.put("Input Text", input);
+				    		flurryParams.put("Diagnosis Type", select_type);
+				    		flurryParams.put("Reply", reply);
+				    		flurryParams.put("Response Type", type);
+			    		
+			    		FlurryAgent.logEvent("Show Map", flurryParams);
+			    		
 						showMap();
 
 					}
@@ -1121,6 +1325,11 @@ public class Alice extends Activity implements AsyncTasksListener,
 			case 4:
 				// Response Type 4 - CALL DOCTOR - Text with button
 				// to call doctor.
+				flurryParams.put("Recommendation", "Call Doctor");
+    		
+	    		FlurryAgent.logEvent("Recommendation", flurryParams);
+				
+				
 				row = inflater.inflate(R.layout.diagnosis_calldoc_chat, null);
 
 				queryTxt = (TextView) row.findViewById(R.id.options_text_query);
@@ -1134,6 +1343,16 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 					@Override
 					public void onClick(View v) {
+						Map<String, String> flurryParams = new HashMap<String, String>(); 
+			    			flurryParams.put("Guide", guide);
+				    		flurryParams.put("Input", input);
+				    		flurryParams.put("Input Text", input);
+				    		flurryParams.put("Diagnosis Type", select_type);
+				    		flurryParams.put("Reply", reply);
+				    		flurryParams.put("Response Type", "X");
+		    		
+			    		FlurryAgent.logEvent("Remove response", flurryParams);
+						
 						removeItem(mposition);
 
 						if (listitems.size() == 0) {
@@ -1154,7 +1373,17 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 					@Override
 					public void onClick(View v) {
-
+						//event tracking
+						Map<String, String> flurryParams = new HashMap<String, String>(); 
+				    		flurryParams.put("Guide", guide);
+				    		flurryParams.put("Input", input);
+				    		flurryParams.put("Input Text", input);
+				    		flurryParams.put("Diagnosis Type", select_type);
+				    		flurryParams.put("Reply", reply);
+				    		flurryParams.put("Response Type", type);
+			    		
+			    		FlurryAgent.logEvent("Call Doctor", flurryParams);
+			    		
 						stopTTS();
 
 						if (canCallDoctor) {
@@ -1175,6 +1404,10 @@ public class Alice extends Activity implements AsyncTasksListener,
 				break;
 			case 5:
 				// Response Type 5 - INFORMATION - Text
+				flurryParams.put("Recommendation", "Information/pharmacy");
+	    		
+	    		FlurryAgent.logEvent("Recommendation", flurryParams);
+				
 				row = inflater.inflate(R.layout.diagnosis_information_chat,
 						null);
 
@@ -1188,6 +1421,17 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 					@Override
 					public void onClick(View v) {
+						//flurry tracking
+						Map<String, String> flurryParams = new HashMap<String, String>(); 
+				    		flurryParams.put("Guide", guide);
+				    		flurryParams.put("Input", input);
+				    		flurryParams.put("Input Text", input);
+				    		flurryParams.put("Diagnosis Type", select_type);
+				    		flurryParams.put("Reply", reply);
+				    		flurryParams.put("Response Type", "X");
+		    		
+			    		FlurryAgent.logEvent("Remove response", flurryParams);
+						
 						removeItem(mposition);
 
 						if (listitems.size() == 0) {
@@ -1211,6 +1455,10 @@ public class Alice extends Activity implements AsyncTasksListener,
 				// name will contain the name of the guide to link to. You
 				// should then respond with the start of that guide (you have
 				// already the codes to do this).
+				flurryParams.put("Recommendation", "Change Guide");
+	    		
+	    		FlurryAgent.logEvent("Change Guide", flurryParams);
+	    		
 				row = inflater.inflate(R.layout.diagnosis_options_chat, null);
 
 				queryTxt = (TextView) row.findViewById(R.id.options_text_query);
@@ -1224,7 +1472,17 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 					@Override
 					public void onClick(View v) {
-
+						//event tracking
+						Map<String, String> flurryParams = new HashMap<String, String>(); 
+				    		flurryParams.put("Guide", guide);
+				    		flurryParams.put("Input", input);
+				    		flurryParams.put("Input Text", input);
+				    		flurryParams.put("Diagnosis Type", select_type);
+				    		flurryParams.put("Reply", reply);
+				    		flurryParams.put("Response Type", "X");
+		    		
+			    		FlurryAgent.logEvent("Remove response", flurryParams);
+			    		
 						removeItem(mposition);
 
 						if (listitems.size() == 0) {
