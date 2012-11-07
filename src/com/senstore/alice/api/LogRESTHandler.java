@@ -31,7 +31,7 @@ public class LogRESTHandler {
 
 		String absoluteURL = Constants.SERVER_URL + "log.json";
 		RestClient req = new RestClient(absoluteURL);
-		req.addParam("user_id", Utils.getPhoneNumber());
+		req.addParam("user_id", Utils.getUserID());
 		req.addParam("log_type", log_type);
 		req.addParam("app_name", Constants.APP_NAME);
 
