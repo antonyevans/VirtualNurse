@@ -282,6 +282,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 			FlurryAgent.logEvent("Show Rate it!");
 			rateItDialog();
 		}
+		
 
 	}
 
@@ -768,6 +769,9 @@ public class Alice extends Activity implements AsyncTasksListener,
 	public void rateItDialog() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("Rate it!");
+		LayoutInflater inflater = getLayoutInflater();
+		View dialoglayout = inflater.inflate(R.layout.rate_it, (ViewGroup) getCurrentFocus());
+		builder.setView(dialoglayout);
 		builder.setMessage("Would you like to rate this app?")
 		       .setCancelable(true)
 		       .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
