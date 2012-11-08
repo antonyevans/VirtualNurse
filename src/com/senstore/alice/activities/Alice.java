@@ -410,9 +410,9 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 	}
 
-	public void onAbout(View view) {
+	public void onInfo(View view) {
 		//usage tracking
-		FlurryAgent.logEvent("onAbout");
+		FlurryAgent.logEvent("onInfo");
 				
 		View currentView = flipper.getCurrentView();
 		if (!currentView.equals(aboutView)) {
