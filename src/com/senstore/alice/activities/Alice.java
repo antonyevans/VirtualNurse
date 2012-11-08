@@ -409,14 +409,9 @@ public class Alice extends Activity implements AsyncTasksListener,
 		}
 		stopTTS();
 		
-		shareAppBtn();
-
-	}
-	
-	private void shareAppBtn() {
-		Button shareBtn = (Button) this.findViewById(R.id.share_app);
+		Button shareBtnAbout = (Button) aboutView.findViewById(R.id.share_app);
 		
-		shareBtn.setOnClickListener(new OnClickListener() {
+		shareBtnAbout.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -428,7 +423,9 @@ public class Alice extends Activity implements AsyncTasksListener,
 			}
 
 		});
+
 	}
+	
 
 	private void shareApp() {
 		Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
@@ -635,6 +632,22 @@ public class Alice extends Activity implements AsyncTasksListener,
 			lightbox.addView(b);
 
 		}
+		
+		Button shareBtnMain = (Button) menuView.findViewById(R.id.share_app);
+		
+		shareBtnMain.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				//event tracking
+				    		
+	    		FlurryAgent.logEvent("Share App Btn pressed");
+	    		shareApp();
+	    		
+			}
+
+		});
+		
 	}
 
 	private void initLogBroadcastReceiver() {
@@ -1474,9 +1487,9 @@ public class Alice extends Activity implements AsyncTasksListener,
 					}
 				});
 				
-				Button shareBtn = (Button) row.findViewById(R.id.share_app);
+				Button shareBtnInfo = (Button) row.findViewById(R.id.share_app);
 				
-				shareBtn.setOnClickListener(new OnClickListener() {
+				shareBtnInfo.setOnClickListener(new OnClickListener() {
 
 					@Override
 					public void onClick(View v) {
