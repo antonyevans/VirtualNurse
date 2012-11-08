@@ -273,6 +273,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 			_currentRecognizer.setListener(_listener);
 
 		}
+		rateItDialog();
 
 	}
 
@@ -756,6 +757,33 @@ public class Alice extends Activity implements AsyncTasksListener,
 		return null;
 	}
 
+	public void rateItDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("Rate it!");
+		builder.setMessage("Would you like to rate this app?")
+		       .setCancelable(true)
+		       .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		        	   rateIt();
+		           }
+		       })
+		       .setPositiveButton("No", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		        	   dialog.cancel();
+		           }
+		       });
+		AlertDialog rateDialog = builder.create();
+		rateDialog.show(); 
+		
+	}
+	
+	public void rateIt() {
+		Intent intent = new Intent(Intent.ACTION_VIEW);
+		//TODO rewrite this to be the app package
+ 	   	intent.setData(Uri.parse("market://details?id=" + getApplicationContext().getPackageName()));
+ 	   	startActivity(intent);
+	}
+	
 	public AlertDialog simpleMessage(String message) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage(message)
