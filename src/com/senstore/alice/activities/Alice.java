@@ -277,10 +277,13 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 		}
 		
-		//show rate it dialog on the third time someone uses the app
+		//show rate it dialog on the RATEIT time someone uses the app
 		if (usageCount == Constants.RATE_IT) {
 			FlurryAgent.logEvent("Show Rate it!");
 			rateItDialog();
+		} else if (usageCount == Constants.SHARE_IT) {
+			FlurryAgent.logEvent("Show Share it!");
+			shareApp();
 		}
 		
 
