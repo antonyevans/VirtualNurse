@@ -779,7 +779,6 @@ public class Alice extends Activity implements AsyncTasksListener,
 	
 	public void rateIt() {
 		Intent intent = new Intent(Intent.ACTION_VIEW);
-		//TODO rewrite this to be the app package
  	   	intent.setData(Uri.parse("market://details?id=" + getApplicationContext().getPackageName()));
  	   	startActivity(intent);
 	}
