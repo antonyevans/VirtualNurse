@@ -7,7 +7,7 @@ package com.senstore.alice.utils;
  */
 public class Constants {
 
-	public static String FLURRY_API = "TRNYRFJKB8CQF7NYKCM9";
+	public static String FLURRY_API = "CCF4HBFDPHMQDTSNY4T5";
 	
 	public static String TAG = "Alice";
 	public static String APP_NAME = "Birth Control";
