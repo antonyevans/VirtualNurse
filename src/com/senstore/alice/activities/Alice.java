@@ -126,7 +126,9 @@ public class Alice extends Activity implements AsyncTasksListener,
 	private Drawable mic_stop;
 	private ImageButton mic_action;
 
+	//preferences variables
 	private boolean canTalk = true;
+	private int usageCount = 0;
 
 	private String talkResp = "";
 
@@ -209,6 +211,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	       SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
 	       canTalk = settings.getBoolean("canTalk", true);
 	       setTalkSettings();
+	       usageCount = settings.getInt("usageCount", 0);
 
 		// Register the Background Logger Broadcast Receiver
 		initLogBroadcastReceiver();
@@ -273,7 +276,11 @@ public class Alice extends Activity implements AsyncTasksListener,
 			_currentRecognizer.setListener(_listener);
 
 		}
-		rateItDialog();
+		
+		//show rate it dialog on the third time someone uses the app
+		if (usageCount == 2) {
+			rateItDialog();
+		}
 
 	}
 
@@ -1097,6 +1104,7 @@ public class Alice extends Activity implements AsyncTasksListener,
       SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
       SharedPreferences.Editor editor = settings.edit();
       editor.putBoolean("canTalk", canTalk);
+      editor.putInt("usageCount", usageCount + 1);
 
       // Commit the edits!
       editor.commit();
