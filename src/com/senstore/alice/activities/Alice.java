@@ -278,7 +278,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		}
 		
 		//show rate it dialog on the third time someone uses the app
-		if (usageCount == 2) {
+		if (usageCount == Constants.RATE_IT) {
 			rateItDialog();
 		}
 
