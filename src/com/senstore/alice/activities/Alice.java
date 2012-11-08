@@ -443,8 +443,9 @@ public class Alice extends Activity implements AsyncTasksListener,
 	private void shareApp() {
 		Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
 		sharingIntent.setType("text/plain");
-		String shareBody = "Helping women answer the question 'Do I need to see the doctor?' http://bit.ly/SMjOWQ";
-		sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
+		String shareBody = getString(R.string.share_body);
+		String shareSubject = getString(R.string.share_subject);
+		sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSubject);
 		sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
 		startActivity(Intent.createChooser(sharingIntent, "Share via"));
 	}
