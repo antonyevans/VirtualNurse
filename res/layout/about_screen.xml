@@ -89,19 +89,7 @@
         </RelativeLayout>
         
     </LinearLayout>
-            <Button
-            android:id="@+id/share_app"
-            android:layout_width="fill_parent"
-            android:layout_height="70dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/btn_green"
-            android:gravity="center"
-            android:text="Share with friends"
-            android:textSize="25dp"
-            android:textStyle="bold" />
+            <include layout="@layout/share_app_btn"/>
                 </LinearLayout>
         </ScrollView>
 

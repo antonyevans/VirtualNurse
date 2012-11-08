@@ -418,13 +418,23 @@ public class Alice extends Activity implements AsyncTasksListener,
 				//event tracking
 				    		
 	    		FlurryAgent.logEvent("Share App Btn pressed");
-	    		Log.i("Alice","Button Pressed");
+	    		shareApp();
 	    		
 			}
+
 		});
 
 	}
 
+	private void shareApp() {
+		Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+		sharingIntent.setType("text/plain");
+		String shareBody = "Helping women answer the question 'Do I need to see the doctor?' http://bit.ly/SMjOWQ";
+		sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
+		sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+		startActivity(Intent.createChooser(sharingIntent, "Share via"));
+	}
+	
 	public void onAlphabet(View view) {
 		//usage tracking
 		FlurryAgent.logEvent("onAlphabet");
