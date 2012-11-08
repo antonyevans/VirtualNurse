@@ -409,6 +409,11 @@ public class Alice extends Activity implements AsyncTasksListener,
 		}
 		stopTTS();
 		
+		shareAppBtn();
+
+	}
+	
+	private void shareAppBtn() {
 		Button shareBtn = (Button) this.findViewById(R.id.share_app);
 		
 		shareBtn.setOnClickListener(new OnClickListener() {
@@ -423,7 +428,6 @@ public class Alice extends Activity implements AsyncTasksListener,
 			}
 
 		});
-
 	}
 
 	private void shareApp() {
@@ -1469,7 +1473,22 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 					}
 				});
+				
+				Button shareBtn = (Button) row.findViewById(R.id.share_app);
+				
+				shareBtn.setOnClickListener(new OnClickListener() {
 
+					@Override
+					public void onClick(View v) {
+						//event tracking
+						    		
+			    		FlurryAgent.logEvent("Share App Btn pressed");
+			    		shareApp();
+			    		
+					}
+
+				});
+				
 				break;
 
 			case 6:

@@ -122,8 +122,10 @@
                 android:layout_marginRight="20dp"
                 android:gravity="center_vertical|center_horizontal" />
         </RelativeLayout>
+        
     </LinearLayout>
-
+	<include layout="@layout/share_app_btn"/>
     <include layout="@layout/query_text_view" />
+    
 
 </LinearLayout>
