@@ -279,6 +279,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		
 		//show rate it dialog on the third time someone uses the app
 		if (usageCount == Constants.RATE_IT) {
+			FlurryAgent.logEvent("Show Rate it!");
 			rateItDialog();
 		}
 
@@ -771,6 +772,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		       .setCancelable(true)
 		       .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) {
+		        	   FlurryAgent.logEvent("Pressed Rate it!");
 		        	   rateIt();
 		           }
 		       })
