@@ -408,6 +408,20 @@ public class Alice extends Activity implements AsyncTasksListener,
 			flipper.showNext();
 		}
 		stopTTS();
+		
+		Button shareBtn = (Button) this.findViewById(R.id.share_app);
+		
+		shareBtn.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				//event tracking
+				    		
+	    		FlurryAgent.logEvent("Share App Btn pressed");
+	    		Log.i("Alice","Button Pressed");
+	    		
+			}
+		});
 
 	}
 
