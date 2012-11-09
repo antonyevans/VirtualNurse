@@ -377,33 +377,18 @@ public class Alice extends Activity implements AsyncTasksListener,
 		// identify the view on display currently
 		View currentView = flipper.getCurrentView();
 
-		if (currentView.equals(menuView)) {
+		while (!currentView.equals(menuView)) {
 
-			// perhaps scroll to the last item if layout does not handle
-			// this well
-
-		} else if (currentView.equals(chatview)) {
-
-			// moving to Home View. Clean the Chat list and remove the chat view
-			chatAdapter.resetAdapter();
-			flipper.removeView(currentView);
-			
-
-		} else if (currentView.equals(aboutView)) {
-
-			// moving to Home View. Clean the Chat list and remove the chat view
-
-			flipper.removeView(currentView);
-
-			// This code checks to see if we are back at home yet, and if not
-			// sends to home
-			View updatedView = flipper.getCurrentView();
-			if (updatedView.equals(chatview)) {
+			if (currentView.equals(chatview)) {
+				// moving to Home View. Clean the Chat list and remove the chat view
 				chatAdapter.resetAdapter();
-			 	flipper.removeView(updatedView);
+				flipper.removeView(currentView);
+			} else {
+				flipper.removeView(currentView);
 			}
-
-		}
+			currentView = flipper.getCurrentView();
+		} 
+		
 		stopTTS();
 		
 		int chcount = flipper.getChildCount();
