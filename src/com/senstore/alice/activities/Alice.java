@@ -459,19 +459,31 @@ public class Alice extends Activity implements AsyncTasksListener,
 	
 	public void infoClickResponse(String selection) {
 		if (selection == getString(R.string.info_about) ) {
+			FlurryAgent.logEvent("Info: About");
+			//TODO
 			
 		} else if (selection == getString(R.string.info_partners)) {
-
+			FlurryAgent.logEvent("Info: Partners");
+			//TODO
+			
 		} else if (selection == getString(R.string.info_TCs)) {
+			FlurryAgent.logEvent("Info: T&Cs");
+			//TODO
 			
 		} else if (selection == getString(R.string.info_privacy)) {
+			FlurryAgent.logEvent("Info: Privacy");
+			//TODO
 			
 		} else if (selection == getString(R.string.info_share)) {
+			FlurryAgent.logEvent("Info: Share");
 			shareApp();
 		} else if (selection == getString(R.string.info_rate)) {
+			FlurryAgent.logEvent("Info: Rate");
 			rateIt();
 		} else if (selection == getString(R.string.info_contact)) {
-			 
+			FlurryAgent.logEvent("Info: Contact"); 
+			//TODO
+			
 		}
 	}
 	
