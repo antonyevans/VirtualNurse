@@ -37,7 +37,9 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -109,7 +111,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	private View aboutView;
 	private View infoView;
 
-	ListView list;
+	private ListView list;
     private List<String> List_file;
 	
 	private LayoutInflater inflater;
@@ -436,11 +438,18 @@ public class Alice extends Activity implements AsyncTasksListener,
 	        List_file.add("Share with Friends");
 	        List_file.add("Rate this app!");
 	        List_file.add("Contact us");
+	           
+	        list.setAdapter(new ArrayAdapter<String>(Alice.this, R.layout.info_item, List_file));
 	        
-	        final ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(Alice.this, R.layout.info_item, List_file);
-	        
-	        list.setAdapter(listAdapter);
-	        
+	        list.setOnItemClickListener(new OnItemClickListener() {	       
+				@Override
+				public void onItemClick(AdapterView<?> arg0, View view,
+						int arg2, long arg3) {
+					// selected item
+		            String product = ((TextView) view).getText().toString();
+		            infoClickResponse(product);
+				};
+	        });
 	        
 			
 		}
@@ -461,6 +470,24 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 		});*/
 
+	}
+	
+	public void infoClickResponse(String selection) {
+		if (selection == "About Virtual Nurse" ) {
+			
+		} else if (selection == "Partners") {
+
+		} else if (selection == "Terms & Conditions") {
+			
+		} else if (selection == "Privacy Policy") {
+			
+		} else if (selection == "Share with Friends") {
+			shareApp();
+		} else if (selection == "Rate this app!") {
+			rateIt();
+		} else if (selection == "Contact us") {
+			 
+		}
 	}
 	
 /*	public void onPartners(View view) {
