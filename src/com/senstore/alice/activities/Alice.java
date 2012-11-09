@@ -37,6 +37,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -106,7 +107,11 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 	private View menuView;
 	private View aboutView;
+	private View infoView;
 
+	ListView list;
+    private List<String> List_file;
+	
 	private LayoutInflater inflater;
 
 	private Diagnosis mDiagnosis;
@@ -413,16 +418,35 @@ public class Alice extends Activity implements AsyncTasksListener,
 	public void onInfo(View view) {
 		//usage tracking
 		FlurryAgent.logEvent("onInfo");
-				
+        
 		View currentView = flipper.getCurrentView();
-		if (!currentView.equals(aboutView)) {
-			aboutView = inflater.inflate(R.layout.about_screen, null);
-			flipper.addView(aboutView);
+		if (!currentView.equals(infoView)) {
+			
+			infoView = inflater.inflate(R.layout.info_screen, null);
+			flipper.addView(infoView);
 			flipper.showNext();
+			
+			List_file = new ArrayList<String>();
+	        list = (ListView)findViewById(R.id.infolist);
+	        
+	        List_file.add("About Virtual Nurse");
+	        List_file.add("Partners");
+	        List_file.add("Terms & Conditions");
+	        List_file.add("Privacy Policy");
+	        List_file.add("Share with Friends");
+	        List_file.add("Rate this app!");
+	        List_file.add("Contact us");
+	        
+	        final ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(Alice.this, android.R.layout.simple_list_item_1, List_file);
+	        
+	        list.setAdapter(listAdapter);
+	        
+	        
+			
 		}
 		stopTTS();
 		
-		Button shareBtnAbout = (Button) aboutView.findViewById(R.id.share_app);
+/*		Button shareBtnAbout = (Button) aboutView.findViewById(R.id.share_app);
 		
 		shareBtnAbout.setOnClickListener(new OnClickListener() {
 
@@ -435,9 +459,23 @@ public class Alice extends Activity implements AsyncTasksListener,
 	    		
 			}
 
-		});
+		});*/
 
 	}
+	
+/*	public void onPartners(View view) {
+		//usage tracking
+		FlurryAgent.logEvent("onInfo");
+				
+		View currentView = flipper.getCurrentView();
+		if (!currentView.equals(aboutView)) {
+			aboutView = inflater.inflate(R.layout.about_screen, null);
+			flipper.addView(aboutView);
+			flipper.showNext();
+		}
+		stopTTS();
+		
+	}*/
 	
 
 	private void shareApp() {
