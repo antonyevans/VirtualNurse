@@ -89,7 +89,7 @@
         </RelativeLayout>
         
     </LinearLayout>
-            <include layout="@layout/share_app_btn"/>
+            
                 </LinearLayout>
         </ScrollView>
 
