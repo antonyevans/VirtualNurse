@@ -431,13 +431,13 @@ public class Alice extends Activity implements AsyncTasksListener,
 			List_file = new ArrayList<String>();
 	        list = (ListView)findViewById(R.id.infolist);
 	        
-	        List_file.add("About Virtual Nurse");
-	        List_file.add("Partners");
-	        List_file.add("Terms & Conditions");
-	        List_file.add("Privacy Policy");
-	        List_file.add("Share with Friends");
-	        List_file.add("Rate this app!");
-	        List_file.add("Contact us");
+	        List_file.add(getString(R.string.info_about));
+	        List_file.add(getString(R.string.info_partners));
+	        List_file.add(getString(R.string.info_TCs));
+	        List_file.add(getString(R.string.info_privacy));
+	        List_file.add(getString(R.string.info_share));
+	        List_file.add(getString(R.string.info_rate));
+	        List_file.add(getString(R.string.info_contact));
 	           
 	        list.setAdapter(new ArrayAdapter<String>(Alice.this, R.layout.info_item, List_file));
 	        
@@ -473,19 +473,19 @@ public class Alice extends Activity implements AsyncTasksListener,
 	}
 	
 	public void infoClickResponse(String selection) {
-		if (selection == "About Virtual Nurse" ) {
+		if (selection == getString(R.string.info_about) ) {
 			
-		} else if (selection == "Partners") {
+		} else if (selection == getString(R.string.info_partners)) {
 
-		} else if (selection == "Terms & Conditions") {
+		} else if (selection == getString(R.string.info_TCs)) {
 			
-		} else if (selection == "Privacy Policy") {
+		} else if (selection == getString(R.string.info_privacy)) {
 			
-		} else if (selection == "Share with Friends") {
+		} else if (selection == getString(R.string.info_share)) {
 			shareApp();
-		} else if (selection == "Rate this app!") {
+		} else if (selection == getString(R.string.info_rate)) {
 			rateIt();
-		} else if (selection == "Contact us") {
+		} else if (selection == getString(R.string.info_contact)) {
 			 
 		}
 	}

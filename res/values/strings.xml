@@ -34,4 +34,12 @@
     <string name="share_subject">The Virtual Nurse - Do you need to see the Doctor?</string>
     <string name="share_body">Helping you answer the question \'Do I need to see the doctor?\' http://bit.ly/SMjOWQ</string>
 
+    <string name="info_about">About Virtual Nurse</string>
+    <string name="info_partners">Partners</string>
+    <string name="info_TCs">Terms &amp; Conditions</string>
+    <string name="info_privacy">Privacy Policy</string>
+    <string name="info_share">Share with Friends</string>
+    <string name="info_rate">Rate this app!</string>
+    <string name="info_contact">Contact us</string>
+    
 </resources>
