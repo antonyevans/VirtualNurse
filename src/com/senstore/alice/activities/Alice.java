@@ -109,6 +109,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 	private View menuView;
 	private View aboutView;
+	private View partnerView;
 	private View infoView;
 
 	private ListView list;
@@ -460,12 +461,23 @@ public class Alice extends Activity implements AsyncTasksListener,
 	public void infoClickResponse(String selection) {
 		if (selection == getString(R.string.info_about) ) {
 			FlurryAgent.logEvent("Info: About");
-			//TODO
+			
+			View currentView = flipper.getCurrentView();
+			if (!currentView.equals(aboutView)) {
+				aboutView = inflater.inflate(R.layout.about_screen, null);
+				flipper.addView(aboutView);
+				flipper.showNext();
+			}
 			
 		} else if (selection == getString(R.string.info_partners)) {
 			FlurryAgent.logEvent("Info: Partners");
-			//TODO
 			
+			View currentView = flipper.getCurrentView();
+			if (!currentView.equals(partnerView)) {
+				partnerView = inflater.inflate(R.layout.partner_screen, null);
+				flipper.addView(partnerView);
+				flipper.showNext();
+			}
 		} else if (selection == getString(R.string.info_TCs)) {
 			FlurryAgent.logEvent("Info: T&Cs");
 			//TODO

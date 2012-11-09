@@ -68,12 +68,74 @@
 	                android:layout_marginLeft="10dp"
 	                android:layout_marginRight="10dp"
 	                android:layout_marginTop="10dp"
+	                android:textStyle="bold"
 	                android:paddingBottom="10dp"
 	                android:paddingLeft="10dp"
 	                android:paddingRight="10dp"
 	                android:paddingTop="10dp"
-	                android:text="@string/about"
+	                android:text="@string/partner_medical"
 	                android:textColor="@android:color/black" />
+                
+                <ImageView
+			        android:id="@+id/harvard_logo"
+			        android:layout_width="fill_parent"
+			        android:layout_height="60dp"
+			        android:layout_centerHorizontal="true"
+			        android:src="@drawable/harvard_logo" />
+                
+                <TextView
+	                android:layout_width="fill_parent"
+	                android:layout_height="wrap_content"
+	                android:layout_marginBottom="10dp"
+	                android:layout_marginLeft="10dp"
+	                android:layout_marginRight="10dp"
+	                android:layout_marginTop="10dp"
+	                android:textStyle="bold"
+	                android:paddingLeft="10dp"
+	                android:paddingRight="10dp"
+	                android:paddingTop="10dp"
+	                android:text="@string/partner_tech"
+	                android:textColor="@android:color/black" />
+                
+                <ImageView
+			        android:id="@+id/nuance_light"
+			        android:layout_width="fill_parent"
+			        android:layout_height="70dp"
+			        android:layout_alignParentBottom="true"
+			        android:layout_centerHorizontal="true"
+			        android:src="@drawable/nuance_light" />
+                
+                <TextView
+	                android:layout_width="fill_parent"
+	                android:layout_height="wrap_content"
+	                android:layout_marginBottom="10dp"
+	                android:layout_marginLeft="10dp"
+	                android:layout_marginRight="10dp"
+	                android:layout_marginTop="10dp"
+	                android:textStyle="bold"
+	                android:paddingBottom="10dp"
+	                android:paddingLeft="10dp"
+	                android:paddingRight="10dp"
+	                android:text="@string/partner_business"
+	                android:textColor="@android:color/black" />
+                
+                <ImageView
+			        android:id="@+id/su_logo"
+			        android:layout_width="fill_parent"
+			        android:layout_height="50dp"
+			        android:layout_alignParentBottom="true"
+			        android:layout_centerHorizontal="true"
+			        android:src="@drawable/su_logo" />
+                
+                <ImageView
+			        android:id="@+id/rockhealth_logo"
+			        android:layout_width="fill_parent"
+			        android:layout_height="60dp"
+			        android:paddingBottom="10dp"
+	                android:paddingTop="10dp"
+			        android:layout_alignParentBottom="true"
+			        android:layout_centerHorizontal="true"
+			        android:src="@drawable/rockhealth_logo" />
                 
                 </LinearLayout>
             </RelativeLayout>
