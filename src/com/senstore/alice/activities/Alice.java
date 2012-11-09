@@ -437,7 +437,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	        List_file.add("Rate this app!");
 	        List_file.add("Contact us");
 	        
-	        final ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(Alice.this, android.R.layout.simple_list_item_1, List_file);
+	        final ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(Alice.this, R.layout.info_item, List_file);
 	        
 	        list.setAdapter(listAdapter);
 	        
