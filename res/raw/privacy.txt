@@ -1,0 +1,10 @@
+<b>Privacy Policy</b>
+<br><br>
+We will never sell or share your personal information with anyone else.  Ever.  No exceptions.
+<br><br>
+The data we do collect is used only to develop and improve the product and the user experience.  The following data is collected:<br>
+<b>Phone number:</b> Used to track which mobile application users call the Ringadoc service<br>
+<b>Location:</b> Used to determine eligibility of users to call the Ringadoc service due to restrictions on practicing medicine across state boundaries (currently California only)<br>
+<b>Usage:</b> Aggregate statistics are gathered on which paths are taken through the decision trees<br>
+<br>
+Any information disclosed to any partners introduced by this service remains confidential to them and is never disclosed back to us.  We do not share information provided to the app with a doctor or anyone else.

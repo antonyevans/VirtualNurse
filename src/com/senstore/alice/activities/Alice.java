@@ -496,7 +496,14 @@ public class Alice extends Activity implements AsyncTasksListener,
 			
 		} else if (selection == getString(R.string.info_privacy)) {
 			FlurryAgent.logEvent("Info: Privacy");
-			//TODO
+			View currentView = flipper.getCurrentView();
+			if (!currentView.equals(textinputView)) {
+				textinputView = inflater.inflate(R.layout.text_screen, null);
+				flipper.addView(textinputView);
+				flipper.showNext();
+			}
+			TextView text_inputTxt = (TextView)findViewById(R.id.text_input);
+	        text_inputTxt.setText(Html.fromHtml(readTxt("Privacy")));
 			
 		} else if (selection == getString(R.string.info_share)) {
 			FlurryAgent.logEvent("Info: Share");
@@ -517,6 +524,8 @@ public class Alice extends Activity implements AsyncTasksListener,
      
      if (textFile == "TCs") {
     	 inputStream = getResources().openRawResource(R.raw.tcs);
+     } else if (textFile == "Privacy") {
+    	 inputStream = getResources().openRawResource(R.raw.privacy);    
      } else {
     	 return "TextFile not found";
      }
