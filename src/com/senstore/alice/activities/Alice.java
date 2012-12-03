@@ -1,5 +1,8 @@
 package com.senstore.alice.activities;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -111,6 +114,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	private View aboutView;
 	private View partnerView;
 	private View infoView;
+	private View textinputView;
 
 	private ListView list;
     private List<String> List_file;
@@ -480,7 +484,15 @@ public class Alice extends Activity implements AsyncTasksListener,
 			}
 		} else if (selection == getString(R.string.info_TCs)) {
 			FlurryAgent.logEvent("Info: T&Cs");
-			//TODO
+			
+			View currentView = flipper.getCurrentView();
+			if (!currentView.equals(textinputView)) {
+				textinputView = inflater.inflate(R.layout.text_screen, null);
+				flipper.addView(textinputView);
+				flipper.showNext();
+			}
+			TextView text_inputTxt = (TextView)findViewById(R.id.text_input);
+	        text_inputTxt.setText(Html.fromHtml(readTxt()));
 			
 		} else if (selection == getString(R.string.info_privacy)) {
 			FlurryAgent.logEvent("Info: Privacy");
@@ -498,6 +510,30 @@ public class Alice extends Activity implements AsyncTasksListener,
 			
 		}
 	}
+	
+	private String readTxt()	{
+
+     InputStream inputStream = getResources().openRawResource(R.raw.tcs);
+     
+     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+     
+     int i;
+	  try {
+	   i = inputStream.read();
+	   while (i != -1)
+	      {
+	       byteArrayOutputStream.write(i);
+	       i = inputStream.read();
+	      }
+	      inputStream.close();
+	  } catch (IOException e) {
+	   // TODO Auto-generated catch block
+	   e.printStackTrace();
+	  }
+	  
+	  return byteArrayOutputStream.toString();
+	}
+	
 	
 /*	public void onPartners(View view) {
 		//usage tracking
