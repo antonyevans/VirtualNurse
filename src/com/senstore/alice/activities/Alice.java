@@ -492,7 +492,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 				flipper.showNext();
 			}
 			TextView text_inputTxt = (TextView)findViewById(R.id.text_input);
-	        text_inputTxt.setText(Html.fromHtml(readTxt()));
+	        text_inputTxt.setText(Html.fromHtml(readTxt("TCs")));
 			
 		} else if (selection == getString(R.string.info_privacy)) {
 			FlurryAgent.logEvent("Info: Privacy");
@@ -511,10 +511,15 @@ public class Alice extends Activity implements AsyncTasksListener,
 		}
 	}
 	
-	private String readTxt()	{
+	private String readTxt(String textFile)	{
 
-     InputStream inputStream = getResources().openRawResource(R.raw.tcs);
+     InputStream inputStream;
      
+     if (textFile == "TCs") {
+    	 inputStream = getResources().openRawResource(R.raw.tcs);
+     } else {
+    	 return "TextFile not found";
+     }
      ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
      
      int i;
