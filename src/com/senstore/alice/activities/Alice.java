@@ -31,6 +31,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.text.Html;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -496,6 +497,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 			
 		} else if (selection == getString(R.string.info_privacy)) {
 			FlurryAgent.logEvent("Info: Privacy");
+			
 			View currentView = flipper.getCurrentView();
 			if (!currentView.equals(textinputView)) {
 				textinputView = inflater.inflate(R.layout.text_screen, null);
@@ -513,8 +515,18 @@ public class Alice extends Activity implements AsyncTasksListener,
 			rateIt();
 		} else if (selection == getString(R.string.info_contact)) {
 			FlurryAgent.logEvent("Info: Contact"); 
-			//TODO
 			
+			View currentView = flipper.getCurrentView();
+			if (!currentView.equals(textinputView)) {
+				textinputView = inflater.inflate(R.layout.text_screen, null);
+				flipper.addView(textinputView);
+				flipper.showNext();
+			}
+			TextView text_inputTxt = (TextView)findViewById(R.id.text_input);
+	        text_inputTxt.setText(Html.fromHtml(readTxt("Contact")));
+			//Linkify.addLinks(text_inputTxt, 4); //phone numbers become links
+			//Linkify.addLinks(text_inputTxt, 2); //email addresses become links
+			Linkify.addLinks(text_inputTxt, 15); //web addresses become links
 		}
 	}
 	
@@ -525,7 +537,9 @@ public class Alice extends Activity implements AsyncTasksListener,
      if (textFile == "TCs") {
     	 inputStream = getResources().openRawResource(R.raw.tcs);
      } else if (textFile == "Privacy") {
-    	 inputStream = getResources().openRawResource(R.raw.privacy);    
+    	 inputStream = getResources().openRawResource(R.raw.privacy);
+     } else if (textFile == "Contact") {
+        	 inputStream = getResources().openRawResource(R.raw.contact);    
      } else {
     	 return "TextFile not found";
      }
