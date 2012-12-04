@@ -471,11 +471,14 @@ public class Alice extends Activity implements AsyncTasksListener,
 			FlurryAgent.logEvent("Info: About");
 			
 			View currentView = flipper.getCurrentView();
-			if (!currentView.equals(aboutView)) {
-				aboutView = inflater.inflate(R.layout.about_screen, null);
-				flipper.addView(aboutView);
+			if (!currentView.equals(textinputView)) {
+				textinputView = inflater.inflate(R.layout.text_screen, null);
+				flipper.addView(textinputView);
 				flipper.showNext();
 			}
+			TextView text_inputTxt = (TextView)findViewById(R.id.text_input);
+	        text_inputTxt.setText(Html.fromHtml(readTxt("About")));
+			Linkify.addLinks(text_inputTxt, 15); //all become links
 			
 		} else if (selection == getString(R.string.info_partners)) {
 			FlurryAgent.logEvent("Info: Partners");
@@ -543,6 +546,8 @@ public class Alice extends Activity implements AsyncTasksListener,
         	 inputStream = getResources().openRawResource(R.raw.contact);    
      } else if (textFile == "Hello") {
     	 inputStream = getResources().openRawResource(R.raw.hello);
+     } else if (textFile == "About") {
+    	 inputStream = getResources().openRawResource(R.raw.about);
      } else {
     	 return "TextFile not found";
      }
