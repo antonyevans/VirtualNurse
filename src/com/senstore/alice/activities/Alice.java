@@ -527,9 +527,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 			}
 			TextView text_inputTxt = (TextView)findViewById(R.id.text_input);
 	        text_inputTxt.setText(Html.fromHtml(readTxt("Contact")));
-			//Linkify.addLinks(text_inputTxt, 4); //phone numbers become links
-			//Linkify.addLinks(text_inputTxt, 2); //email addresses become links
-			Linkify.addLinks(text_inputTxt, 15); //web addresses become links
+			Linkify.addLinks(text_inputTxt, 15); //all become links
 		}
 	}
 	
