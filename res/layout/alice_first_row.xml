@@ -72,7 +72,7 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:paddingTop="10dp"
-                android:text="@string/hello"
+                android:id="@+id/hello"
                 android:textColor="@android:color/black" />
                 </LinearLayout>
             </RelativeLayout>

@@ -219,6 +219,9 @@ public class Alice extends Activity implements AsyncTasksListener,
 		createHarvardGuideWidget();
 
 		flipper.addView(menuView);
+		//load hello text into menuView
+		TextView text_inputTxt = (TextView)findViewById(R.id.hello);
+        text_inputTxt.setText(Html.fromHtml(readTxt("Hello")));
 		
 		// Restore preferences
 	       SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
@@ -404,7 +407,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		}
 		
 		// Speak after returning to Home View
-		// speakText(getString(R.string.hello));
+		// Removed for now
 
 	}
 
@@ -540,6 +543,8 @@ public class Alice extends Activity implements AsyncTasksListener,
     	 inputStream = getResources().openRawResource(R.raw.privacy);
      } else if (textFile == "Contact") {
         	 inputStream = getResources().openRawResource(R.raw.contact);    
+     } else if (textFile == "Hello") {
+    	 inputStream = getResources().openRawResource(R.raw.hello);
      } else {
     	 return "TextFile not found";
      }
@@ -607,8 +612,9 @@ public class Alice extends Activity implements AsyncTasksListener,
 		// Set an EditText view to get user input 
 		final EditText input = new EditText(this);
 		alert.setView(input);
+		final View crntView = view;
 
-		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+		alert.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				String value = input.getText().toString();
 				if (mDiagnosis != null) {
@@ -617,6 +623,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 				} else {
 					//instance we are starting the selection process
+					onHome(crntView);
 					doVoiceDiagnosis("null",
 							Constants.DIAGNOSIS_DEFAULT_LAST_QUERY, value);
 				}
@@ -625,7 +632,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 			}
 		});
 
-		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		alert.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
 		 public void onClick(DialogInterface dialog, int whichButton) {
 		     // Canceled.
 		 }
@@ -733,7 +740,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 	 */
 	private void createHarvardGuideWidget() {
 		// inflate main menu view
-		menuView = inflater.inflate(R.layout.alice_first_row, null);
+		menuView = inflater.inflate(R.layout.alice_first_row, null);	
+		
 		// locate box for placing buttons
 		LinearLayout lightbox = (LinearLayout) menuView
 				.findViewById(R.id.lightbox_button_layout);
@@ -2075,7 +2083,9 @@ public class Alice extends Activity implements AsyncTasksListener,
 				if (isFirstTime) {
 					isFirstTime = false;
 					// Speak the welcome text
-					speakText(getString(R.string.hello));
+					
+					speakText(Html.fromHtml(readTxt("Hello")).toString());
+					
 
 				}
 			}
