@@ -735,6 +735,51 @@ public class Alice extends Activity implements AsyncTasksListener,
 		alert.show();
 	}
 
+	/** This creates the orange button used a in number of the views
+	 * 
+	 */
+	
+	private Button createOrangeBtn(final String name, final String type, final String details) {
+		Button b = new Button(this);
+		
+		// Create Layout parameters object to dynamically
+		// style the button before plugging it to the view
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+				LinearLayout.LayoutParams.FILL_PARENT,
+				LinearLayout.LayoutParams.WRAP_CONTENT);
+
+		params.setMargins(15, 5, 0, 5);
+		params.gravity = Gravity.CENTER;
+		b.setLayoutParams(params);
+		b.setGravity(Gravity.CENTER);
+
+		b.setPadding(10, 10, 10, 10);
+
+		Drawable btnBg = getResources().getDrawable(R.drawable.btn_orange);
+
+		b.setBackgroundDrawable(btnBg);
+
+		b.setText(name);
+
+		b.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+						        	
+				// firstQuery = name;
+
+				stopTTS();
+
+				chatQuery = name;
+
+				doTouchDiagnosis(type,
+						Constants.DIAGNOSIS_DEFAULT_LAST_QUERY, details);
+			}
+		});
+		
+		return b;
+	}
+	
 	/**
 	 * Loop through the Harvard Guide enum, to fetch the guides and their
 	 * respective properties
@@ -754,42 +799,9 @@ public class Alice extends Activity implements AsyncTasksListener,
 			final String guide = hg.guideName();
 			final String start_input = hg.startInput();
 
-			Button b = new Button(this);
+			Button b = createOrangeBtn(name, guide, start_input);
 
-			// Create Layout parameters object to dynamically
-			// style the button before plugging it to the view
-			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-					LinearLayout.LayoutParams.FILL_PARENT,
-					LinearLayout.LayoutParams.WRAP_CONTENT);
-
-			params.setMargins(15, 5, 0, 5);
-			params.gravity = Gravity.CENTER;
-			b.setLayoutParams(params);
-			b.setGravity(Gravity.CENTER);
-
-			b.setPadding(10, 10, 10, 10);
-
-			Drawable btnBg = getResources().getDrawable(R.drawable.btn_orange);
-
-			b.setBackgroundDrawable(btnBg);
-
-			b.setText(name);
-
-			b.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-							        	
-					// firstQuery = name;
-
-					stopTTS();
-
-					chatQuery = name;
-
-					doTouchDiagnosis(guide,
-							Constants.DIAGNOSIS_DEFAULT_LAST_QUERY, start_input);
-				}
-			});
+			
 
 			// add each button to the layout
 			lightbox.addView(b);
