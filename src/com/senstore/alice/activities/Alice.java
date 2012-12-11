@@ -117,7 +117,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 	private DiagnosisAsyncTask diagnosisTask;
 
-	private View chatview;
+	private View chatView;
 	private ChatListView chatlist;
 	private ViewFlipper flipper;
 
@@ -214,10 +214,10 @@ public class Alice extends Activity implements AsyncTasksListener,
 		}
 
 		// inflate the view with the listview
-		chatview = inflater.inflate(R.layout.alice_chat_list_layout, null);
+		chatView = inflater.inflate(R.layout.alice_chat_list_layout, null);
 
 		// load listview
-		chatlist = (ChatListView) chatview.findViewById(R.id.alice_chat_list);
+		chatlist = (ChatListView) chatView.findViewById(R.id.alice_chat_list);
 		chatlist.setFocusable(false);
 
 		chatAdapter = new AliceChatAdapter(this);
@@ -397,7 +397,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 		while (!currentView.equals(menuView)) {
 
-			if (currentView.equals(chatview)) {
+			if (currentView.equals(chatView)) {
 				// moving to Home View. Clean the Chat list and remove the chat view
 				chatAdapter.resetAdapter();
 				flipper.removeView(currentView);
@@ -676,7 +676,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 			// close the app
 			onStop();
 			moveTaskToBack(true);
-		} else if (currentView.equals(chatview)) {
+		} else if (currentView.equals(chatView)) {
 
 			// moving to Home View. Clean the Chat list and remove the chat view
 			chatAdapter.resetAdapter();
@@ -744,6 +744,14 @@ public class Alice extends Activity implements AsyncTasksListener,
 		alert.show();
 	}
 
+	/** This returns the list of guides to display
+	 * 
+	 */
+	
+	private void getGuidesList() {
+		createMenuWidget(GUIDE);
+	}
+	
 	/** This creates the orange button used a in number of the views
 	 * 
 	 */
@@ -776,16 +784,16 @@ public class Alice extends Activity implements AsyncTasksListener,
 			public void onClick(View v) {
 				stopTTS();		        	
 				switch (type) {
+				case MENU:
+					createMenuWidget(CATAGORY);
+					break;
+				case CATAGORY:
+					getGuidesList();
+					break;
 				case GUIDE:
 					chatQuery = name;
 					doTouchDiagnosis(details,
 							Constants.DIAGNOSIS_DEFAULT_LAST_QUERY, subDetails);
-					break;
-				case MENU:
-					createMenuWidget(BODY);
-					break;
-				case CATAGORY:
-					
 					break;
 				}
 				
@@ -829,8 +837,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 			}
 			break;
-		case BODY:
-			Log.i("Alice", "Body found");
+		case CATAGORY:
+			
 			catagoryView = inflater.inflate(R.layout.alice_first_row, null);
 			flipper.addView(catagoryView);
 			flipper.showNext();
@@ -846,11 +854,35 @@ public class Alice extends Activity implements AsyncTasksListener,
 			for (BodyGuide body : BodyGuide.values()) {
 
 				//Button b = createOrangeBtn(name,GUIDE, guide, start_input);
-				Button b = createOrangeBtn(body.userFriendlyName(),BODY, body.result(), "");
+				Button b = createOrangeBtn(body.userFriendlyName(),CATAGORY, body.result(), "");
 				// add each button to the layout
 				lightbox.addView(b);
 
 			}
+			break;
+		case GUIDE:
+			
+			guideView = inflater.inflate(R.layout.alice_first_row, null);
+			flipper.addView(guideView);
+			flipper.showNext();
+			
+			//load description text into menuView
+			text_inputTxt = (TextView) guideView.findViewById(R.id.description);
+	        text_inputTxt.setText(Html.fromHtml(getString(R.string.menu_guide)));
+			
+			// locate box for placing buttons
+			lightbox = (LinearLayout) guideView
+					.findViewById(R.id.lightbox_button_layout);
+			
+			for (HarvardGuide harvard : HarvardGuide.values()) {
+
+				//Button b = createOrangeBtn(name,GUIDE, guide, start_input);
+				Button b = createOrangeBtn(harvard.userFriendlyName(),GUIDE, harvard.guideName(), harvard.startInput());
+				// add each button to the layout
+				lightbox.addView(b);
+
+			}
+			break;
 		}
 		
 		
@@ -1107,26 +1139,33 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 					// identify the view on display currently
 					View currentView = flipper.getCurrentView();
-
-					if (currentView.equals(menuView)) {
+					
+					if (currentView.equals(chatView)) {
+						//don't need to do anything
+					} else {
+						//load the chatView
+						flipper.addView(chatView);
+						flipper.showNext();
+					}
+					/*if (currentView.equals(menuView)) {
 						// identify the number of children in the flipper
 						int childCount = flipper.getChildCount();
 						if (childCount > 1) {
 							flipper.showNext();
 						} else {
-							flipper.addView(chatview);
+							flipper.addView(chatView);
 							flipper.showNext();
 						}
 
 						// handle
 
-					} else if (currentView.equals(chatview)) {
+					} else if (currentView.equals(chatView)) {
 
 						// Incidentally we do not have a case that makes use of
 						// this logic space
 						// handle
 
-					}
+					}*/
 				}
 			} 
 		}  else  {
