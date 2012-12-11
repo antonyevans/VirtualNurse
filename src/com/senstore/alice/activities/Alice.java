@@ -62,6 +62,7 @@ import com.nuance.nmdp.speechkit.SpeechKit;
 import com.nuance.nmdp.speechkit.Vocalizer;
 import com.senstore.alice.harvard.R;
 import com.senstore.alice.api.HarvardGuide;
+import com.senstore.alice.api.MenuGuide;
 import com.senstore.alice.listeners.AsyncTasksListener;
 import com.senstore.alice.location.AliceLocation;
 import com.senstore.alice.location.AliceLocation.LocationResult;
@@ -98,6 +99,11 @@ public class Alice extends Activity implements AsyncTasksListener,
 	private static final int BILLING_NOT_WORKING_DIALOG = 2;
 	private static final int DIALOG_BILLING_NOT_SUPPORTED_ID = 3;	
 	private static final int BILLING_WORKING_DIALOG = 4;
+	
+	//constants for the orange buttons
+	private static final int GUIDE = 0;
+	private static final int MENU = 1;
+	private static final int CATAGORY = 2;
 	
 	public static final String PREFS_NAME = "MyPrefsFile";
 
@@ -216,7 +222,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		chatlist.setAdapter(chatAdapter);
 
 		// Load the main menu
-		createHarvardGuideWidget();
+		createMenuWidget();
 
 		flipper.addView(menuView);
 		//load hello text into menuView
@@ -739,7 +745,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	 * 
 	 */
 	
-	private Button createOrangeBtn(final String name, final String type, final String details) {
+	private Button createOrangeBtn(final String name, final int type, final String details, final String subDetails) {
 		Button b = new Button(this);
 		
 		// Create Layout parameters object to dynamically
@@ -765,15 +771,18 @@ public class Alice extends Activity implements AsyncTasksListener,
 			
 			@Override
 			public void onClick(View v) {
-						        	
-				// firstQuery = name;
-
-				stopTTS();
-
-				chatQuery = name;
-
-				doTouchDiagnosis(type,
-						Constants.DIAGNOSIS_DEFAULT_LAST_QUERY, details);
+				stopTTS();		        	
+				switch (type) {
+				case GUIDE:
+					chatQuery = name;
+					doTouchDiagnosis(details,
+							Constants.DIAGNOSIS_DEFAULT_LAST_QUERY, subDetails);
+				case MENU:
+					
+				case CATAGORY:
+					
+				}
+				
 			}
 		});
 		
@@ -786,7 +795,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	 * 
 	 * @Mimano This is where you put in your buttons/list in a scroll view
 	 */
-	private void createHarvardGuideWidget() {
+	private void createMenuWidget() {
 		// inflate main menu view
 		menuView = inflater.inflate(R.layout.alice_first_row, null);	
 		
@@ -794,15 +803,10 @@ public class Alice extends Activity implements AsyncTasksListener,
 		LinearLayout lightbox = (LinearLayout) menuView
 				.findViewById(R.id.lightbox_button_layout);
 
-		for (HarvardGuide hg : HarvardGuide.values()) {
-			final String name = hg.officialName();
-			final String guide = hg.guideName();
-			final String start_input = hg.startInput();
+		for (MenuGuide menu : MenuGuide.values()) {
 
-			Button b = createOrangeBtn(name, guide, start_input);
-
-			
-
+			//Button b = createOrangeBtn(name,GUIDE, guide, start_input);
+			Button b = createOrangeBtn(menu.userFriendlyName(),MENU, menu.result(), "");
 			// add each button to the layout
 			lightbox.addView(b);
 
