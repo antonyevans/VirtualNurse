@@ -19,8 +19,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.senstore.alice.harvard.R;
-import com.senstore.alice.api.HarvardGuide;
 import com.senstore.alice.listeners.AsyncTasksListener;
+import com.senstore.alice.menus.HarvardGuide;
 import com.senstore.alice.models.Diagnosis;
 import com.senstore.alice.tasks.DiagnosisAsyncTask;
 import com.senstore.alice.utils.Constants;

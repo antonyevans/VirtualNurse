@@ -61,11 +61,12 @@ import com.nuance.nmdp.speechkit.SpeechError;
 import com.nuance.nmdp.speechkit.SpeechKit;
 import com.nuance.nmdp.speechkit.Vocalizer;
 import com.senstore.alice.harvard.R;
-import com.senstore.alice.api.HarvardGuide;
-import com.senstore.alice.api.MenuGuide;
 import com.senstore.alice.listeners.AsyncTasksListener;
 import com.senstore.alice.location.AliceLocation;
 import com.senstore.alice.location.AliceLocation.LocationResult;
+import com.senstore.alice.menus.HarvardGuide;
+import com.senstore.alice.menus.MenuGuide;
+import com.senstore.alice.menus.BodyGuide;
 import com.senstore.alice.models.Diagnosis;
 import com.senstore.alice.services.BackgroundLogger;
 import com.senstore.alice.services.BillingService.RequestPurchase;
@@ -104,6 +105,11 @@ public class Alice extends Activity implements AsyncTasksListener,
 	private static final int GUIDE = 0;
 	private static final int MENU = 1;
 	private static final int CATAGORY = 2;
+	private static final int BODY = 3;
+	private static final int DEMOGRAPHIC = 4;
+	private static final int OWNED = 5;
+	private static final int ALL = 6;
+	private static final int HOME = 7;
 	
 	public static final String PREFS_NAME = "MyPrefsFile";
 
@@ -118,7 +124,9 @@ public class Alice extends Activity implements AsyncTasksListener,
 	private AliceChatAdapter chatAdapter;
 
 	private View menuView;
-	private View aboutView;
+	private View catagoryView;
+	private View guideView;
+	//private View aboutView;
 	private View partnerView;
 	private View infoView;
 	private View textinputView;
@@ -222,7 +230,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		chatlist.setAdapter(chatAdapter);
 
 		// Load the main menu
-		createMenuWidget();
+		createMenuWidget(HOME);
 
 		flipper.addView(menuView);
 		//load hello text into menuView
@@ -777,10 +785,13 @@ public class Alice extends Activity implements AsyncTasksListener,
 					chatQuery = name;
 					doTouchDiagnosis(details,
 							Constants.DIAGNOSIS_DEFAULT_LAST_QUERY, subDetails);
+					break;
 				case MENU:
-					
+					createMenuWidget(BODY);
+					break;
 				case CATAGORY:
 					
+					break;
 				}
 				
 			}
@@ -795,22 +806,47 @@ public class Alice extends Activity implements AsyncTasksListener,
 	 * 
 	 * @Mimano This is where you put in your buttons/list in a scroll view
 	 */
-	private void createMenuWidget() {
-		// inflate main menu view
-		menuView = inflater.inflate(R.layout.alice_first_row, null);	
+	private void createMenuWidget(int layer) {
+		LinearLayout lightbox;
 		
-		// locate box for placing buttons
-		LinearLayout lightbox = (LinearLayout) menuView
-				.findViewById(R.id.lightbox_button_layout);
+		switch (layer) {
+		case HOME:
+			// inflate main menu view
+			menuView = inflater.inflate(R.layout.alice_first_row, null);	
+			
+			// locate box for placing buttons
+			lightbox = (LinearLayout) menuView
+					.findViewById(R.id.lightbox_button_layout);
+			
+			for (MenuGuide menu : MenuGuide.values()) {
 
-		for (MenuGuide menu : MenuGuide.values()) {
+				//Button b = createOrangeBtn(name,GUIDE, guide, start_input);
+				Button b = createOrangeBtn(menu.userFriendlyName(),MENU, menu.result(), "");
+				// add each button to the layout
+				lightbox.addView(b);
 
-			//Button b = createOrangeBtn(name,GUIDE, guide, start_input);
-			Button b = createOrangeBtn(menu.userFriendlyName(),MENU, menu.result(), "");
-			// add each button to the layout
-			lightbox.addView(b);
+			}
+			break;
+		case BODY:
+			Log.i("Alice", "Body found");
+			catagoryView = inflater.inflate(R.layout.alice_first_row, null);
+			flipper.addView(catagoryView);
+			flipper.showNext();
+			
+			// locate box for placing buttons
+			lightbox = (LinearLayout) catagoryView
+					.findViewById(R.id.lightbox_button_layout);
+			
+			for (BodyGuide body : BodyGuide.values()) {
 
+				//Button b = createOrangeBtn(name,GUIDE, guide, start_input);
+				Button b = createOrangeBtn(body.userFriendlyName(),BODY, body.result(), "");
+				// add each button to the layout
+				lightbox.addView(b);
+
+			}
 		}
+		
 		
 		Button shareBtnMain = (Button) menuView.findViewById(R.id.share_app);
 		
