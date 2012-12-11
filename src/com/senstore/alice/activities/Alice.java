@@ -231,11 +231,6 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 		// Load the main menu
 		createMenuWidget(HOME);
-
-		flipper.addView(menuView);
-		//load hello text into menuView
-		TextView text_inputTxt = (TextView)findViewById(R.id.hello);
-        text_inputTxt.setText(Html.fromHtml(readTxt("Hello")));
 		
 		// Restore preferences
 	       SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
@@ -808,12 +803,19 @@ public class Alice extends Activity implements AsyncTasksListener,
 	 */
 	private void createMenuWidget(int layer) {
 		LinearLayout lightbox;
+		TextView text_inputTxt;
 		
 		switch (layer) {
 		case HOME:
 			// inflate main menu view
 			menuView = inflater.inflate(R.layout.alice_first_row, null);	
+			flipper.addView(menuView);
+			flipper.showNext();
 			
+			//load description text into menuView
+			text_inputTxt = (TextView) menuView.findViewById(R.id.description);
+	        text_inputTxt.setText(Html.fromHtml(readTxt("Hello")));
+	        
 			// locate box for placing buttons
 			lightbox = (LinearLayout) menuView
 					.findViewById(R.id.lightbox_button_layout);
@@ -832,6 +834,10 @@ public class Alice extends Activity implements AsyncTasksListener,
 			catagoryView = inflater.inflate(R.layout.alice_first_row, null);
 			flipper.addView(catagoryView);
 			flipper.showNext();
+			
+			//load description text into menuView
+			text_inputTxt = (TextView) catagoryView.findViewById(R.id.description);
+	        text_inputTxt.setText(Html.fromHtml(getString(R.string.menu_body)));
 			
 			// locate box for placing buttons
 			lightbox = (LinearLayout) catagoryView
