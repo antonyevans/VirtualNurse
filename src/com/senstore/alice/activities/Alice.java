@@ -871,6 +871,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 				}
 			} else if (layer == CATAGORY) {
+				text_inputTxt.setText(Html.fromHtml(getString(R.string.menu_catagory)));
 				
 			} else if (layer == DEMOGRAPHIC) {
 				text_inputTxt.setText(Html.fromHtml(getString(R.string.menu_demographic)));
@@ -890,6 +891,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 			getGuideList("All", "");
 			break;
 		case OWNED:
+			//TODO: update this to search for owned guides, requires back end work
 			getGuideList("All", "");
 			break;
 		case GUIDE:
