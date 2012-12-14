@@ -905,6 +905,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 			break;
 		
 		case GUIDE:
+			
 			FlurryAgent.logEvent("Show Guides");
 			guideView = inflater.inflate(R.layout.alice_first_row, null);
 			flipper.addView(guideView);
