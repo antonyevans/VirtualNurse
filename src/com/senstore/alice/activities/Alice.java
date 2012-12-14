@@ -68,6 +68,7 @@ import com.senstore.alice.menus.HarvardGuide;
 import com.senstore.alice.menus.MenuGuide;
 import com.senstore.alice.menus.BodyGuide;
 import com.senstore.alice.models.Diagnosis;
+import com.senstore.alice.models.Guide;
 import com.senstore.alice.services.BackgroundLogger;
 import com.senstore.alice.services.BillingService.RequestPurchase;
 import com.senstore.alice.tasks.DiagnosisAsyncTask;
@@ -230,7 +231,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		chatlist.setAdapter(chatAdapter);
 
 		// Load the main menu
-		createMenuWidget(HOME);
+		createMenuWidget(HOME, null);
 		
 		// Restore preferences
 	       SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
@@ -744,13 +745,6 @@ public class Alice extends Activity implements AsyncTasksListener,
 		alert.show();
 	}
 
-	/** This returns the list of guides to display
-	 * 
-	 */
-	
-	private void getGuidesList() {
-		createMenuWidget(GUIDE);
-	}
 	
 	/** This creates the orange button used a in number of the views
 	 * 
@@ -785,10 +779,10 @@ public class Alice extends Activity implements AsyncTasksListener,
 				stopTTS();		        	
 				switch (type) {
 				case MENU:
-					createMenuWidget(CATAGORY);
+					createMenuWidget(CATAGORY, null);
 					break;
 				case CATAGORY:
-					getGuidesList();
+					getGuideList("Body", details);
 					break;
 				case GUIDE:
 					chatQuery = name;
@@ -809,7 +803,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	 * 
 	 * @Mimano This is where you put in your buttons/list in a scroll view
 	 */
-	private void createMenuWidget(int layer) {
+	private void createMenuWidget(int layer, List <Guide> guides) {
 		LinearLayout lightbox;
 		TextView text_inputTxt;
 		
@@ -874,10 +868,10 @@ public class Alice extends Activity implements AsyncTasksListener,
 			lightbox = (LinearLayout) guideView
 					.findViewById(R.id.lightbox_button_layout);
 			
-			for (HarvardGuide harvard : HarvardGuide.values()) {
-
+			for(int i = 0; i < guides.size(); i++) {
+				Guide guide = guides.get(i);
 				//Button b = createOrangeBtn(name,GUIDE, guide, start_input);
-				Button b = createOrangeBtn(harvard.userFriendlyName(),GUIDE, harvard.guideName(), harvard.startInput());
+				Button b = createOrangeBtn(guide.getSimpleName(),GUIDE, guide.getFileName(), guide.getStartOption());
 				// add each button to the layout
 				lightbox.addView(b);
 
@@ -934,6 +928,21 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 	}
 
+	public void getGuideList(String type, String selection) {
+		Map<String, String> flurryParams = new HashMap<String, String>(); 
+			flurryParams.put("Type", type);
+			flurryParams.put("Selection", selection);
+		
+		FlurryAgent.logEvent("Get guides", flurryParams);
+		
+		diagnosisTask = new DiagnosisAsyncTask();
+		diagnosisTask.setType("Guide_list");
+		diagnosisTask.setListener(listener);
+		diagnosisTask.setLast_query(selection);
+		diagnosisTask.setInput_text(type);
+		diagnosisTask.execute();
+	}
+	
 	/**
 	 * Touch Diagnosis - Creates an instance of {@link DiagnosisAsyncTask}, and
 	 * sets the {@link AsyncTasksListener}
@@ -955,7 +964,7 @@ public class Alice extends Activity implements AsyncTasksListener,
     	FlurryAgent.logEvent("Start Diagnosis", flurryParams);
     	
 		diagnosisTask = new DiagnosisAsyncTask();
-		diagnosisTask.setVoice(false);
+		diagnosisTask.setType("Touch");
 		diagnosisTask.setListener(listener);
 		diagnosisTask.setLast_query(last_query);
 		diagnosisTask.setHealth_guide(health_guide);
@@ -985,7 +994,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		    	
 		    	
 		diagnosisTask = new DiagnosisAsyncTask();
-		diagnosisTask.setVoice(true);
+		diagnosisTask.setType("Voice");
 		diagnosisTask.setListener(listener);
 		diagnosisTask.setLast_query(last_query);
 		diagnosisTask.setHealth_guide(health_guide);
@@ -1076,7 +1085,15 @@ public class Alice extends Activity implements AsyncTasksListener,
 			
 			return;
 		}
-
+		
+		if (result.getHas_guides()) {
+			//This means that our asynctask has returned a list of guides
+			//we need to display a guide menu
+			createMenuWidget(GUIDE,result.getGuides());
+			
+			return;
+		}
+		
 		if (result.getPurchasedState()) {
 
 			// In cases where the server cannot understand/decipher

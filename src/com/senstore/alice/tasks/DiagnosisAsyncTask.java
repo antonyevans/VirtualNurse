@@ -20,7 +20,8 @@ public class DiagnosisAsyncTask extends AsyncTask<Void, String, Diagnosis> {
 	private String health_guide = null;
 	private String input_text = null;
 	private String last_query = null;
-	private boolean isVoice = false;
+	//private boolean isVoice = false;
+	private String task_type = null;
 
 	public String getLast_query() {
 		return last_query;
@@ -29,14 +30,22 @@ public class DiagnosisAsyncTask extends AsyncTask<Void, String, Diagnosis> {
 	public void setLast_query(String last_query) {
 		this.last_query = last_query;
 	}
-
-	public boolean isVoice() {
+	
+	public String getType() {
+		return task_type;
+	}
+	
+	public void setType(String type) {
+		this.task_type = type;
+	}
+	
+	/*public boolean isVoice() {
 		return isVoice;
-	}
+	}*/
 
-	public void setVoice(boolean isVoice) {
+	/*public void setVoice(boolean isVoice) {
 		this.isVoice = isVoice;
-	}
+	}*/
 
 	public void setHealth_guide(String health_guide) {
 		this.health_guide = health_guide;
@@ -74,10 +83,12 @@ public class DiagnosisAsyncTask extends AsyncTask<Void, String, Diagnosis> {
 		Diagnosis diagnosis = null;
 		DiagnosisRESTHandler handler = new DiagnosisRESTHandler();
 
-		if (isVoice()) {
+		if (getType() == "Guide_list") {
+			diagnosis = handler.getGuides(input_text, last_query);
+		} else if (getType()=="Voice") {
 			diagnosis = handler.voiceDiagnosis(health_guide, last_query,
 					input_text);
-		} else {
+		} else if (getType()=="Touch") {
 			diagnosis = handler.touchDiagnosis(health_guide, last_query,
 					input_text);
 		}

@@ -4,6 +4,7 @@
 package com.senstore.alice.models;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author Muniu Kariuki - muniu@bityarn.co.ke
@@ -25,8 +26,11 @@ public class Diagnosis {
 	private String updated_at = null;
 	private String user_id = null;
 	private Boolean purchased = false;
+	private Boolean has_guides = false;
 
 	private String query_string = null;
+	
+	private List <Guide> guides = null;
 
 	public String getQuery_string() {
 		return query_string;
@@ -150,6 +154,22 @@ public class Diagnosis {
 
 	public void setUser_id(String user_id) {
 		this.user_id = user_id;
+	}
+
+	public List <Guide> getGuides() {
+		return guides;
+	}
+
+	public void setGuides(List <Guide> guides) {
+		this.guides = guides;
+	}
+
+	public Boolean getHas_guides() {
+		return has_guides;
+	}
+
+	public void setHas_guides(Boolean has_guides) {
+		this.has_guides = has_guides;
 	}
 
 }

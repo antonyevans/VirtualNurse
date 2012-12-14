@@ -3,7 +3,10 @@
  */
 package com.senstore.alice.api;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,6 +18,7 @@ import android.widget.Toast;
 
 import com.senstore.alice.models.Diagnosis;
 import com.senstore.alice.utils.Constants;
+import com.senstore.alice.models.Guide;
 
 /**
  * @author Muniu Kariuki - muniu@bityarn.co.ke
@@ -108,7 +112,28 @@ public class DiagnosisParser {
 				diag.setSelect_type(select_type);
 				diag.setUpdated_at(updated_at);
 				diag.setUser_id(user_id);
+				diag.setHas_guides(false);
 
+			} else if	(JSONresponse.has("guides")) {
+				//case when we are getting list of guides back
+				JSONArray jsonGuides = JSONresponse.getJSONArray("guides");
+				diag.setHas_guides(true);
+				List <Guide> guides = new ArrayList <Guide>();
+				
+				for(int i = 0; i < jsonGuides.length(); i++) {
+					JSONObject items = jsonGuides.getJSONObject(i);
+					Guide guide = new Guide();
+					guide.setSimpleName(items.optString("SimpleName"));
+					guide.setFileName(items.optString("FileName"));
+					guide.setStartOption(items.optString("StartOption"));
+					guides.add(guide);
+					
+				}
+				
+				
+				diag.setGuides(guides);
+				
+				
 			} else {
 				Boolean purchased = false;
 				diag.setPurchased(purchased);

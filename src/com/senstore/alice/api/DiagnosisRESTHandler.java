@@ -24,7 +24,37 @@ public class DiagnosisRESTHandler {
 	public DiagnosisRESTHandler() {
 
 	}
+	
+	public Diagnosis getGuides(String type, String selection) {
+		
+		String absoluteURL = Constants.SERVER_URL + "guide_list.json";
+		RestClient req = new RestClient(absoluteURL);
+		req.addParam("type", type);
+		req.addParam("selection", selection);
+		req.addParam("security", Constants.SECURITY_HASH);
+		req.addParam("app_name", Constants.APP_NAME);
 
+		try {
+			req.execute(RequestMethod.GET);
+			int responseCode = req.getResponseCode();
+			if (responseCode == 201) {
+				String responseBody = req.getResponse();
+				Log.i(Constants.TAG, responseBody);
+
+				// Proceed to parse result
+				DiagnosisParser parser = new DiagnosisParser();
+				diagnosis = parser.parse(responseBody);
+
+			} else {
+				Log.i(Constants.TAG, responseCode + " - " + req.getResponse());
+			}
+		} catch (Exception e) {
+			Log.e(Constants.TAG, e.getMessage());
+		}
+
+		return diagnosis;
+	}
+	
 	/**
 	 * 
 	 * http://sharp-waterfall-5241.herokuapp.com/harvard.json?guide=
