@@ -64,9 +64,9 @@ import com.senstore.alice.harvard.R;
 import com.senstore.alice.listeners.AsyncTasksListener;
 import com.senstore.alice.location.AliceLocation;
 import com.senstore.alice.location.AliceLocation.LocationResult;
-import com.senstore.alice.menus.HarvardGuide;
 import com.senstore.alice.menus.MenuGuide;
 import com.senstore.alice.menus.BodyGuide;
+import com.senstore.alice.menus.DemographicGuide;
 import com.senstore.alice.models.Diagnosis;
 import com.senstore.alice.models.Guide;
 import com.senstore.alice.services.BackgroundLogger;
@@ -609,8 +609,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	public void onAlphabet(View view) {
 		//usage tracking
 		FlurryAgent.logEvent("onAlphabet");
-		
-		onHome(view);
+		getGuideList("All", "");
 	}
 
 	public void onKeyboard(View view) {
@@ -779,10 +778,26 @@ public class Alice extends Activity implements AsyncTasksListener,
 				stopTTS();		        	
 				switch (type) {
 				case MENU:
-					createMenuWidget(CATAGORY, null);
+					if (details == "BodyPart") {
+						createMenuWidget(BODY, null);
+					} else if (details == "Catagory") {
+						createMenuWidget(CATAGORY, null);
+					} else if (details == "Demographic") {
+						createMenuWidget(DEMOGRAPHIC, null);
+					} else if (details == "Owned") {
+						createMenuWidget(OWNED, null);
+					} else  {
+						createMenuWidget(ALL, null);
+					};
+					break;
+				case BODY:
+					getGuideList("Body", details);
 					break;
 				case CATAGORY:
-					getGuideList("Body", details);
+					getGuideList("Catagory", details);
+					break;
+				case DEMOGRAPHIC:
+					getGuideList("Demographic", details);
 					break;
 				case GUIDE:
 					chatQuery = name;
@@ -798,10 +813,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 	}
 	
 	/**
-	 * Loop through the Harvard Guide enum, to fetch the guides and their
-	 * respective properties
+	 * Handler to manage all the different menu displays
 	 * 
-	 * @Mimano This is where you put in your buttons/list in a scroll view
 	 */
 	private void createMenuWidget(int layer, List <Guide> guides) {
 		LinearLayout lightbox;
@@ -831,28 +844,53 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 			}
 			break;
+		case BODY:
 		case CATAGORY:
-			
+		case DEMOGRAPHIC:
+					
 			catagoryView = inflater.inflate(R.layout.alice_first_row, null);
 			flipper.addView(catagoryView);
 			flipper.showNext();
 			
-			//load description text into menuView
-			text_inputTxt = (TextView) catagoryView.findViewById(R.id.description);
-	        text_inputTxt.setText(Html.fromHtml(getString(R.string.menu_body)));
-			
 			// locate box for placing buttons
 			lightbox = (LinearLayout) catagoryView
-					.findViewById(R.id.lightbox_button_layout);
+								.findViewById(R.id.lightbox_button_layout);
 			
-			for (BodyGuide body : BodyGuide.values()) {
+			//load description text into menuView
+			text_inputTxt = (TextView) catagoryView.findViewById(R.id.description);
+	        
+			if (layer== BODY) {
+				text_inputTxt.setText(Html.fromHtml(getString(R.string.menu_body)));
+				
+				for (BodyGuide body : BodyGuide.values()) {
 
-				//Button b = createOrangeBtn(name,GUIDE, guide, start_input);
-				Button b = createOrangeBtn(body.userFriendlyName(),CATAGORY, body.result(), "");
-				// add each button to the layout
-				lightbox.addView(b);
+					//Button b = createOrangeBtn(name,GUIDE, guide, start_input);
+					Button b = createOrangeBtn(body.userFriendlyName(),layer, body.result(), "");
+					// add each button to the layout
+					lightbox.addView(b);
 
-			}
+				}
+			} else if (layer == CATAGORY) {
+				
+			} else if (layer == DEMOGRAPHIC) {
+				text_inputTxt.setText(Html.fromHtml(getString(R.string.menu_demographic)));
+				
+				for (DemographicGuide body : DemographicGuide.values()) {
+
+					//Button b = createOrangeBtn(name,GUIDE, guide, start_input);
+					Button b = createOrangeBtn(body.userFriendlyName(),layer, body.result(), "");
+					// add each button to the layout
+					lightbox.addView(b);
+
+				}
+			};
+			
+			break;
+		case ALL:
+			getGuideList("All", "");
+			break;
+		case OWNED:
+			getGuideList("All", "");
 			break;
 		case GUIDE:
 			
