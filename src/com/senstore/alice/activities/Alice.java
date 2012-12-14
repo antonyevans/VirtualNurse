@@ -573,7 +573,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	      }
 	      inputStream.close();
 	  } catch (IOException e) {
-	   // TODO Auto-generated catch block
+	   
 	   e.printStackTrace();
 	  }
 	  
@@ -823,6 +823,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		switch (layer) {
 		case HOME:
 			// inflate main menu view
+			FlurryAgent.logEvent("Show Home");
 			menuView = inflater.inflate(R.layout.alice_first_row, null);	
 			flipper.addView(menuView);
 			flipper.showNext();
@@ -860,6 +861,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 			text_inputTxt = (TextView) catagoryView.findViewById(R.id.description);
 	        
 			if (layer== BODY) {
+				FlurryAgent.logEvent("Show Body");
 				text_inputTxt.setText(Html.fromHtml(getString(R.string.menu_body)));
 				
 				for (BodyGuide body : BodyGuide.values()) {
@@ -871,9 +873,12 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 				}
 			} else if (layer == CATAGORY) {
+				FlurryAgent.logEvent("Show Catagory");
 				text_inputTxt.setText(Html.fromHtml(getString(R.string.menu_catagory)));
+				//TODO: update this to include catagories, requires server work
 				
 			} else if (layer == DEMOGRAPHIC) {
+				FlurryAgent.logEvent("Show Demographic");
 				text_inputTxt.setText(Html.fromHtml(getString(R.string.menu_demographic)));
 				
 				for (DemographicGuide body : DemographicGuide.values()) {
@@ -887,15 +892,20 @@ public class Alice extends Activity implements AsyncTasksListener,
 			};
 			
 			break;
-		case ALL:
-			getGuideList("All", "");
-			break;
+			
 		case OWNED:
 			//TODO: update this to search for owned guides, requires back end work
+			FlurryAgent.logEvent("Show Owned");
 			getGuideList("All", "");
 			break;
-		case GUIDE:
 			
+		case ALL:
+	    	FlurryAgent.logEvent("Show All");
+			getGuideList("All", "");
+			break;
+		
+		case GUIDE:
+			FlurryAgent.logEvent("Show Guides");
 			guideView = inflater.inflate(R.layout.alice_first_row, null);
 			flipper.addView(guideView);
 			flipper.showNext();
@@ -1118,8 +1128,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 		Diagnosis result = (Diagnosis) obj;
 		
 		if (result == null) {
-			// TODO: Something sensible to handle this
-			
+			// This shouldn't really happen unless we have a bad server connection
+			FlurryAgent.onError("Diagnosis returned null","","");
 			Log.i("Alice","Diagnosis returned null");
 			
 			
