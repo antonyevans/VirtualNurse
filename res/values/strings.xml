@@ -43,7 +43,7 @@
     <string name="info_rate">Rate this app!</string>
     <string name="info_contact">Contact us</string>
     <string name="menu_body">Please select the body area where you are having problems</string>
-    <string name="menu_guide">Please select the most suitable guide</string>
+    <string name="menu_guide">I've identified a number of possible guides, please select the most relevent one below</string>
     <string name="menu_demographic">Please select your demographic from the list below</string>
     <string name="menu_catagory">Coming soon - search by catagory of problem!!</string>
     
