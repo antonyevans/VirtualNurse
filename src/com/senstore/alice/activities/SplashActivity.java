@@ -6,11 +6,16 @@ package com.senstore.alice.activities;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.flurry.android.FlurryAgent;
 import com.senstore.alice.harvard.R;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -19,8 +24,39 @@ import android.view.WindowManager;
  *
  */
 public class SplashActivity extends Activity {
+	private boolean agreeTCs = false;
 	
 	private long splashDelay = 1500; //1.5 seconds
+	
+	private void ask_accept_TCs() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("Terms & Conditions");
+		builder.setMessage("By clicking accept you agree to the Terms and Conditions and our Privacy Policy")
+		       .setCancelable(false)
+		       .setNegativeButton("Agree", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		        	   FlurryAgent.logEvent("Agreed to T&Cs");
+		        	   agreeTCs = true;
+		        	   
+		        	   //save the preferences
+		        	   SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(SplashActivity.this);
+		        	   SharedPreferences.Editor editor = preferences.edit();
+		       		   editor.putBoolean("agreeTCs", agreeTCs); // value to store
+		       		   editor.commit();
+		       		   Intent mainIntent = new Intent(SplashActivity.this, Alice.class);
+		       		   startActivity(mainIntent);
+		           }
+		       })
+		       .setPositiveButton("Disagree (quit)", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		        	   agreeTCs = false;
+		        	   FlurryAgent.logEvent("Rejected the T&Cs");
+		        	   finish();
+		           }
+		       });
+		AlertDialog askTCsDialog = builder.create();
+		askTCsDialog.show(); 
+	}
 	
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
@@ -51,9 +87,16 @@ public class SplashActivity extends Activity {
 			}
 		};
 		
-		Timer timer = new Timer();
+		//load the sharedpreferences
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		agreeTCs = preferences.getBoolean("agreeTCs", false);
 		
-		timer.schedule(task, this.splashDelay);
+		if (agreeTCs) {
+			Timer timer = new Timer();
+			timer.schedule(task, this.splashDelay);
+		} else {
+			ask_accept_TCs();
+		};
 		
 		
 	}

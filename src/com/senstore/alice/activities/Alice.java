@@ -234,11 +234,16 @@ public class Alice extends Activity implements AsyncTasksListener,
 		createMenuWidget(HOME, null);
 		
 		// Restore preferences
-	       SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-	       canTalk = settings.getBoolean("canTalk", true);
-	       setTalkSettings();
-	       usageCount = settings.getInt("usageCount", 0);
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        canTalk = settings.getBoolean("canTalk", true);
+        setTalkSettings();
+        usageCount = settings.getInt("usageCount", 0);
 
+        /*if (!agreeTCs) {
+        	//user hasn't agreed to TC's and privacy policy so ask for confirmation
+        	ask_accept_TCs();
+        }*/
+	       
 		// Register the Background Logger Broadcast Receiver
 		initLogBroadcastReceiver();
 
@@ -709,6 +714,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 		});
 		alert.show();
 	}
+	
+
 
 	private void showCallAlert(String title, String message) {
 		AlertDialog alert = new AlertDialog.Builder(this).create();
