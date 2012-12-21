@@ -313,8 +313,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 			FlurryAgent.logEvent("Show Rate it!");
 			rateItDialog();
 		} else if (usageCount == Constants.SHARE_IT) {
-			FlurryAgent.logEvent("Show Share it!");
-			shareApp();
+			FlurryAgent.logEvent("Ask Share it!");
+			askShareApp();
 		}
 		
 
@@ -1086,12 +1086,35 @@ public class Alice extends Activity implements AsyncTasksListener,
 		       .setCancelable(true)
 		       .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) {
-		        	   FlurryAgent.logEvent("Pressed Rate it!");
+		        	   FlurryAgent.logEvent("Yes, Rate it!");
 		        	   rateIt();
 		           }
 		       })
 		       .setPositiveButton("No", new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) {
+		        	   FlurryAgent.logEvent("No, Don't Rate it!");
+		        	   dialog.cancel();
+		           }
+		       });
+		AlertDialog rateDialog = builder.create();
+		rateDialog.show(); 
+		
+	}
+	
+	public void askShareApp() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("Tell your friends?");
+		builder.setMessage("Would you like to tell your friends about this app?")
+		       .setCancelable(true)
+		       .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		        	   FlurryAgent.logEvent("Yes Share App!");
+		        	   shareApp();
+		           }
+		       })
+		       .setPositiveButton("No", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		        	   FlurryAgent.logEvent("No, don't Share App!");
 		        	   dialog.cancel();
 		           }
 		       });
