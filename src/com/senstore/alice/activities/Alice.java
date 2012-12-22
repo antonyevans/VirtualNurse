@@ -2250,7 +2250,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	// Implements TextToSpeech.OnInitListener.
 	public void onInit(int status) {
 		// status can be either TextToSpeech.SUCCESS or TextToSpeech.ERROR.
-		if (status == TextToSpeech.SUCCESS) {
+		if ((status == TextToSpeech.SUCCESS) && (mTts != null)) {
 			// Set preferred language to US english.
 			// Note that a language may not be available, and the result will
 			// indicate this.
