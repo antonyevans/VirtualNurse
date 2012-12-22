@@ -71,6 +71,9 @@
         
 
         <uses-library android:name="com.google.android.maps" />
+        
+        <meta-data android:name="com.google.android.backup.api_key"
+    android:value="AEdPqrEAAAAICaM_nBfTwoI26J6ooW-NwWj1ZBBX3F9-tFhZ4g" />
     </application>
 
 </manifest>
