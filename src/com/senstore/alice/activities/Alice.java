@@ -111,8 +111,6 @@ public class Alice extends Activity implements AsyncTasksListener,
 	private static final int OWNED = 5;
 	private static final int ALL = 6;
 	private static final int HOME = 7;
-	
-	public static final String PREFS_NAME = "MyPrefsFile";
 
 	final AsyncTasksListener listener = this;
 
@@ -234,7 +232,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		createMenuWidget(HOME, null);
 		
 		// Restore preferences
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences settings = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
         canTalk = settings.getBoolean("canTalk", true);
         setTalkSettings();
         usageCount = settings.getInt("usageCount", 0);
@@ -964,12 +962,12 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 	private void setNotFirstRun() {
 		// Save the state with shared preferences
-		getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit()
+		getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE).edit()
 				.putBoolean("firstRun", false).commit();
 	}
 
 	private boolean isFirstRun() {
-		return getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean(
+		return getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE).getBoolean(
 				"firstRun", true);
 	}
 
@@ -1455,7 +1453,7 @@ public class Alice extends Activity implements AsyncTasksListener,
        
       // We need an Editor object to make preference changes.
       // All objects are from android.context.Context
-      SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+      SharedPreferences settings = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
       SharedPreferences.Editor editor = settings.edit();
       editor.putBoolean("canTalk", canTalk);
       editor.putInt("usageCount", usageCount + 1);

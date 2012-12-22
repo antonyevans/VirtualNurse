@@ -8,6 +8,7 @@ import java.util.TimerTask;
 
 import com.flurry.android.FlurryAgent;
 import com.senstore.alice.harvard.R;
+import com.senstore.alice.utils.Constants;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -15,7 +16,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -39,7 +39,7 @@ public class SplashActivity extends Activity {
 		        	   agreeTCs = true;
 		        	   
 		        	   //save the preferences
-		        	   SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(SplashActivity.this);
+		        	   SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
 		        	   SharedPreferences.Editor editor = preferences.edit();
 		       		   editor.putBoolean("agreeTCs", agreeTCs); // value to store
 		       		   editor.commit();
@@ -63,7 +63,6 @@ public class SplashActivity extends Activity {
 	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		
 		// Set Full Screen Since we have a Tittle Bar
@@ -88,7 +87,7 @@ public class SplashActivity extends Activity {
 		};
 		
 		//load the sharedpreferences
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
 		agreeTCs = preferences.getBoolean("agreeTCs", false);
 		
 		if (agreeTCs) {
