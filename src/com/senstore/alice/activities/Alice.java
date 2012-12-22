@@ -14,6 +14,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Service;
+import android.app.backup.BackupManager;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -70,6 +71,7 @@ import com.senstore.alice.menus.DemographicGuide;
 import com.senstore.alice.models.Diagnosis;
 import com.senstore.alice.models.Guide;
 import com.senstore.alice.services.BackgroundLogger;
+import com.senstore.alice.services.MyPrefsBackupAgent;
 import com.senstore.alice.services.BillingService.RequestPurchase;
 import com.senstore.alice.tasks.DiagnosisAsyncTask;
 import com.senstore.alice.utils.Constants;
@@ -87,6 +89,8 @@ import com.flurry.android.FlurryAgent;
 public class Alice extends Activity implements AsyncTasksListener,
 		TextToSpeech.OnInitListener {
 
+	private BackupManager mBackupManager;
+	
 	private boolean canCallDoctor = false;
 	private TextToSpeech mTts;
 	private boolean isTTSReady = false;
@@ -177,7 +181,11 @@ public class Alice extends Activity implements AsyncTasksListener,
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		
+		Log.i(Constants.TAG,"Oncreate");
+		//create backupmanager
+		mBackupManager = new BackupManager(this);
+		
 		// Set Full Screen Since we have a Tittle Bar
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -232,7 +240,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		createMenuWidget(HOME, null);
 		
 		// Restore preferences
-        SharedPreferences settings = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences settings = getSharedPreferences(MyPrefsBackupAgent.PREFS, MODE_PRIVATE);
         canTalk = settings.getBoolean("canTalk", true);
         setTalkSettings();
         usageCount = settings.getInt("usageCount", 0);
@@ -673,12 +681,15 @@ public class Alice extends Activity implements AsyncTasksListener,
 	public void onBackPressed() {
 		//usage tracking
 		FlurryAgent.logEvent("onBackPressed");
+		Log.d(Constants.TAG,"Back Pressed");
 		
 		View currentView = flipper.getCurrentView();
 		if (currentView.equals(menuView)) {
 			// close the app
+			Log.i("Alice", "backpressed"); 
 			onStop();
 			moveTaskToBack(true);
+			//finish(); 
 		} else if (currentView.equals(chatView)) {
 
 			// moving to Home View. Clean the Chat list and remove the chat view
@@ -689,7 +700,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		} else  {
 
 			// stepback one
-
+			Log.i("Alice","Removed view");
 			flipper.removeView(currentView);
 		}
 		stopTTS();
@@ -962,12 +973,12 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 	private void setNotFirstRun() {
 		// Save the state with shared preferences
-		getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE).edit()
+		getSharedPreferences(MyPrefsBackupAgent.PREFS, MODE_PRIVATE).edit()
 				.putBoolean("firstRun", false).commit();
 	}
 
 	private boolean isFirstRun() {
-		return getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE).getBoolean(
+		return getSharedPreferences(MyPrefsBackupAgent.PREFS, MODE_PRIVATE).getBoolean(
 				"firstRun", true);
 	}
 
@@ -1453,13 +1464,17 @@ public class Alice extends Activity implements AsyncTasksListener,
        
       // We need an Editor object to make preference changes.
       // All objects are from android.context.Context
-      SharedPreferences settings = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+      SharedPreferences settings = getSharedPreferences(MyPrefsBackupAgent.PREFS, MODE_PRIVATE);
       SharedPreferences.Editor editor = settings.edit();
       editor.putBoolean("canTalk", canTalk);
       editor.putInt("usageCount", usageCount + 1);
 
       // Commit the edits!
       editor.commit();
+      
+      //And backup 
+	  mBackupManager.dataChanged();
+	  Log.i("Alice","onstop completed");
     }
 	
 	@Override

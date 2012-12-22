@@ -6,9 +6,6 @@ package com.senstore.alice.utils;
  * 
  */
 public class Constants {
-
-	//preferences file
-	public static final String PREFS_NAME = "MyPrefsFile";
 	
 	public static String FLURRY_API = "CCF4HBFDPHMQDTSNY4T5";
 	public static Integer RATE_IT = 2;

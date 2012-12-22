@@ -18,7 +18,7 @@ public class Utils {
 			Constants.REGISTRY_CONTEXT);
 
 	public static String getUserID() {
-		String userID = getPhoneNumber();
+		String userID = "temp to stop holding";
 		return userID;
 	}
 	
