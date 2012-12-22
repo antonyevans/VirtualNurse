@@ -22,6 +22,16 @@ public class DiagnosisAsyncTask extends AsyncTask<Void, String, Diagnosis> {
 	private String last_query = null;
 	//private boolean isVoice = false;
 	private String task_type = null;
+	private String user_id = null;
+	
+
+	public String getUser_id() {
+		return user_id;
+	}
+
+	public void setUser_id(String user_id) {
+		this.user_id = user_id;
+	}
 
 	public String getLast_query() {
 		return last_query;
@@ -84,13 +94,13 @@ public class DiagnosisAsyncTask extends AsyncTask<Void, String, Diagnosis> {
 		DiagnosisRESTHandler handler = new DiagnosisRESTHandler();
 
 		if (getType() == "Guide_list") {
-			diagnosis = handler.getGuides(input_text, last_query);
+			diagnosis = handler.getGuides(input_text, last_query, user_id);
 		} else if (getType()=="Voice") {
 			diagnosis = handler.voiceDiagnosis(health_guide, last_query,
-					input_text);
+					input_text, user_id);
 		} else if (getType()=="Touch") {
 			diagnosis = handler.touchDiagnosis(health_guide, last_query,
-					input_text);
+					input_text, user_id);
 		}
 		return diagnosis;
 	}

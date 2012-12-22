@@ -10,7 +10,6 @@ import com.senstore.alice.http.RestClient.RequestMethod;
 import com.senstore.alice.models.ActionLog;
 import com.senstore.alice.utils.Constants;
 import com.senstore.alice.utils.Registry;
-import com.senstore.alice.utils.Utils;
 
 /**
  * @author Muniu Kariuki - muniu@bityarn.co.ke
@@ -27,11 +26,11 @@ public class LogRESTHandler {
 
 	}
 
-	public ActionLog log(String log_type) {
+	public ActionLog log(String log_type, String user_id) {
 
 		String absoluteURL = Constants.SERVER_URL + "log.json";
 		RestClient req = new RestClient(absoluteURL);
-		req.addParam("user_id", Utils.getUserID());
+		req.addParam("user_id", user_id);
 		req.addParam("log_type", log_type);
 		req.addParam("app_name", Constants.APP_NAME);
 

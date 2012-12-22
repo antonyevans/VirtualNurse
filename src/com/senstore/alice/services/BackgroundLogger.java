@@ -17,6 +17,7 @@ import com.senstore.alice.utils.Constants;
 public class BackgroundLogger extends IntentService {
 
 	private String msg = "-1";
+	private String user_id = null;
 
 	private static final int ERROR = -1;
 	private static final int REGISTER = 0;
@@ -51,6 +52,9 @@ public class BackgroundLogger extends IntentService {
 	protected void onHandleIntent(Intent intent) {
 
 		msg = intent.getStringExtra(Constants.LOG_SERVICE_IN_MSG);
+		
+		user_id = intent.getStringExtra(Constants.LOG_USER_ID);
+		
 		LogRESTHandler handler = new LogRESTHandler();
 
 		switch (identifyType(msg)) {
@@ -58,7 +62,7 @@ public class BackgroundLogger extends IntentService {
 			break;
 		}
 		case REGISTER:
-			ActionLog log = handler.log(msg);
+			ActionLog log = handler.log(msg, user_id);
 
 			if (log != null) {
 
@@ -71,7 +75,7 @@ public class BackgroundLogger extends IntentService {
 			}
 			break;
 		case LOCATION:
-			ActionLog logloc = handler.log(msg);
+			ActionLog logloc = handler.log(msg, user_id);
 			if (logloc != null) {
 				Intent locIntent = new Intent();
 				locIntent.setAction(Constants.ACTION_RESP);
@@ -82,7 +86,7 @@ public class BackgroundLogger extends IntentService {
 			}
 			break;
 		case CALL_DOCTOR:
-			ActionLog logcd = handler.log(msg);
+			ActionLog logcd = handler.log(msg, user_id);
 			if (logcd != null) {
 				Intent cdIntent = new Intent();
 				cdIntent.setAction(Constants.ACTION_RESP);
@@ -93,7 +97,7 @@ public class BackgroundLogger extends IntentService {
 			}
 			break;
 		case CALL_DOCTOR_ACCEPT:
-			ActionLog logcda = handler.log(msg);
+			ActionLog logcda = handler.log(msg, user_id);
 			if (logcda != null) {
 				Intent cdaIntent = new Intent();
 				cdaIntent.setAction(Constants.ACTION_RESP);
@@ -104,7 +108,7 @@ public class BackgroundLogger extends IntentService {
 			}
 			break;
 		case CALL_DOCTOR_REJECT:
-			ActionLog logcdr = handler.log(msg);
+			ActionLog logcdr = handler.log(msg, user_id);
 			if (logcdr != null) {
 				Intent cdrIntent = new Intent();
 				cdrIntent.setAction(Constants.ACTION_RESP);

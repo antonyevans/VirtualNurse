@@ -9,7 +9,6 @@ import com.senstore.alice.http.RestClient;
 import com.senstore.alice.http.RestClient.RequestMethod;
 import com.senstore.alice.models.Purchase;
 import com.senstore.alice.utils.Constants;
-import com.senstore.alice.utils.Utils;
 
 /**
  * @author Antony Evans - antony@senstore.com
@@ -26,11 +25,11 @@ public class PurchaseRESTHandler {
 
 	}
 
-	public Purchase purchase(String purchaseType) {
+	public Purchase purchase(String purchaseType, String user_id) {
 		
 		String absoluteURL = Constants.SERVER_URL + "purchase.json";
 		RestClient req = new RestClient(absoluteURL);
-		req.addParam("user_id", Utils.getUserID());
+		req.addParam("user_id", user_id);
 		req.addParam("purchase", purchaseType);
 		req.addParam("app_name", Constants.APP_NAME);
 		req.addParam("security", Constants.SECURITY_HASH);

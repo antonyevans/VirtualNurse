@@ -209,7 +209,7 @@ public class LoggingAPITester extends Activity implements AsyncTasksListener {
 			publishProgress("Logging on remote server");
 			LogRESTHandler handler = new LogRESTHandler();
 
-			return handler.log(log_type);
+			return handler.log(log_type, "user_id");
 		}
 
 	}

@@ -991,6 +991,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	private void doLog(String log_type) {
 		Intent msgIntent = new Intent(this, BackgroundLogger.class);
 		msgIntent.putExtra(Constants.LOG_SERVICE_IN_MSG, log_type);
+		msgIntent.putExtra(Constants.LOG_USER_ID, Utils.getUserID(this));
 		startService(msgIntent);
 
 	}
@@ -1007,6 +1008,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		diagnosisTask.setListener(listener);
 		diagnosisTask.setLast_query(selection);
 		diagnosisTask.setInput_text(type);
+		diagnosisTask.setUser_id(Utils.getUserID(this));
 		diagnosisTask.execute();
 	}
 	
@@ -1036,6 +1038,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		diagnosisTask.setLast_query(last_query);
 		diagnosisTask.setHealth_guide(health_guide);
 		diagnosisTask.setInput_text(input_text);
+		diagnosisTask.setUser_id(Utils.getUserID(this));
 		diagnosisTask.execute();
 	}
 
@@ -1066,6 +1069,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		diagnosisTask.setLast_query(last_query);
 		diagnosisTask.setHealth_guide(health_guide);
 		diagnosisTask.setInput_text(input_text);
+		diagnosisTask.setUser_id(Utils.getUserID(this));
 		diagnosisTask.execute();
 	}
 
@@ -1437,7 +1441,7 @@ public class Alice extends Activity implements AsyncTasksListener,
     	
     	//start flurry agent
     	FlurryAgent.onStartSession(this, Constants.FLURRY_API);
-    	FlurryAgent.setUserId(Utils.getUserID());
+    	FlurryAgent.setUserId(Utils.getUserID(this));
     	FlurryAgent.setReportLocation(true);   	
     	FlurryAgent.setVersionName(app_ver);
     	FlurryAgent.setLogEnabled(true);

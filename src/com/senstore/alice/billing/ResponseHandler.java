@@ -6,6 +6,7 @@ import com.senstore.alice.api.PurchaseRESTHandler;
 import com.senstore.alice.models.Purchase;
 import com.senstore.alice.services.BillingService.RequestPurchase;
 import com.senstore.alice.utils.Constants;
+import com.senstore.alice.utils.Utils;
 import com.senstore.alice.utils.Constants.PurchaseState;
 import com.senstore.alice.utils.Constants.ResponseCode;
 
@@ -116,7 +117,7 @@ public class ResponseHandler {
             	case PURCHASED: {
             		PurchaseRESTHandler handler = new PurchaseRESTHandler();
             		//in a future version could switch purchase_type for productID to enable puchase of different products
-                	Purchase purchase = handler.purchase(Constants.PURCHASE_TYPE);
+                	Purchase purchase = handler.purchase(Constants.PURCHASE_TYPE, Utils.getUserID(context));
             	}
             	case CANCELED: {
             		Log.i(Constants.TAG,"Purchase canceled");

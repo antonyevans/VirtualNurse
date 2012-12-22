@@ -9,7 +9,7 @@ import com.senstore.alice.http.RestClient;
 import com.senstore.alice.http.RestClient.RequestMethod;
 import com.senstore.alice.models.Diagnosis;
 import com.senstore.alice.utils.Constants;
-import com.senstore.alice.utils.Utils;
+
 
 /**
  * @author Muniu Kariuki - muniu@bityarn.co.ke
@@ -25,10 +25,11 @@ public class DiagnosisRESTHandler {
 
 	}
 	
-	public Diagnosis getGuides(String type, String selection) {
+	public Diagnosis getGuides(String type, String selection, String user_id) {
 		
 		String absoluteURL = Constants.SERVER_URL + "guide_list.json";
 		RestClient req = new RestClient(absoluteURL);
+		req.addParam("user_id", user_id);
 		req.addParam("type", type);
 		req.addParam("selection", selection);
 		req.addParam("security", Constants.SECURITY_HASH);
@@ -64,13 +65,13 @@ public class DiagnosisRESTHandler {
 	 * 
 	 * 
 	 */
-	public Diagnosis touchDiagnosis(String guide,String last_query, String input_text) {
+	public Diagnosis touchDiagnosis(String guide,String last_query, String input_text, String user_id) {
 
 		Log.i(Constants.TAG, "last_query(touch) "+last_query);
 		
 		String absoluteURL = Constants.SERVER_URL + "harvard.json";
 		RestClient req = new RestClient(absoluteURL);
-		req.addParam("user_id", Utils.getUserID());
+		req.addParam("user_id", user_id);
 		req.addParam("user_text", input_text);
 		req.addParam("guide", guide);
 		req.addParam("last_query", last_query);
@@ -108,13 +109,13 @@ public class DiagnosisRESTHandler {
 	 * 
 	 * 
 	 */
-	public Diagnosis voiceDiagnosis(String guide,String last_query, String input_text) {
+	public Diagnosis voiceDiagnosis(String guide,String last_query, String input_text, String user_id) {
 		
 		Log.i(Constants.TAG, "last_query(voice) "+last_query);
 
 		String absoluteURL = Constants.SERVER_URL + "harvard.json";
 		RestClient req = new RestClient(absoluteURL);
-		req.addParam("user_id", Utils.getUserID());
+		req.addParam("user_id", user_id);
 		req.addParam("guide", guide);
 		req.addParam("last_query", last_query);
 		req.addParam("input", input_text);
