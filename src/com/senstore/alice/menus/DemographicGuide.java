@@ -57,7 +57,7 @@ public enum DemographicGuide {
 
 		@Override
 		public String result() {
-			return "Adults";
+			return "Adult";
 		}
 
 	};
