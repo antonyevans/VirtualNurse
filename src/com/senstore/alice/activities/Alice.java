@@ -836,6 +836,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	private void createMenuWidget(int layer, List <Guide> guides, String user_input, String reply) {
 		LinearLayout lightbox;
 		TextView text_inputTxt;
+		TextView text_aliceTxt;
 		
 		switch (layer) {
 		case HOME:
@@ -932,13 +933,24 @@ public class Alice extends Activity implements AsyncTasksListener,
 		case GUIDE:
 			
 			FlurryAgent.logEvent("Show Guides");
-			guideView = inflater.inflate(R.layout.alice_first_row, null);
-			flipper.addView(guideView);
-			flipper.showNext();
+			View currentView = flipper.getCurrentView();
+			if (currentView.equals(guideView)) {
+				//don't need to do anything
+			} else {
+				//load the guideView
+				guideView = inflater.inflate(R.layout.guide_list, null);
+				flipper.addView(guideView);
+				flipper.showNext();
+			}
 			
-			//load description text into menuView
-			text_inputTxt = (TextView) guideView.findViewById(R.id.description);
-	        text_inputTxt.setText(reply);
+			//load description text into View
+			text_inputTxt = (TextView) guideView.findViewById(R.id.options_text_query);
+	        text_inputTxt.setText(user_input);
+			
+			text_aliceTxt = (TextView) guideView.findViewById(R.id.description);
+	        text_aliceTxt.setText(reply);
+	        
+	        
 			
 			// locate box for placing buttons
 			lightbox = (LinearLayout) guideView
