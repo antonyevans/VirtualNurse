@@ -134,6 +134,10 @@ public class DiagnosisParser {
 				diag.setGuides(guides);
 				
 				
+				diag.setInput(JSONresponse.optString("User_input"));
+				diag.setReply(JSONresponse.optString("Alice"));
+				
+				
 			} else {
 				Boolean purchased = false;
 				diag.setPurchased(purchased);

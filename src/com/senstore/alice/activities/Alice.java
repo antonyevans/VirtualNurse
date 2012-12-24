@@ -238,7 +238,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		chatlist.setAdapter(chatAdapter);
 
 		// Load the main menu
-		createMenuWidget(HOME, null);
+		createMenuWidget(HOME, null, "","");
 		
 		// Restore preferences
         SharedPreferences settings = getSharedPreferences(MyPrefsBackupAgent.PREFS, MODE_PRIVATE);
@@ -796,15 +796,15 @@ public class Alice extends Activity implements AsyncTasksListener,
 				switch (type) {
 				case MENU:
 					if (details == "BodyPart") {
-						createMenuWidget(BODY, null);
+						createMenuWidget(BODY, null,"","");
 					} else if (details == "Catagory") {
-						createMenuWidget(CATAGORY, null);
+						createMenuWidget(CATAGORY, null,"","");
 					} else if (details == "Demographic") {
-						createMenuWidget(DEMOGRAPHIC, null);
+						createMenuWidget(DEMOGRAPHIC, null,"","");
 					} else if (details == "Owned") {
-						createMenuWidget(OWNED, null);
+						createMenuWidget(OWNED, null,"","");
 					} else  {
-						createMenuWidget(ALL, null);
+						createMenuWidget(ALL, null,"","");
 					};
 					break;
 				case BODY:
@@ -833,7 +833,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	 * Handler to manage all the different menu displays
 	 * 
 	 */
-	private void createMenuWidget(int layer, List <Guide> guides) {
+	private void createMenuWidget(int layer, List <Guide> guides, String user_input, String reply) {
 		LinearLayout lightbox;
 		TextView text_inputTxt;
 		
@@ -921,7 +921,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		case OWNED:
 			//TODO: update this to search for owned guides, requires back end work
 			FlurryAgent.logEvent("Show Owned");
-			getGuideList("All", "");
+			getGuideList("Owned", "");
 			break;
 			
 		case ALL:
@@ -938,7 +938,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 			
 			//load description text into menuView
 			text_inputTxt = (TextView) guideView.findViewById(R.id.description);
-	        text_inputTxt.setText(Html.fromHtml(getString(R.string.menu_guide)));
+	        text_inputTxt.setText(reply);
 			
 			// locate box for placing buttons
 			lightbox = (LinearLayout) guideView
@@ -1192,7 +1192,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		if (result.getHas_guides()) {
 			//This means that our asynctask has returned a list of guides
 			//we need to display a guide menu
-			createMenuWidget(GUIDE,result.getGuides());
+			createMenuWidget(GUIDE,result.getGuides(),result.getInput(),result.getReply());
 			
 			return;
 		}
