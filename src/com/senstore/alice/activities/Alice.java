@@ -65,6 +65,7 @@ import com.senstore.alice.harvard.R;
 import com.senstore.alice.listeners.AsyncTasksListener;
 import com.senstore.alice.location.AliceLocation;
 import com.senstore.alice.location.AliceLocation.LocationResult;
+import com.senstore.alice.menus.CatagoryGuide;
 import com.senstore.alice.menus.MenuGuide;
 import com.senstore.alice.menus.BodyGuide;
 import com.senstore.alice.menus.DemographicGuide;
@@ -891,7 +892,15 @@ public class Alice extends Activity implements AsyncTasksListener,
 			} else if (layer == CATAGORY) {
 				FlurryAgent.logEvent("Show Catagory");
 				text_inputTxt.setText(Html.fromHtml(getString(R.string.menu_catagory)));
-				//TODO: update this to include catagories, requires server work
+				
+				for (CatagoryGuide body : CatagoryGuide.values()) {
+
+					//Button b = createOrangeBtn(name,GUIDE, guide, start_input);
+					Button b = createOrangeBtn(body.userFriendlyName(),layer, body.result(), "");
+					// add each button to the layout
+					lightbox.addView(b);
+
+				}
 				
 			} else if (layer == DEMOGRAPHIC) {
 				FlurryAgent.logEvent("Show Demographic");
