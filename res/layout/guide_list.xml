@@ -27,66 +27,7 @@
     <!-- End User input -->
         
     <!-- Start Alice Reply -->
-        <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-
-            <ImageView
-                android:id="@+id/tri_left"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="30dp"
-                android:contentDescription="@string/left_triangle"
-                android:src="@drawable/tri_left" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/layout_left"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true" >
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" >
-
-                <LinearLayout
-                    android:id="@+id/options_text_response"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="5dp"
-                    android:background="@drawable/bubble_left"
-                    android:orientation="vertical" >
-
-                    <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="10dp"
-                android:paddingBottom="10dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="10dp"
-                android:id="@+id/description"
-                android:textColor="@android:color/black" />
-                </LinearLayout>
-            </RelativeLayout>
-
-        </RelativeLayout>
-        
-    </LinearLayout>
+       <include layout="@layout/alice_reply"/>
 <!-- End Alice Reply -->
         
 		<!-- Start options buttons -->
@@ -104,7 +45,7 @@
             </LinearLayout>
        <!-- End options buttons -->   
          
-            <include layout="@layout/share_app_btn"/>
+          
             
                 </LinearLayout>
         </ScrollView>
