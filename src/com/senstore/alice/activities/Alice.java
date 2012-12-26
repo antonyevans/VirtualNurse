@@ -1728,7 +1728,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 				// Response Type 3 - EMERGENCY - Load Map with search results of
 				// nearest
 				// hospital/doctor
-				flurryParams.put("Recommendation", "Emergancy");
+				flurryParams.put("Recommendation", "Emergency");
 	    		
 	    		FlurryAgent.logEvent("Recommendation", flurryParams);
 				
