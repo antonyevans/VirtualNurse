@@ -23,7 +23,9 @@ import android.content.SharedPreferences;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.media.AudioManager;
@@ -1850,12 +1852,25 @@ public class Alice extends Activity implements AsyncTasksListener,
 				    		flurryParams.put("Reply", reply);
 				    		flurryParams.put("Response Type", type);
 			    		
-			    		FlurryAgent.logEvent("Call Doctor", flurryParams);
+			    		FlurryAgent.logEvent("Find Doctor", flurryParams);
 			    		
 						stopTTS();
+						
+						// Build the intent
+						Uri webpage = Uri.parse("http://www.google.com/search?q=doctor");
+						Intent webIntent = new Intent(Intent.ACTION_VIEW, webpage);
 
-						if (canCallDoctor) {
+						// Verify it resolves
+						PackageManager packageManager = getPackageManager();
+						List<ResolveInfo> activities = packageManager.queryIntentActivities(webIntent, 0);
+						boolean isIntentSafe = activities.size() > 0;
+						  
+						// Start an activity if it's safe
+						if (isIntentSafe) {
+						    startActivity(webIntent);
+						}
 
+						/*if (canCallDoctor) {
 							doLog(Integer.toString(Constants.LOG_CALL_DOCTOR));
 							showCallAlert(getString(R.string.app_name),
 									getString(R.string.call_doctor_text));
@@ -1864,7 +1879,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 							showInfoAlert(getString(R.string.app_name),
 									getString(R.string.call_doctor_unavailable));
-						}
+						}*/
 
 					}
 				});

@@ -143,7 +143,7 @@
             android:layout_marginTop="10dp"
             android:background="@drawable/btn_green"
             android:gravity="center"
-            android:text="Call Doctor"
+            android:text="Find Doctor"
             android:textSize="25dp"
             android:textStyle="bold" />
     </LinearLayout>
