@@ -78,31 +78,6 @@ public class SplashActivity extends Activity {
 		//load preferences file
 		mBackupManager = new BackupManager(this);
 		
-		//the next lines are not required
-		/*mBackupManager.requestRestore( new RestoreObserver()
-		{
-			@Override
-			public void restoreStarting( int numPackages )
-			{
-				Log.d( Constants.TAG, "restoreStarting: " + numPackages );
-				super.restoreStarting( numPackages );
-			}
-
-			@Override
-			public void restoreFinished( int error )
-			{
-				Log.d( Constants.TAG, "restoreFinished: " + error );
-				super.restoreFinished( error );
-			}
-
-			@Override
-			public void onUpdate( int nowBeingRestored, String currentPackage )
-			{
-				Log.d( Constants.TAG, "onUpdate: " + currentPackage );
-				super.onUpdate( nowBeingRestored, currentPackage );
-			}
-		} );*/
-		
 		// Set Full Screen Since we have a Tittle Bar
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
