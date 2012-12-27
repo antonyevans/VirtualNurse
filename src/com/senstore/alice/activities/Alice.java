@@ -87,12 +87,23 @@ import com.senstore.alice.utils.Constants.PurchaseState;
 import com.senstore.alice.utils.Constants.ResponseCode;
 import com.senstore.alice.billing.ResponseHandler;
 
+import com.google.android.vending.licensing.AESObfuscator;
+import com.google.android.vending.licensing.LicenseChecker;
+import com.google.android.vending.licensing.LicenseCheckerCallback;
+import com.google.android.vending.licensing.Policy;
+import com.google.android.vending.licensing.ServerManagedPolicy;
 import com.flurry.android.FlurryAgent;
 
 public class Alice extends Activity implements AsyncTasksListener,
 		TextToSpeech.OnInitListener {
 
 	private BackupManager mBackupManager;
+	
+	//Variables for licensing
+	private LicenseCheckerCallback mLicenseCheckerCallback;
+    private LicenseChecker mChecker;
+    // A handler on the UI thread.
+    private Handler licenseHandler;
 	
 	private boolean canCallDoctor = false;
 	private TextToSpeech mTts;
@@ -188,6 +199,18 @@ public class Alice extends Activity implements AsyncTasksListener,
 		Log.i(Constants.TAG,"Oncreate");
 		//create backupmanager
 		mBackupManager = new BackupManager(this);
+		
+		//setup licensing
+		licenseHandler = new Handler();
+		
+		// Library calls this when it's done.
+        mLicenseCheckerCallback = new MyLicenseCheckerCallback();
+        // Construct the LicenseChecker with a policy.
+        mChecker = new LicenseChecker(
+            this, new ServerManagedPolicy(this,
+                new AESObfuscator(AppInfo.SALT, getPackageName(), Utils.getUserID(this))),
+            AppInfo.BASE64_PUBLIC_KEY);
+        doLicenseCheck(); 
 		
 		// Set Full Screen Since we have a Tittle Bar
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -329,6 +352,53 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 	}
 
+	private void doLicenseCheck() {
+        
+        setProgressBarIndeterminateVisibility(true);
+        mChecker.checkAccess(mLicenseCheckerCallback);
+    }
+	
+    private class MyLicenseCheckerCallback implements LicenseCheckerCallback {
+        public void allow(int policyReason) {
+            if (isFinishing()) {
+                // Don't update UI if Activity is finishing.
+                return;
+            }
+            // Should allow user access.
+            Toast.makeText(getApplicationContext(), "License Allow Permission", Toast.LENGTH_LONG).show();
+        }
+
+        public void dontAllow(int policyReason) {
+            if (isFinishing()) {
+                // Don't update UI if Activity is finishing.
+                return;
+            }
+            
+            // Should not allow access. In most cases, the app should assume
+            // the user has access unless it encounters this. If it does,
+            // the app should inform the user of their unlicensed ways
+            // and then either shut down the app or limit the user to a
+            // restricted set of features.
+            // In this example, we show a dialog that takes the user to Market.
+            // If the reason for the lack of license is that the service is
+            // unavailable or there is another problem, we display a
+            // retry button on the dialog and a different message.
+            Toast.makeText(getApplicationContext(), "Application Don't Allow", Toast.LENGTH_LONG).show();
+        }
+
+        public void applicationError(int errorCode) {
+            if (isFinishing()) {
+                // Don't update UI if Activity is finishing.
+                return;
+            }
+            // This is a polite way of saying the developer made a mistake
+            // while setting up or calling the license checker library.
+            // Please examine the error code and fix the error.
+            Toast.makeText(getApplicationContext(), "Application License Error", Toast.LENGTH_LONG).show();
+        }
+    }
+
+	
 	private void initAliceLocation() {
 		AliceLocation myLocation = new AliceLocation();
 		myLocation.getLocation(this, locationResult);
@@ -1526,6 +1596,7 @@ public class Alice extends Activity implements AsyncTasksListener,
         mBillingService.unbind();
         ResponseHandler.unregister(mAlicePurchaseObserver); 
 		killTTS();
+		mChecker.onDestroy();
 		super.onDestroy();
 	}
 

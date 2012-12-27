@@ -2,7 +2,14 @@ package com.senstore.alice.activities;
 
 public class AppInfo
 {
-    public static final String SpeechKitServer = "pm.nmdp.nuancemobility.net";
+	public static final String BASE64_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgNksQ5kZtkHBRXGZ+BvFVINabTWsSMkFE6yM+20o82Crj/8auAongqcXXqOH25VPXKj+/eFz8TgSHExpXSmhoNOpd+Q4D7r1/B0rGOwRATYzI+MrJWRzY/ZhNy6fwTDH+Qjs1qWcr1r8WVLnpFn3SAmYTZIfk1aRCw1bG0A/KMBS65KKxBl0TzQ4tyLHUnEK45JTpiP+xHae1di0iGrxTxrElalTjqblHuU6LMKs8QNmEOb5gum02D5V5yhTZfdIMNYTCb2hk7YnWDF+vPO3CrCwN/UpDa2g3NAa2jNJJW8pgb6XAeObpRtWFv4SffMgg0JGmXMbXn+122ghAB2VSQIDAQAB";
+
+	public static final byte[] SALT = new byte[] {
+        -84, 105, 58, 0, 48, 77, 82, -69, 74, -33, -113, 31, 11, -128, -48, -4, 121, 55, -66,
+        -100
+    };
+	
+	public static final String SpeechKitServer = "pm.nmdp.nuancemobility.net";
 
     public static final int SpeechKitPort = 443;
     
