@@ -45,7 +45,7 @@ public class SplashActivity extends Activity {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("Terms & Conditions");
 		
-		String msg = "By clicking 'Accept' you agree to our <b><a href=\"http://www.senstore.com/TCs\">Terms and Conditions</a></b> and <b><a href=\"http://www.senstore.com/privacy\">Privacy Policy</a></b>";
+		String msg = "By clicking 'Accept' you agree to our <b><a href=\"http://www.senstore.com/tcs\">Terms and Conditions</a></b> and <b><a href=\"http://www.senstore.com/privacy\">Privacy Policy</a></b>";
 		
 		builder.setMessage(Html.fromHtml(msg))
 		       .setCancelable(false)
@@ -122,7 +122,6 @@ public class SplashActivity extends Activity {
 		} else {
 			ask_accept_TCs();
 		};
-		
 		
 	}
 
