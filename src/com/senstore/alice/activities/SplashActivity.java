@@ -5,6 +5,7 @@ package com.senstore.alice.activities;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.regex.Pattern;
 
 import com.flurry.android.FlurryAgent;
 import com.senstore.alice.harvard.R;
@@ -19,9 +20,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 /**
  * @author Mimano Muthondu gmimano@bityarn.co.ke
@@ -37,9 +44,12 @@ public class SplashActivity extends Activity {
 	private void ask_accept_TCs() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("Terms & Conditions");
-		builder.setMessage("By clicking accept you agree to the Terms and Conditions and our Privacy Policy")
+		
+		String msg = "By clicking 'Accept' you agree to our <b><a href=\"http://www.senstore.com/TCs\">Terms and Conditions</a></b> and <b><a href=\"http://www.senstore.com/privacy\">Privacy Policy</a></b>";
+		
+		builder.setMessage(Html.fromHtml(msg))
 		       .setCancelable(false)
-		       .setNegativeButton("Agree", new DialogInterface.OnClickListener() {
+		       .setNegativeButton("Accept", new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) {
 		        	   FlurryAgent.logEvent("Agreed to T&Cs");
 		        	   agreeTCs = true;
@@ -66,6 +76,9 @@ public class SplashActivity extends Activity {
 		       });
 		AlertDialog askTCsDialog = builder.create();
 		askTCsDialog.show(); 
+		
+		// Make the textview clickable. 
+	    ((TextView)askTCsDialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
 	}
 	
 	
