@@ -1053,7 +1053,15 @@ public class Alice extends Activity implements AsyncTasksListener,
     		flurryParams.put("Input Text", input_text);
     		flurryParams.put("Diagnosis Type", "Touch");
     		
-    	FlurryAgent.logEvent("Start Diagnosis", flurryParams);
+		View currentView = flipper.getCurrentView();
+		
+		if (currentView.equals(chatView)) {
+			//don't need to do anything
+			FlurryAgent.logEvent("Provide response", flurryParams);
+		} else {
+			//we are starting new diagnosis
+			FlurryAgent.logEvent("Start Guide", flurryParams);
+		}
     	
 		diagnosisTask = new DiagnosisAsyncTask();
 		diagnosisTask.setType("Touch");
@@ -1083,8 +1091,16 @@ public class Alice extends Activity implements AsyncTasksListener,
     		flurryParams.put("Input Text", input_text);
     		flurryParams.put("Diagnosis Type", "Voice");
     		
-    	FlurryAgent.logEvent("Start Diagnosis", flurryParams);
-		    	
+    	
+    	View currentView = flipper.getCurrentView();
+		
+		if (currentView.equals(chatView)) {
+			//don't need to do anything
+			FlurryAgent.logEvent("Provide response", flurryParams);
+		} else {
+			//we are starting new diagnosis
+			FlurryAgent.logEvent("Start Guide", flurryParams);
+		}
 		    	
 		diagnosisTask = new DiagnosisAsyncTask();
 		diagnosisTask.setType("Voice");
