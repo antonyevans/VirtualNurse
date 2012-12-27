@@ -102,8 +102,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	//Variables for licensing
 	private LicenseCheckerCallback mLicenseCheckerCallback;
     private LicenseChecker mChecker;
-    // A handler on the UI thread.
-    private Handler licenseHandler;
+    private boolean bRetry = true;
 	
 	private boolean canCallDoctor = false;
 	private TextToSpeech mTts;
@@ -201,7 +200,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		mBackupManager = new BackupManager(this);
 		
 		//setup licensing
-		licenseHandler = new Handler();
+		
 		
 		// Library calls this when it's done.
         mLicenseCheckerCallback = new MyLicenseCheckerCallback();
@@ -365,7 +364,8 @@ public class Alice extends Activity implements AsyncTasksListener,
                 return;
             }
             // Should allow user access.
-            Toast.makeText(getApplicationContext(), "License Allow Permission", Toast.LENGTH_LONG).show();
+            FlurryAgent.logEvent("License Allowed");
+            //Toast.makeText(getApplicationContext(), "License Permission Granted", Toast.LENGTH_SHORT).show();
         }
 
         public void dontAllow(int policyReason) {
@@ -383,7 +383,9 @@ public class Alice extends Activity implements AsyncTasksListener,
             // If the reason for the lack of license is that the service is
             // unavailable or there is another problem, we display a
             // retry button on the dialog and a different message.
-            Toast.makeText(getApplicationContext(), "Application Don't Allow", Toast.LENGTH_LONG).show();
+            FlurryAgent.logEvent("License Not Allowed");
+            //Toast.makeText(getApplicationContext(), "License Not Allowed", Toast.LENGTH_LONG).show();
+            showNotLicensedDialog();
         }
 
         public void applicationError(int errorCode) {
@@ -394,10 +396,39 @@ public class Alice extends Activity implements AsyncTasksListener,
             // This is a polite way of saying the developer made a mistake
             // while setting up or calling the license checker library.
             // Please examine the error code and fix the error.
-            Toast.makeText(getApplicationContext(), "Application License Error", Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(), "License Error", Toast.LENGTH_LONG).show();
+            FlurryAgent.onError("Licensing Error","Licensing Application Error",Integer.toString(errorCode));
         }
     }
 
+    private void showNotLicensedDialog() {
+    	AlertDialog.Builder notAllowedBuilder = new AlertDialog.Builder(this);
+        notAllowedBuilder.setTitle("Unlicensed Application")
+            .setCancelable(false)
+        	.setMessage(bRetry ? "Error with application license, would you like to retry?" : "Please download a new version of the app from Google Play")
+            .setNegativeButton(bRetry ? "Retry License" : "Download App", new DialogInterface.OnClickListener() {
+                boolean mRetry = bRetry;
+                public void onClick(DialogInterface dialog, int which) {
+                    if ( mRetry ) {
+                    	FlurryAgent.logEvent("Retry License");
+                    	bRetry = false;
+                        doLicenseCheck();
+                    } else {
+                    	FlurryAgent.logEvent("License Failed - going to Play");
+                        Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(
+                                "https://play.google.com/store/apps/details?id=" + getPackageName()));
+                            startActivity(marketIntent);                        
+                    }
+                }
+            })
+            .setPositiveButton("Quit", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                	FlurryAgent.logEvent("License Failed - Quit");
+                	finish();
+                }
+            }).create();
+        notAllowedBuilder.show();
+    }
 	
 	private void initAliceLocation() {
 		AliceLocation myLocation = new AliceLocation();
