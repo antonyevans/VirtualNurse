@@ -1,8 +1,14 @@
-Hello and welcome to the virtual nurse.  This app includes premium medical content developed by Harvard Medical School which helps you answer the question: "Do I need to see a doctor?".  <br>
+This app includes premium medical content developed by Harvard Medical School which helps you answer the question: "Do I need to see a doctor?".  <br>
 <br>
-The content covers 98% of medical concerns people have.  There are three ways to interact with the virtual nurse:<br>
-1. Press the microphone button and describe your symptoms<br>
-2. Press the keyboard button and input your symptoms by text<br>
-3. Search all available guides alphabetically by pressing the A-Z button<br>
+The content is broken down into guides which cover 98% of medical concerns people have.  Each guide will ask you a series of questions to establish if things are normal, if you should see the doctor of if it's an emergancy situation.<br>
 <br>
-We hope you find this content useful.  If you have any questions feel free to contact us by pressing the i button above.
+There are three ways to find the correct guide:<br>
+1. Press the microphone button, at the bottom of the screen, and describe your symptoms<br>
+2. Press the keyboard button, bottom right of the screen, and input your symptoms by text<br>
+3. Search the guides by touching the orange buttons<br>
+<br>
+Once you have selected a guide the Virtual Nurse will ask you a series of questions. You have two options for how to provide your response:<br>
+1. The simplest option is just to press the orange button corresponding to your answer<br>
+2. Alternatively you can press the microphone button and say your answer<br>
+<br>
+We hope you find this content useful.  If you have any questions feel free to contact us by pressing the i button above and selecting 'Contact Us'.
