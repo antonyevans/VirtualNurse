@@ -11,4 +11,6 @@ Once you have selected a guide the Virtual Nurse will ask you a series of questi
 1. The simplest option is just to press the orange button corresponding to your answer<br>
 2. Alternatively you can press the microphone button and say your answer<br>
 <br>
-We hope you find this content useful.  If you have any questions feel free to contact us by pressing the i button above and selecting 'Contact Us'.
+You can mute the speech at any time by pressing the audio icon in the top menu bar.<br>
+<br>
+We hope you find this content useful.  If you have any questions feel free to contact us by pressing the i button above and selecting 'Contact Us'.  You can also return to these instructions from the same menu.

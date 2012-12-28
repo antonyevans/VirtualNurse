@@ -340,7 +340,11 @@ public class Alice extends Activity implements AsyncTasksListener,
 		}
 		
 		//show rate it dialog on the RATEIT time someone uses the app
-		if (usageCount == Constants.RATE_IT) {
+		if (usageCount == 0) {
+			FlurryAgent.logEvent("Show How to dialog");
+			stopTTS();
+			showHowTo();
+		} else if (usageCount == Constants.RATE_IT) {
 			FlurryAgent.logEvent("Show Rate it!");
 			rateItDialog();
 		} else if (usageCount == Constants.SHARE_IT) {
@@ -1230,6 +1234,21 @@ public class Alice extends Activity implements AsyncTasksListener,
 		return null;
 	}
 
+	public void showHowTo() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("How to use this app");
+		builder.setMessage(Html.fromHtml(readTxt("HowTo")))
+		       .setCancelable(true)
+		       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		        	   dialog.cancel();
+		           }
+		       });
+		AlertDialog howToDialog = builder.create();
+		howToDialog.show(); 
+		
+	}
+	
 	public void rateItDialog() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("Rate it!");
