@@ -551,6 +551,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	        list = (ListView)findViewById(R.id.infolist);
 	        
 	        List_file.add(getString(R.string.info_about));
+	        List_file.add(getString(R.string.info_howto));
 	        List_file.add(getString(R.string.info_partners));
 	        List_file.add(getString(R.string.info_TCs));
 	        List_file.add(getString(R.string.info_privacy));
@@ -603,6 +604,19 @@ public class Alice extends Activity implements AsyncTasksListener,
 			}
 			TextView text_inputTxt = (TextView)findViewById(R.id.text_input);
 	        text_inputTxt.setText(Html.fromHtml(readTxt("About")));
+			Linkify.addLinks(text_inputTxt, 15); //all become links
+			
+		} else if (selection == getString(R.string.info_howto) ) {
+			FlurryAgent.logEvent("Info: How to");
+			
+			View currentView = flipper.getCurrentView();
+			if (!currentView.equals(textinputView)) {
+				textinputView = inflater.inflate(R.layout.text_screen, null);
+				flipper.addView(textinputView);
+				flipper.showNext();
+			}
+			TextView text_inputTxt = (TextView)findViewById(R.id.text_input);
+	        text_inputTxt.setText(Html.fromHtml(readTxt("HowTo")));
 			Linkify.addLinks(text_inputTxt, 15); //all become links
 			
 		} else if (selection == getString(R.string.info_partners)) {
@@ -673,6 +687,8 @@ public class Alice extends Activity implements AsyncTasksListener,
     	 inputStream = getResources().openRawResource(R.raw.hello);
      } else if (textFile == "About") {
     	 inputStream = getResources().openRawResource(R.raw.about);
+     } else if (textFile == "HowTo") {
+    	 inputStream = getResources().openRawResource(R.raw.howto);
      } else {
     	 return "TextFile not found";
      }
@@ -694,21 +710,6 @@ public class Alice extends Activity implements AsyncTasksListener,
 	  
 	  return byteArrayOutputStream.toString();
 	}
-	
-	
-/*	public void onPartners(View view) {
-		//usage tracking
-		FlurryAgent.logEvent("onInfo");
-				
-		View currentView = flipper.getCurrentView();
-		if (!currentView.equals(aboutView)) {
-			aboutView = inflater.inflate(R.layout.about_screen, null);
-			flipper.addView(aboutView);
-			flipper.showNext();
-		}
-		stopTTS();
-		
-	}*/
 	
 
 	private void shareApp() {
