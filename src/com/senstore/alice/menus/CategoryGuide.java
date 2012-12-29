@@ -3,7 +3,7 @@ package com.senstore.alice.menus;
  * @author Antony Evans Antony@senstore.com
  * 
  */
-public enum CatagoryGuide {
+public enum CategoryGuide {
 
 	COMMON {
 

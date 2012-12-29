@@ -37,15 +37,15 @@
     <string name="info_about">About Virtual Nurse</string>
     <string name="info_howto">How to Use this App</string>
     <string name="info_partners">Partners</string>
-    <string name="info_TCs">Terms &amp; Conditions</string>
+    <string name="info_TCs">Terms of Use</string>
     <string name="info_privacy">Privacy Policy</string>
     <string name="info_share">Share with Friends</string>
     <string name="info_rate">Rate this app!</string>
     <string name="info_contact">Contact us</string>
     <string name="menu_body">Please select the body area where you are having problems</string>
-    <string name="menu_guide">I\'ve identified a number of possible guides, please select the most relevent one below</string>
+    <string name="menu_guide">I\'ve identified a number of possible guides, please select the most relevant one below</string>
     <string name="menu_demographic">Please select your demographic from the list below</string>
-    <string name="menu_catagory">Please select the catagory which best describes your problem</string>
+    <string name="menu_category">Please select the category which best describes your problem</string>
     
     
 </resources>

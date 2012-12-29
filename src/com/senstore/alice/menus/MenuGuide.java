@@ -19,17 +19,17 @@ public enum MenuGuide {
 		}
 
 	},
-	CATAGORY {
+	CATEGORY {
 
 		@Override
 		public String userFriendlyName() {
-			return "By Catagory";
+			return "By Category";
 		}
 
 
 		@Override
 		public String result() {
-			return "Catagory";
+			return "Category";
 		}
 
 	},

@@ -67,8 +67,8 @@ import com.senstore.alice.harvard.R;
 import com.senstore.alice.listeners.AsyncTasksListener;
 import com.senstore.alice.location.AliceLocation;
 import com.senstore.alice.location.AliceLocation.LocationResult;
-import com.senstore.alice.menus.CatagoryGuide;
 import com.senstore.alice.menus.MenuGuide;
+import com.senstore.alice.menus.CategoryGuide;
 import com.senstore.alice.menus.BodyGuide;
 import com.senstore.alice.menus.DemographicGuide;
 import com.senstore.alice.models.Diagnosis;
@@ -122,7 +122,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	//constants for the orange buttons
 	private static final int GUIDE = 0;
 	private static final int MENU = 1;
-	private static final int CATAGORY = 2;
+	private static final int CATEGORY = 2;
 	private static final int BODY = 3;
 	private static final int DEMOGRAPHIC = 4;
 	private static final int OWNED = 5;
@@ -140,7 +140,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	private AliceChatAdapter chatAdapter;
 
 	private View menuView;
-	private View catagoryView;
+	private View categoryView;
 	private View guideView;
 	//private View aboutView;
 	private View partnerView;
@@ -549,8 +549,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 			List_file = new ArrayList<String>();
 	        list = (ListView)findViewById(R.id.infolist);
 	        
-	        List_file.add(getString(R.string.info_about));
 	        List_file.add(getString(R.string.info_howto));
+	        List_file.add(getString(R.string.info_about));
 	        List_file.add(getString(R.string.info_partners));
 	        List_file.add(getString(R.string.info_TCs));
 	        List_file.add(getString(R.string.info_privacy));
@@ -900,8 +900,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 				case MENU:
 					if (details == "BodyPart") {
 						createMenuWidget(BODY, null,"","");
-					} else if (details == "Catagory") {
-						createMenuWidget(CATAGORY, null,"","");
+					} else if (details == "Category") {
+						createMenuWidget(CATEGORY, null,"","");
 					} else if (details == "Demographic") {
 						createMenuWidget(DEMOGRAPHIC, null,"","");
 					} else if (details == "Owned") {
@@ -913,8 +913,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 				case BODY:
 					getGuideList("Body", details);
 					break;
-				case CATAGORY:
-					getGuideList("Catagory", details);
+				case CATEGORY:
+					getGuideList("Category", details);
 					break;
 				case DEMOGRAPHIC:
 					getGuideList("Demographic", details);
@@ -967,19 +967,19 @@ public class Alice extends Activity implements AsyncTasksListener,
 			}
 			break;
 		case BODY:
-		case CATAGORY:
+		case CATEGORY:
 		case DEMOGRAPHIC:
 					
-			catagoryView = inflater.inflate(R.layout.alice_first_row, null);
-			flipper.addView(catagoryView);
+			categoryView = inflater.inflate(R.layout.alice_first_row, null);
+			flipper.addView(categoryView);
 			flipper.showNext();
 			
 			// locate box for placing buttons
-			lightbox = (LinearLayout) catagoryView
+			lightbox = (LinearLayout) categoryView
 								.findViewById(R.id.lightbox_button_layout);
 			
 			//load description text into menuView
-			text_inputTxt = (TextView) catagoryView.findViewById(R.id.description);
+			text_inputTxt = (TextView) categoryView.findViewById(R.id.description);
 	        
 			if (layer== BODY) {
 				FlurryAgent.logEvent("Show Body");
@@ -993,11 +993,11 @@ public class Alice extends Activity implements AsyncTasksListener,
 					lightbox.addView(b);
 
 				}
-			} else if (layer == CATAGORY) {
-				FlurryAgent.logEvent("Show Catagory");
-				text_inputTxt.setText(Html.fromHtml(getString(R.string.menu_catagory)));
+			} else if (layer == CATEGORY) {
+				FlurryAgent.logEvent("Show Category");
+				text_inputTxt.setText(Html.fromHtml(getString(R.string.menu_category)));
 				
-				for (CatagoryGuide body : CatagoryGuide.values()) {
+				for (CategoryGuide body : CategoryGuide.values()) {
 
 					//Button b = createOrangeBtn(name,GUIDE, guide, start_input);
 					Button b = createOrangeBtn(body.userFriendlyName(),layer, body.result(), "");
