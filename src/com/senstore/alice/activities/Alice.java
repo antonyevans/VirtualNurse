@@ -269,11 +269,6 @@ public class Alice extends Activity implements AsyncTasksListener,
         canTalk = settings.getBoolean("canTalk", true);
         setTalkSettings();
         usageCount = settings.getInt("usageCount", 0);
-
-        /*if (!agreeTCs) {
-        	//user hasn't agreed to TC's and privacy policy so ask for confirmation
-        	ask_accept_TCs();
-        }*/
 	       
 		// Register the Background Logger Broadcast Receiver
 		initLogBroadcastReceiver();
@@ -339,10 +334,10 @@ public class Alice extends Activity implements AsyncTasksListener,
 
 		}
 		
+		
 		//show rate it dialog on the RATEIT time someone uses the app
 		if (usageCount == 0) {
-			FlurryAgent.logEvent("Show How to dialog");
-			stopTTS();
+			FlurryAgent.logEvent("Show How to dialog");			
 			showHowTo();
 		} else if (usageCount == Constants.RATE_IT) {
 			FlurryAgent.logEvent("Show Rate it!");
@@ -2473,7 +2468,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 					isFirstTime = false;
 					// Speak the welcome text
 					
-					speakText(Html.fromHtml(readTxt("Hello")).toString());
+					//speakText(Html.fromHtml(readTxt("Hello")).toString());
 					
 
 				}
