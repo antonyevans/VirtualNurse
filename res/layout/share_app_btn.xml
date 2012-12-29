@@ -17,7 +17,7 @@
             android:layout_marginTop="10dp"
             android:background="@drawable/btn_green"
             android:gravity="center"
-            android:text="Share with friends"
+            android:text="@string/share_btn"
             android:textSize="25dp"
             android:textStyle="bold" />
 
