@@ -558,7 +558,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	        List_file.add(getString(R.string.info_rate));
 	        List_file.add(getString(R.string.info_contact));
 	           
-	        list.setAdapter(new ArrayAdapter<String>(Alice.this, R.layout.info_item, List_file));
+	        list.setAdapter(new ArrayAdapter<String>(this, R.layout.info_item, List_file));
 	        
 	        list.setOnItemClickListener(new OnItemClickListener() {	       
 				@Override
