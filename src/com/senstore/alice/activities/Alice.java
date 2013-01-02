@@ -1169,6 +1169,7 @@ public class Alice extends Activity implements AsyncTasksListener,
     	
 		if (!everMute) {
 			canTalk = false;
+			setTalkSettings();
 		}
 		
 		diagnosisTask = new DiagnosisAsyncTask();
@@ -1201,6 +1202,7 @@ public class Alice extends Activity implements AsyncTasksListener,
     		
 		if (!everMute) {
 			canTalk = true;
+			setTalkSettings();
 		}
     	
     	View currentView = flipper.getCurrentView();
