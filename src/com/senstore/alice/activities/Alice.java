@@ -1244,6 +1244,28 @@ public class Alice extends Activity implements AsyncTasksListener,
 		
 	}
 	
+	public void askUpgrade() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("Please upgrade the app");
+		builder.setMessage("To access this content you need to update to the most recent version of the app.  Please press 'upload' to be taken to the Google Play store")
+		       .setCancelable(true)
+		       .setNegativeButton("Upgrade", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		        	   FlurryAgent.logEvent("Upgrade app");
+		        	   rateIt();
+		           }
+		       })
+		       .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		        	   FlurryAgent.logEvent("No, Don't Upgrade");
+		        	   dialog.cancel();
+		           }
+		       });
+		AlertDialog upgradeDialog = builder.create();
+		upgradeDialog.show(); 
+		
+	}
+	
 	public void rateItDialog() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("Rate it!");
@@ -1436,13 +1458,15 @@ public class Alice extends Activity implements AsyncTasksListener,
 			} 
 		}  else  {
 			//this means they haven't purchased guide yet
+			askUpgrade();
 			
-			if (!mBillingService.requestPurchase("womanssexualhealth", Constants.ITEM_TYPE_INAPP, "developerPayload")) {
+			//old code to direct to purchase guides
+			/*if (!mBillingService.requestPurchase("womanssexualhealth", Constants.ITEM_TYPE_INAPP, "developerPayload")) {
                 showDialog(BILLING_NOT_WORKING_DIALOG);
                 FlurryAgent.onError("Billing Error", "App purchase failure" + System.currentTimeMillis(), "");
             } else {
             	Log.i(Constants.TAG,"Billing request sent");
-            }
+            }*/
 		}
 
 	}
