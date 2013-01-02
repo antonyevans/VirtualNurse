@@ -170,7 +170,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 	private ImageButton mic_action;
 
 	//preferences variables
-	private boolean canTalk = true;
+	private boolean canTalk = false;
+	private boolean everMute = false;
 	private int usageCount = 0;
 
 	private String talkResp = "";
@@ -266,7 +267,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 		
 		// Restore preferences
         SharedPreferences settings = getSharedPreferences(MyPrefsBackupAgent.PREFS, MODE_PRIVATE);
-        canTalk = settings.getBoolean("canTalk", true);
+        canTalk = settings.getBoolean("canTalk", false);
+        everMute = settings.getBoolean("everMute", false);
         setTalkSettings();
         usageCount = settings.getInt("usageCount", 0);
 	       
@@ -486,6 +488,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	
 	public void toggleTalk(View view) {
 		//usage tracking
+		everMute = true;
 		String talkStatus = null;
 		if (canTalk) {
 			talkStatus = "Mute";
@@ -1164,6 +1167,10 @@ public class Alice extends Activity implements AsyncTasksListener,
 			FlurryAgent.logEvent("Start Guide", flurryParams);
 		}
     	
+		if (!everMute) {
+			canTalk = false;
+		}
+		
 		diagnosisTask = new DiagnosisAsyncTask();
 		diagnosisTask.setType("Touch");
 		diagnosisTask.setListener(listener);
@@ -1192,6 +1199,9 @@ public class Alice extends Activity implements AsyncTasksListener,
     		flurryParams.put("Input Text", input_text);
     		flurryParams.put("Diagnosis Type", "Voice");
     		
+		if (!everMute) {
+			canTalk = true;
+		}
     	
     	View currentView = flipper.getCurrentView();
 		
@@ -1650,6 +1660,7 @@ public class Alice extends Activity implements AsyncTasksListener,
       SharedPreferences settings = getSharedPreferences(MyPrefsBackupAgent.PREFS, MODE_PRIVATE);
       SharedPreferences.Editor editor = settings.edit();
       editor.putBoolean("canTalk", canTalk);
+      editor.putBoolean("everMute", everMute);
       editor.putInt("usageCount", usageCount + 1);
 
       // Commit the edits!
