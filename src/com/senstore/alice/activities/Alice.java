@@ -1637,6 +1637,7 @@ public class Alice extends Activity implements AsyncTasksListener,
     	FlurryAgent.setVersionName(app_ver);
     	FlurryAgent.setLogEnabled(true);
     	FlurryAgent.setLogEvents(true);
+    	
     }
     
     @Override
