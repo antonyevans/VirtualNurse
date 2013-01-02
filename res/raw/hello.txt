@@ -1,3 +1,3 @@
-Hello and welcome to the virtual nurse. <br>
+Hello and welcome to the Virtual Nurse, the Best Android Symptom Checker, which brings you content from Harvard Medical School. <br>
 <br>
 Search for a diagnosis guide by pressing the orange buttons below, or press the microphone button and describe your symptoms.

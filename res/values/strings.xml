@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Virtual Nurse (dev)</string>
+    <string name="app_name">Best Android Symptom Checker</string>
 
     <!-- API tester resources -->
     <string name="api_test_desc">This is a utility to test the various ALICE API endpoints, and decision trees and workflows.</string>
