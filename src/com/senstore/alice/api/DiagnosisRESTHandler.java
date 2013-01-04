@@ -53,7 +53,7 @@ public class DiagnosisRESTHandler {
 			}
 		} catch (Exception e) {
 			Log.e(Constants.TAG, e.getMessage());
-			FlurryAgent.onError("Diagnosis REST error", "Error" + e, "");
+			FlurryAgent.onError("Diagnosis REST error", "Error" + e, req.getFullURL());
 		}
 
 		return diagnosis;

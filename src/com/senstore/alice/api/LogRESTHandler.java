@@ -64,7 +64,7 @@ public class LogRESTHandler {
 			}
 		} catch (Exception e) {
 			Log.e(Constants.TAG, e.getMessage());
-			FlurryAgent.onError("Log REST error", "Error" + e, "");
+			FlurryAgent.onError("Log REST error", "Error" + e, req.getFullURL());
 		}
 
 		return log;

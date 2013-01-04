@@ -163,7 +163,19 @@ public class RestClient {
 		}
 		return combinedParams.toString();
 	}
-
+	
+	public String getFullURL() {
+		String fullURL;
+		try {
+			fullURL = url + addGetParams();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			fullURL = url + ":Error=" + e.toString();
+		}
+		return fullURL;
+	}
+	
 	public String getErrorMessage() {
 		return message;
 	}
