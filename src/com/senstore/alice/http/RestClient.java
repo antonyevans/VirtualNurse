@@ -171,8 +171,9 @@ public class RestClient {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			fullURL = url + ":Error=" + e.toString();
+			fullURL = url + ":Error AddingGetParams";
 		}
+		
 		return fullURL;
 	}
 	

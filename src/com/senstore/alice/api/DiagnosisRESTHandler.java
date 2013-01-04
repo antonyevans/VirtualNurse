@@ -53,7 +53,7 @@ public class DiagnosisRESTHandler {
 			}
 		} catch (Exception e) {
 			Log.e(Constants.TAG, e.getMessage());
-			FlurryAgent.onError("Diagnosis REST error", "Error" + e, req.getFullURL());
+			FlurryAgent.onError("Diagnosis REST error", "Error" + e.toString(),req.getFullURL());
 		}
 
 		return diagnosis;
@@ -99,6 +99,7 @@ public class DiagnosisRESTHandler {
 			}
 		} catch (Exception e) {
 			Log.e(Constants.TAG, e.getMessage());
+			FlurryAgent.onError("Diagnosis REST error", "Error" + e.toString(),req.getFullURL());
 		}
 
 		return diagnosis;
@@ -142,6 +143,7 @@ public class DiagnosisRESTHandler {
 			}
 		} catch (Exception e) {
 			Log.e(Constants.TAG, e.getMessage());
+			FlurryAgent.onError("Diagnosis REST error", "Error" + e.toString(),req.getFullURL());
 		}
 
 		return diagnosis;

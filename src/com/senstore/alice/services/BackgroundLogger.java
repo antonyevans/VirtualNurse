@@ -5,6 +5,7 @@ package com.senstore.alice.services;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.util.Log;
 
 import com.senstore.alice.api.LogRESTHandler;
 import com.senstore.alice.models.ActionLog;
@@ -18,6 +19,7 @@ public class BackgroundLogger extends IntentService {
 
 	private String msg = "-1";
 	private String user_id = null;
+	private String user_tel = null;
 
 	private static final int ERROR = -1;
 	private static final int REGISTER = 0;
@@ -55,6 +57,8 @@ public class BackgroundLogger extends IntentService {
 		
 		user_id = intent.getStringExtra(Constants.LOG_USER_ID);
 		
+		user_tel = intent.getStringExtra(Constants.LOG_USER_TEL);
+		
 		LogRESTHandler handler = new LogRESTHandler();
 
 		switch (identifyType(msg)) {
@@ -62,7 +66,7 @@ public class BackgroundLogger extends IntentService {
 			break;
 		}
 		case REGISTER:
-			ActionLog log = handler.log(msg, user_id);
+			ActionLog log = handler.log(msg, user_id, user_tel);
 
 			if (log != null) {
 
@@ -75,7 +79,7 @@ public class BackgroundLogger extends IntentService {
 			}
 			break;
 		case LOCATION:
-			ActionLog logloc = handler.log(msg, user_id);
+			ActionLog logloc = handler.log(msg, user_id, user_tel);
 			if (logloc != null) {
 				Intent locIntent = new Intent();
 				locIntent.setAction(Constants.ACTION_RESP);
@@ -86,7 +90,7 @@ public class BackgroundLogger extends IntentService {
 			}
 			break;
 		case CALL_DOCTOR:
-			ActionLog logcd = handler.log(msg, user_id);
+			ActionLog logcd = handler.log(msg, user_id, user_tel);
 			if (logcd != null) {
 				Intent cdIntent = new Intent();
 				cdIntent.setAction(Constants.ACTION_RESP);
@@ -97,7 +101,7 @@ public class BackgroundLogger extends IntentService {
 			}
 			break;
 		case CALL_DOCTOR_ACCEPT:
-			ActionLog logcda = handler.log(msg, user_id);
+			ActionLog logcda = handler.log(msg, user_id, user_tel);
 			if (logcda != null) {
 				Intent cdaIntent = new Intent();
 				cdaIntent.setAction(Constants.ACTION_RESP);
@@ -108,7 +112,7 @@ public class BackgroundLogger extends IntentService {
 			}
 			break;
 		case CALL_DOCTOR_REJECT:
-			ActionLog logcdr = handler.log(msg, user_id);
+			ActionLog logcdr = handler.log(msg, user_id, user_tel);
 			if (logcdr != null) {
 				Intent cdrIntent = new Intent();
 				cdrIntent.setAction(Constants.ACTION_RESP);

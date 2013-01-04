@@ -47,10 +47,9 @@ public class Utils {
 		return uniqueID;
 	}
 
-	public static String getPhoneNumber() {
+	public static String getPhoneNumber(Context context) {
 		String userNumber = null;
-		TelephonyManager tManager = (TelephonyManager) mContext
-				.getSystemService(Context.TELEPHONY_SERVICE);
+		TelephonyManager tManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 		String uid = tManager.getLine1Number();
 
 		String imei = tManager.getDeviceId();

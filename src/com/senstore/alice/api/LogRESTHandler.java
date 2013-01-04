@@ -28,14 +28,14 @@ public class LogRESTHandler {
 
 	}
 
-	public ActionLog log(String log_type, String user_id) {
+	public ActionLog log(String log_type, String user_id, String user_phone) {
 
 		String absoluteURL = Constants.SERVER_URL + "log.json";
 		RestClient req = new RestClient(absoluteURL);
 		req.addParam("user_id", user_id);
 		req.addParam("log_type", log_type);
 		req.addParam("app_name", Constants.APP_NAME);
-		req.addParam("tel_num", Utils.getPhoneNumber());
+		req.addParam("tel_num", user_phone);
 
 		Object loc = Registry.instance().get(Constants.REGISTRY_LOCATION);
 		//boolean hasText = !"".equals(loc);
@@ -63,8 +63,8 @@ public class LogRESTHandler {
 
 			}
 		} catch (Exception e) {
-			Log.e(Constants.TAG, e.getMessage());
-			FlurryAgent.onError("Log REST error", "Error" + e, req.getFullURL());
+			Log.e(Constants.TAG, "LogRestError" + e.fillInStackTrace());
+			FlurryAgent.onError("Log REST error", "Error" + e.toString(), req.getFullURL());
 		}
 
 		return log;

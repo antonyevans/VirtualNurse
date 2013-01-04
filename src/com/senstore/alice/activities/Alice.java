@@ -1119,6 +1119,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		Intent msgIntent = new Intent(this, BackgroundLogger.class);
 		msgIntent.putExtra(Constants.LOG_SERVICE_IN_MSG, log_type);
 		msgIntent.putExtra(Constants.LOG_USER_ID, Utils.getUserID(this));
+		msgIntent.putExtra(Constants.LOG_USER_TEL, Utils.getPhoneNumber(this));
 		startService(msgIntent);
 
 	}
@@ -1239,7 +1240,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		}
 
 		return null;
-	}
+	} 
 
 	public void showHowTo() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
