@@ -46,8 +46,34 @@ public class Utils {
 		
 		return uniqueID;
 	}
-	
 
+	public static String getPhoneNumber() {
+		String userNumber = null;
+		TelephonyManager tManager = (TelephonyManager) mContext
+				.getSystemService(Context.TELEPHONY_SERVICE);
+		String uid = tManager.getLine1Number();
+
+		String imei = tManager.getDeviceId();
+
+		boolean uidHasText = !"".equals(uid);
+		boolean imeiHasText = !"".equals(imei);
+
+		if (uid != null && uidHasText) {
+			userNumber = uid;
+		} else if (imei != null && imeiHasText) {
+			// Use the IMEI
+			userNumber = imei;
+		} else {
+			// Since both uid and imei returned null, Generate a random
+			// number/value and use it
+			RandomStr generator = new RandomStr();
+			userNumber = generator.get(5);
+
+		}
+		return userNumber;
+
+	}
+	
 	public boolean isNetworkAvailable() {
 
 		ConnectivityManager connectivity = (ConnectivityManager) mContext
