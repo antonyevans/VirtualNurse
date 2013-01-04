@@ -5,6 +5,7 @@ package com.senstore.alice.api;
 
 import android.util.Log;
 
+import com.flurry.android.FlurryAgent;
 import com.senstore.alice.http.RestClient;
 import com.senstore.alice.http.RestClient.RequestMethod;
 import com.senstore.alice.models.Diagnosis;
@@ -48,9 +49,11 @@ public class DiagnosisRESTHandler {
 
 			} else {
 				Log.i(Constants.TAG, responseCode + " - " + req.getResponse());
+				FlurryAgent.onError("Diagnosis REST response error", "Response Code" + responseCode, req.getResponse());
 			}
 		} catch (Exception e) {
 			Log.e(Constants.TAG, e.getMessage());
+			FlurryAgent.onError("Diagnosis REST error", "Error" + e, "");
 		}
 
 		return diagnosis;

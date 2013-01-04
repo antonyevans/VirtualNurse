@@ -59,10 +59,12 @@ public class LogRESTHandler {
 
 			} else {
 				Log.i(Constants.TAG, responseCode + " - " + req.getResponse());
+				FlurryAgent.onError("Log REST response error", "Response Code" + responseCode, req.getResponse());
+
 			}
 		} catch (Exception e) {
 			Log.e(Constants.TAG, e.getMessage());
-			FlurryAgent.onError("Log response error", "Error" + e, "");
+			FlurryAgent.onError("Log REST error", "Error" + e, "");
 		}
 
 		return log;
