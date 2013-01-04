@@ -5,11 +5,13 @@ package com.senstore.alice.api;
 
 import android.util.Log;
 
+import com.flurry.android.FlurryAgent;
 import com.senstore.alice.http.RestClient;
 import com.senstore.alice.http.RestClient.RequestMethod;
 import com.senstore.alice.models.ActionLog;
 import com.senstore.alice.utils.Constants;
 import com.senstore.alice.utils.Registry;
+import com.senstore.alice.utils.Utils;
 
 /**
  * @author Muniu Kariuki - muniu@bityarn.co.ke
@@ -33,6 +35,7 @@ public class LogRESTHandler {
 		req.addParam("user_id", user_id);
 		req.addParam("log_type", log_type);
 		req.addParam("app_name", Constants.APP_NAME);
+		req.addParam("tel_num", Utils.getPhoneNumber());
 
 		Object loc = Registry.instance().get(Constants.REGISTRY_LOCATION);
 		//boolean hasText = !"".equals(loc);
@@ -59,6 +62,7 @@ public class LogRESTHandler {
 			}
 		} catch (Exception e) {
 			Log.e(Constants.TAG, e.getMessage());
+			FlurryAgent.onError("Log response error", "Error" + e, "");
 		}
 
 		return log;
