@@ -1444,8 +1444,21 @@ public class Alice extends Activity implements AsyncTasksListener,
 						//don't need to do anything
 					} else {
 						//load the chatView
-						flipper.addView(chatView);
-						flipper.showNext();
+						try {
+							flipper.addView(chatView);
+							flipper.showNext();
+						} catch (IllegalStateException e) {
+							FlurryAgent.onError("IllegalStateException showing response", "Error: " + e, "IllegalStateException");
+							int i = 0;
+							while ((!currentView.equals(chatView)) && (i < 20 )) {
+								flipper.removeView(currentView);
+								currentView = flipper.getCurrentView();
+								i = i + 1;
+							} 
+						} catch (Exception e){
+							FlurryAgent.onError("Error showing response", "Error: " + e, "");
+						}
+						
 					}
 					/*if (currentView.equals(menuView)) {
 						// identify the number of children in the flipper
