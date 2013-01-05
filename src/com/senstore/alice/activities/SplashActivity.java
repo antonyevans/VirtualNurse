@@ -101,6 +101,7 @@ public class SplashActivity extends Activity {
 				}
 			);
 		} catch (RuntimeException e) {
+			//In this instance then user likely didn't have activated backups
 			FlurryAgent.logEvent("User deactivated BackupAgent");
 		} catch (Exception e){
 			FlurryAgent.onError("Error restoring backupagent", "Error: " + e, "");
