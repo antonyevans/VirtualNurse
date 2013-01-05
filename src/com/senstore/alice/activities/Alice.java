@@ -1363,8 +1363,8 @@ public class Alice extends Activity implements AsyncTasksListener,
 		
 		if (result == null) {
 			// This shouldn't really happen unless we have a bad server connection
-			FlurryAgent.onError("Diagnosis returned null","","");
-			Log.i("Alice","Diagnosis returned null");
+			FlurryAgent.logEvent("Diagnosis returned null");
+			Toast.makeText(getApplicationContext(), "Weak internet connection, please retry your query", Toast.LENGTH_SHORT).show();
 			
 			
 			return;
