@@ -1449,7 +1449,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 							flipper.addView(chatView);
 							flipper.showNext();
 						} catch (IllegalStateException e) {
-							FlurryAgent.onError("IllegalStateException showing response", "Error: " + e, "IllegalStateException");
+							FlurryAgent.logEvent("IllegalStateException showing response");
 							int i = 0;
 							while ((!currentView.equals(chatView)) && (i < 20 )) {
 								flipper.removeView(currentView);
