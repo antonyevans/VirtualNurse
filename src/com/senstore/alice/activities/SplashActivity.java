@@ -90,15 +90,22 @@ public class SplashActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		//load preferences file
 		mBackupManager = new BackupManager(this);
-		mBackupManager.requestRestore(
-			new RestoreObserver() {
-	            public void restoreFinished(int error) {
-	                if (error != 0) {
-	                	FlurryAgent.onError("Restore error", "error number" + error, "");
-	                }            
-	            }
-			}
-		);
+		try { 
+			mBackupManager.requestRestore(
+				new RestoreObserver() {
+		            public void restoreFinished(int error) {
+		                if (error != 0) {
+		                	FlurryAgent.onError("Restore error", "error number" + error, "");
+		                }            
+		            }
+				}
+			);
+		} catch (RuntimeException e) {
+			FlurryAgent.logEvent("User deactivated BackupAgent");
+		} catch (Exception e){
+			FlurryAgent.onError("Error restoring backupagent", "Error: " + e, "");
+		}
+		
 		
 		// Set Full Screen Since we have a Tittle Bar
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
