@@ -714,10 +714,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	}
 	
 
-	private void shareApp(String shareParam) {
-		Map<String, String> flurryParams = new HashMap<String, String>(); 
-			flurryParams.put("Share Type", shareParam);
-		FlurryAgent.logEvent("Share App", flurryParams);	
+	private void shareApp(String shareParam) {	
 		
 		Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
 		sharingIntent.setType("text/plain");
@@ -725,7 +722,53 @@ public class Alice extends Activity implements AsyncTasksListener,
 		String shareSubject = getString(R.string.share_subject);
 		sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSubject);
 		sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-		startActivity(Intent.createChooser(sharingIntent, "Share via"));
+		
+		// gets the list of intents that can be loaded.
+		String typeFace = "faceb";
+		String typeTwit	= "twit";
+		Boolean foundFace = false;
+		Boolean foundTwit = false;
+	    List<ResolveInfo> resInfo = getPackageManager().queryIntentActivities(sharingIntent, 0);
+	    if (!resInfo.isEmpty()){
+	        for (ResolveInfo info : resInfo) {
+	            if (info.activityInfo.packageName.toLowerCase().contains(typeFace) || 
+	                    info.activityInfo.name.toLowerCase().contains(typeFace) ) {
+	                sharingIntent.setPackage(info.activityInfo.packageName);
+	                foundFace = true;
+	                Map<String, String> flurryParams = new HashMap<String, String>(); 
+	    				flurryParams.put("Share Type", shareParam);
+	    				flurryParams.put("Share Intent", "Found Fbook");
+	    				flurryParams.put("Share Package", info.activityInfo.packageName.toString());
+	    			FlurryAgent.logEvent("Share App", flurryParams);
+	                break;
+	            }
+	        }
+	        if (!foundFace) {
+	        	//check for twitter
+	        	for (ResolveInfo info : resInfo) {
+		            if (info.activityInfo.packageName.toLowerCase().contains(typeTwit) || 
+		                    info.activityInfo.name.toLowerCase().contains(typeTwit) ) {
+		                sharingIntent.setPackage(info.activityInfo.packageName);
+		                foundTwit = true;
+		                Map<String, String> flurryParams = new HashMap<String, String>(); 
+		    				flurryParams.put("Share Type", shareParam);
+		    				flurryParams.put("Share Intent", "Found Twit");
+		    				flurryParams.put("Share Package", info.activityInfo.packageName.toString());
+	    				FlurryAgent.logEvent("Share App", flurryParams);
+		                break;
+		            }
+		        }
+	        }
+	        //otherwise bring up default chooser
+	        if (!foundFace && !foundTwit) {
+	        	Map<String, String> flurryParams = new HashMap<String, String>(); 
+					flurryParams.put("Share Type", shareParam);
+					flurryParams.put("Share Intent", "Present Chooser");
+					flurryParams.put("Share Package", "No package");
+				FlurryAgent.logEvent("Share App", flurryParams);
+	        }
+	    }
+	    startActivity(Intent.createChooser(sharingIntent, "Share via"));
 	}
 	
 	public void onAlphabet(View view) {
