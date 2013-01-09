@@ -717,7 +717,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	private void shareApp(String shareParam) {
 		Map<String, String> flurryParams = new HashMap<String, String>(); 
 			flurryParams.put("Share Type", shareParam);
-		FlurryAgent.logEvent("Purchase Reponse", flurryParams);	
+		FlurryAgent.logEvent("Share App", flurryParams);	
 		
 		Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
 		sharingIntent.setType("text/plain");
