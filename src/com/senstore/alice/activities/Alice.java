@@ -656,7 +656,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 			
 		} else if (selection == getString(R.string.info_share)) {
 			FlurryAgent.logEvent("Info: Share");
-			shareApp();
+			shareApp("Info: Share");
 		} else if (selection == getString(R.string.info_rate)) {
 			FlurryAgent.logEvent("Info: Rate");
 			rateIt();
@@ -714,7 +714,11 @@ public class Alice extends Activity implements AsyncTasksListener,
 	}
 	
 
-	private void shareApp() {
+	private void shareApp(String shareParam) {
+		Map<String, String> flurryParams = new HashMap<String, String>(); 
+			flurryParams.put("Share Type", shareParam);
+		FlurryAgent.logEvent("Purchase Reponse", flurryParams);	
+		
 		Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
 		sharingIntent.setType("text/plain");
 		String shareBody = getString(R.string.share_body);
@@ -1083,7 +1087,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 				//event tracking
 				    		
 	    		FlurryAgent.logEvent("Share App Btn pressed");
-	    		shareApp();
+	    		shareApp("Share App Btn pressed");
 	    		
 			}
 
@@ -1312,7 +1316,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		       .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) {
 		        	   FlurryAgent.logEvent("Yes Share App!");
-		        	   shareApp();
+		        	   shareApp("Yes Share App!");
 		           }
 		       })
 		       .setPositiveButton("No", new DialogInterface.OnClickListener() {
@@ -2123,7 +2127,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 						//event tracking
 						    		
 			    		FlurryAgent.logEvent("Share App Btn pressed");
-			    		shareApp();
+			    		shareApp("Share App Btn pressed");
 			    		
 					}
 
