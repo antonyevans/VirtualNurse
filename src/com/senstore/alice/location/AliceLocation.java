@@ -6,6 +6,8 @@ package com.senstore.alice.location;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.flurry.android.FlurryAgent;
+
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
@@ -35,11 +37,13 @@ public class AliceLocation {
 		try {
 			gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
 		} catch (Exception ex) {
+			FlurryAgent.logEvent("No location GPS Provider");
 		}
 		try {
 			network_enabled = lm
 					.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 		} catch (Exception ex) {
+			FlurryAgent.logEvent("No location Network Provider");
 		}
 
 		// don't start listeners if no provider is enabled
