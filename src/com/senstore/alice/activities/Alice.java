@@ -2340,7 +2340,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 			_currentRecognizer.start();
 		} else {
 			FlurryAgent.logEvent("No Microphone detected");
-			Toast.makeText(getApplicationContext(), "No Microphone detected, please use touch controls", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), "No Microphone detected, please use touch controls", Toast.LENGTH_LONG).show();
 		}
 		
 	}
