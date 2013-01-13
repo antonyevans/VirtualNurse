@@ -386,7 +386,7 @@ public class Alice extends Activity implements AsyncTasksListener,
             // retry button on the dialog and a different message.
             FlurryAgent.logEvent("License Not Allowed");
             //Toast.makeText(getApplicationContext(), "License Not Allowed", Toast.LENGTH_LONG).show();
-            showNotLicensedDialog();
+            //showNotLicensedDialog();
         }
 
         public void applicationError(int errorCode) {
