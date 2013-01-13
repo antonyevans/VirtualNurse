@@ -8,21 +8,22 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    	<uses-feature android:name="android.hardware.MICROPHONE" android:required="false" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" android:required="false" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" android:required="false" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    	<uses-feature android:name="android.hardware.LOCATION" android:required="false" />
-        <uses-feature android:name="android.hardware.location.GPS" android:required="false" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" android:required="false"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
-    	<uses-feature android:name="android.hardware.telephony" android:required="false" />
     <uses-permission android:name="com.android.vending.BILLING" />
     <uses-permission android:name="com.android.vending.CHECK_LICENSE" />
-    	<uses-feature android:name="android.hardware.screen.PORTRAIT" android:required="false" />
-
+    
+    <uses-feature android:name="android.hardware.screen.portrait" android:required="false" />
+    <uses-feature android:name="android.hardware.telephony" android:required="false" />
+    <uses-feature android:name="android.hardware.location" android:required="false" />
+    <uses-feature android:name="android.hardware.location.gps" android:required="false" />
+    <uses-feature android:name="android.hardware.microphone" android:required="false" />
+    
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
