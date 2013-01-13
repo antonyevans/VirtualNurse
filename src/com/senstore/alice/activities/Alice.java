@@ -2327,17 +2327,22 @@ public class Alice extends Activity implements AsyncTasksListener,
 	// Start Voice Business
 	public void startDictation(View view) {
 		stopTTS();
+		if (getPackageManager().hasSystemFeature("android.hardware.microphone")) {
+			_listeningDialog.setText("Initializing...");
+			showDialog(LISTENING_DIALOG);
+			_listeningDialog.setStoppable(false);
+			setResults(new Recognition.Result[0]);
 
-		_listeningDialog.setText("Initializing...");
-		showDialog(LISTENING_DIALOG);
-		_listeningDialog.setStoppable(false);
-		setResults(new Recognition.Result[0]);
-
-		_currentRecognizer = Alice.getSpeechKit().createRecognizer(
-				Recognizer.RecognizerType.Dictation,
-				Recognizer.EndOfSpeechDetection.Long, "en_US", _listener,
-				_handler);
-		_currentRecognizer.start();
+			_currentRecognizer = Alice.getSpeechKit().createRecognizer(
+					Recognizer.RecognizerType.Dictation,
+					Recognizer.EndOfSpeechDetection.Long, "en_US", _listener,
+					_handler);
+			_currentRecognizer.start();
+		} else {
+			FlurryAgent.logEvent("No Microphone detected");
+			Toast.makeText(getApplicationContext(), "No Microphone detected, please use touch controls", Toast.LENGTH_SHORT).show();
+		}
+		
 	}
 
 	@Override
