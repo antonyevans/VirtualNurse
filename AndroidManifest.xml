@@ -19,6 +19,7 @@
     	<uses-feature android:name="android.hardware.telephony" android:required="false" />
     <uses-permission android:name="com.android.vending.BILLING" />
     <uses-permission android:name="com.android.vending.CHECK_LICENSE" />
+    	<uses-feature android:name="android.hardware.screen.PORTRAIT" android:required="false" />
 
     <supports-screens
         android:anyDensity="true"
