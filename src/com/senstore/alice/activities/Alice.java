@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -173,6 +174,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 	private boolean canTalk = false;
 	private boolean everMute = false;
 	private int usageCount = 0;
+	private int cohort1;
 
 	private String talkResp = "";
 
@@ -271,6 +273,8 @@ public class Alice extends Activity implements AsyncTasksListener,
         everMute = settings.getBoolean("everMute", false);
         setTalkSettings();
         usageCount = settings.getInt("usageCount", 0);
+        int randInt = new Random().nextInt(2) + 1;
+        cohort1 = settings.getInt("cohort1", randInt);
 	       
 		// Register the Background Logger Broadcast Receiver
 		initLogBroadcastReceiver();
@@ -1726,6 +1730,7 @@ public class Alice extends Activity implements AsyncTasksListener,
       editor.putBoolean("canTalk", canTalk);
       editor.putBoolean("everMute", everMute);
       editor.putInt("usageCount", usageCount + 1);
+      editor.putInt("cohort1", cohort1);
 
       // Commit the edits!
       editor.commit();
