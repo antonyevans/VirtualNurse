@@ -213,7 +213,6 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		
 		//setup licensing
 		
-		
 		// Library calls this when it's done.
         mLicenseCheckerCallback = new MyLicenseCheckerCallback();
         // Construct the LicenseChecker with a policy.
@@ -1819,7 +1818,25 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 					canCallDoctor = Boolean.parseBoolean(Registry.instance()
 							.get(Constants.REGISTRY_CALL).toString());
 				}
-
+				
+				//update address constants to handle case where we got address on remote server as Geocode didn't work
+				Object countryObj = Registry.instance().get(Constants.REGISTRY_COUNTRY);
+				if (countryObj != null) {
+					country = countryObj.toString();
+				}
+				Object stateObj = Registry.instance().get(Constants.REGISTRY_STATE);
+				if (stateObj != null) {
+					state = stateObj.toString();
+				}
+				Object localityObj = Registry.instance().get(Constants.REGISTRY_LOCALITY);
+				if (localityObj != null) {
+					locality = localityObj.toString();
+				}
+				Object postalCodeObj = Registry.instance().get(Constants.REGISTRY_POSTALCODE);
+				if (postalCodeObj != null) {
+					postalCode = postalCodeObj.toString();
+				}
+				
 				//Log.i(Constants.TAG, "Successfully logged type " + text);
 
 			}
@@ -2670,22 +2687,25 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	
 	@Override
 	public void onLocationTaskPostExecute(Address address) {
-		if (address.getCountryName() != null) {
-			country = address.getCountryName();
+		if (address != null) {
+			if (address.getCountryName() != null) {
+				country = address.getCountryName();
+				Registry.instance().put(Constants.REGISTRY_COUNTRY, country);
+			}
+			if (address.getAdminArea() != null) {
+				state = address.getAdminArea();
+				Registry.instance().put(Constants.REGISTRY_STATE, state);
+			}
+			if (address.getLocality() != null) {
+				locality = address.getLocality();
+				Registry.instance().put(Constants.REGISTRY_LOCALITY, locality);
+			}
+			if (address.getPostalCode() != null) {
+				postalCode = address.getPostalCode();
+				Registry.instance().put(Constants.REGISTRY_POSTALCODE, postalCode);
+			}
 		}
-		if (address.getAdminArea() != null) {
-			state = address.getAdminArea();
-		}
-		if (address.getLocality() != null) {
-			locality = address.getLocality();
-		}
-		if (address.getPostalCode() != null) {
-			postalCode = address.getPostalCode();
-		}
-		Registry.instance().put(Constants.REGISTRY_COUNTRY, country);
-		Registry.instance().put(Constants.REGISTRY_STATE, state);
-		Registry.instance().put(Constants.REGISTRY_LOCALITY, locality);
-		Registry.instance().put(Constants.REGISTRY_POSTALCODE, postalCode);
+		
 		//Toast.makeText(getApplicationContext(), "Country = "+ country + ", State = " + state + ", Locality = " + locality + ", Zip = " + postalCode, Toast.LENGTH_LONG).show();
 		doLog(Integer.toString(Constants.LOG_LOCATION));
 	}

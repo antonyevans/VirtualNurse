@@ -55,7 +55,12 @@ public class LogParser {
 				Registry.instance().put(Constants.REGISTRY_CALL, call_ringadoc);
 
 			}
-
+			JSONObject address = jsonObj.getJSONObject("address");
+			Registry.instance().put(Constants.REGISTRY_COUNTRY, address.getString("country"));
+			Registry.instance().put(Constants.REGISTRY_STATE, address.getString("state"));
+			Registry.instance().put(Constants.REGISTRY_LOCALITY, address.getString("locality"));
+			Registry.instance().put(Constants.REGISTRY_POSTALCODE, address.getString("postalCode"));
+			
 			String secret_hash = jsonObj.getString("secret_hash");
 			String updated_at = jsonObj.getString("updated_at");
 			String user_id = jsonObj.getString("user_id");
