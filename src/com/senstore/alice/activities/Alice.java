@@ -509,6 +509,9 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		}
 		Map<String, String> flurryParams = new HashMap<String, String>();
         	flurryParams.put("Talk status", talkStatus); // Capture status
+        	flurryParams.put("Country", country);
+    		flurryParams.put("State", state);
+    		flurryParams.put("Locality", locality);
         
 		FlurryAgent.logEvent("toggleTalk", flurryParams);
 		
@@ -751,6 +754,9 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	    				flurryParams.put("Share Type", shareParam);
 	    				flurryParams.put("Share Intent", "Found Fbook");
 	    				flurryParams.put("Share Package", info.activityInfo.packageName.toString());
+	    				flurryParams.put("Country", country);
+			    		flurryParams.put("State", state);
+			    		flurryParams.put("Locality", locality);
 	    			FlurryAgent.logEvent("Share App", flurryParams);
 	                break;
 	            }
@@ -766,6 +772,9 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		    				flurryParams.put("Share Type", shareParam);
 		    				flurryParams.put("Share Intent", "Found Twit");
 		    				flurryParams.put("Share Package", info.activityInfo.packageName.toString());
+		    				flurryParams.put("Country", country);
+				    		flurryParams.put("State", state);
+				    		flurryParams.put("Locality", locality);
 	    				FlurryAgent.logEvent("Share App", flurryParams);
 		                break;
 		            }
@@ -777,6 +786,9 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 					flurryParams.put("Share Type", shareParam);
 					flurryParams.put("Share Intent", "Present Chooser");
 					flurryParams.put("Share Package", "No package");
+					flurryParams.put("Country", country);
+		    		flurryParams.put("State", state);
+		    		flurryParams.put("Locality", locality);
 				FlurryAgent.logEvent("Share App", flurryParams);
 	        }
 	    }
@@ -1187,6 +1199,9 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		Map<String, String> flurryParams = new HashMap<String, String>(); 
 			flurryParams.put("Type", type);
 			flurryParams.put("Selection", selection);
+			flurryParams.put("Country", country);
+    		flurryParams.put("State", state);
+    		flurryParams.put("Locality", locality);
 		
 		FlurryAgent.logEvent("Get guides", flurryParams);
 		
@@ -1216,6 +1231,9 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
     		flurryParams.put("Last Query", last_query);
     		flurryParams.put("Input Text", input_text);
     		flurryParams.put("Diagnosis Type", "Touch");
+    		flurryParams.put("Country", country);
+    		flurryParams.put("State", state);
+    		flurryParams.put("Locality", locality);
     		
 		View currentView = flipper.getCurrentView();
 		
@@ -1259,6 +1277,9 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
     		flurryParams.put("Last Query", last_query);
     		flurryParams.put("Input Text", input_text);
     		flurryParams.put("Diagnosis Type", "Voice");
+    		flurryParams.put("Country", country);
+    		flurryParams.put("State", state);
+    		flurryParams.put("Locality", locality);
     		
 		if (!everMute) {
 			canTalk = true;
@@ -1655,6 +1676,9 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	    			flurryParams.put("Purchase Product ID", request.mProductId);
 	    			flurryParams.put("Purchase Developer Payload", request.mDeveloperPayload);
 	    			flurryParams.put("Purchase Product Type", request.mProductType);
+	    			flurryParams.put("Country", country);
+		    		flurryParams.put("State", state);
+		    		flurryParams.put("Locality", locality);
 	    			
 	    		FlurryAgent.logEvent("Purchase Reponse", flurryParams);
             } else if (responseCode == ResponseCode.RESULT_USER_CANCELED) {
@@ -1666,6 +1690,9 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
     				flurryParams.put("Purchase Product ID", request.mProductId);
 	    			flurryParams.put("Purchase Developer Payload", request.mDeveloperPayload);
 	    			flurryParams.put("Purchase Product Type", request.mProductType);
+	    			flurryParams.put("Country", country);
+		    		flurryParams.put("State", state);
+		    		flurryParams.put("Locality", locality);
     			FlurryAgent.logEvent("Purchase Reponse", flurryParams);	
             } else if (responseCode == ResponseCode.RESULT_SERVICE_UNAVAILABLE) {
                 if (Constants.DEBUG) {
@@ -1676,6 +1703,9 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
     				flurryParams.put("Purchase Product ID", request.mProductId);
 	    			flurryParams.put("Purchase Developer Payload", request.mDeveloperPayload);
 	    			flurryParams.put("Purchase Product Type", request.mProductType);
+	    			flurryParams.put("Country", country);
+		    		flurryParams.put("State", state);
+		    		flurryParams.put("Locality", locality);
     			FlurryAgent.logEvent("Purchase Reponse", flurryParams);
             } else {
                 if (Constants.DEBUG) {
@@ -1686,6 +1716,9 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
     				flurryParams.put("Purchase Product ID", request.mProductId);
 	    			flurryParams.put("Purchase Developer Payload", request.mDeveloperPayload);
 	    			flurryParams.put("Purchase Product Type", request.mProductType);
+	    			flurryParams.put("Country", country);
+		    		flurryParams.put("State", state);
+		    		flurryParams.put("Locality", locality);
     			FlurryAgent.logEvent("Purchase Reponse", flurryParams);
             }
         }
@@ -1883,6 +1916,9 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	    		flurryParams.put("Diagnosis Type", select_type);
 	    		flurryParams.put("Reply", reply);
 	    		flurryParams.put("Response Type", type);
+	    		flurryParams.put("Country", country);
+	    		flurryParams.put("State", state);
+	    		flurryParams.put("Locality", locality);
 	    		
 	    	FlurryAgent.logEvent("Response", flurryParams);
 			
@@ -1916,6 +1952,9 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 				    		flurryParams.put("Diagnosis Type", select_type);
 				    		flurryParams.put("Reply", reply);
 				    		flurryParams.put("Response Type", "X");
+				    		flurryParams.put("Country", country);
+				    		flurryParams.put("State", state);
+				    		flurryParams.put("Locality", locality);
 			    		
 				    	FlurryAgent.logEvent("Remove response", flurryParams);
 						
@@ -2007,6 +2046,9 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 				    		flurryParams.put("Diagnosis Type", select_type);
 				    		flurryParams.put("Reply", reply);
 				    		flurryParams.put("Response Type", "X");
+				    		flurryParams.put("Country", country);
+				    		flurryParams.put("State", state);
+				    		flurryParams.put("Locality", locality);
 		    		
 			    		FlurryAgent.logEvent("Remove response", flurryParams);
 						
@@ -2037,6 +2079,9 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 				    		flurryParams.put("Diagnosis Type", select_type);
 				    		flurryParams.put("Reply", reply);
 				    		flurryParams.put("Response Type", type);
+				    		flurryParams.put("Country", country);
+				    		flurryParams.put("State", state);
+				    		flurryParams.put("Locality", locality);
 			    		
 			    		FlurryAgent.logEvent("Show Map", flurryParams);
 			    		
@@ -2074,6 +2119,9 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 				    		flurryParams.put("Diagnosis Type", select_type);
 				    		flurryParams.put("Reply", reply);
 				    		flurryParams.put("Response Type", "X");
+				    		flurryParams.put("Country", country);
+				    		flurryParams.put("State", state);
+				    		flurryParams.put("Locality", locality);
 		    		
 			    		FlurryAgent.logEvent("Remove response", flurryParams);
 						
@@ -2105,6 +2153,9 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 				    		flurryParams.put("Diagnosis Type", select_type);
 				    		flurryParams.put("Reply", reply);
 				    		flurryParams.put("Response Type", type);
+				    		flurryParams.put("Country", country);
+				    		flurryParams.put("State", state);
+				    		flurryParams.put("Locality", locality);
 			    		
 			    		FlurryAgent.logEvent("Find Doctor", flurryParams);
 			    		
@@ -2166,6 +2217,9 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 				    		flurryParams.put("Diagnosis Type", select_type);
 				    		flurryParams.put("Reply", reply);
 				    		flurryParams.put("Response Type", "X");
+				    		flurryParams.put("Country", country);
+				    		flurryParams.put("State", state);
+				    		flurryParams.put("Locality", locality);
 		    		
 			    		FlurryAgent.logEvent("Remove response", flurryParams);
 						
@@ -2232,6 +2286,9 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 				    		flurryParams.put("Diagnosis Type", select_type);
 				    		flurryParams.put("Reply", reply);
 				    		flurryParams.put("Response Type", "X");
+				    		flurryParams.put("Country", country);
+				    		flurryParams.put("State", state);
+				    		flurryParams.put("Locality", locality);
 		    		
 			    		FlurryAgent.logEvent("Remove response", flurryParams);
 			    		
