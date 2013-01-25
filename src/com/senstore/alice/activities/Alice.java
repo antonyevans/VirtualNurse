@@ -447,11 +447,6 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
             }).create();
         notAllowedBuilder.show();
     }
-	
-	private void initAliceLocation() {
-		AliceLocation myLocation = new AliceLocation();
-		myLocation.getLocation(this, locationResult);
-	}
 
 	private void initAndroidTTS() {
 		// Initialize text-to-speech. This is an asynchronous operation.
@@ -2611,6 +2606,11 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		}
 	}
 
+	private void initAliceLocation() {
+		AliceLocation myLocation = new AliceLocation();
+		myLocation.getLocation(this, locationResult);
+	}
+	
 	@Override
 	public void onLocationTaskPostExecute(Address address) {
 		if (address.getCountryName() != null) {
@@ -2629,7 +2629,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		Registry.instance().put(Constants.REGISTRY_STATE, state);
 		Registry.instance().put(Constants.REGISTRY_LOCALITY, locality);
 		Registry.instance().put(Constants.REGISTRY_POSTALCODE, postalCode);
-		Toast.makeText(getApplicationContext(), "Country = "+ country + ", State = " + state + ", Locality = " + locality + ", Zip = " + postalCode, Toast.LENGTH_LONG).show();
+		//Toast.makeText(getApplicationContext(), "Country = "+ country + ", State = " + state + ", Locality = " + locality + ", Zip = " + postalCode, Toast.LENGTH_LONG).show();
 		doLog(Integer.toString(Constants.LOG_LOCATION));
 	}
 	

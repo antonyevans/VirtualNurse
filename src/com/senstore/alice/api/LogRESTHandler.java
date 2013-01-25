@@ -38,10 +38,33 @@ public class LogRESTHandler {
 		req.addParam("tel_num", user_phone);
 
 		Object loc = Registry.instance().get(Constants.REGISTRY_LOCATION);
-		//boolean hasText = !"".equals(loc);
 		if (loc != null) {
 			req.addParam("location",
 					Registry.instance().get(Constants.REGISTRY_LOCATION)
+							.toString());
+		}
+		Object country = Registry.instance().get(Constants.REGISTRY_COUNTRY);
+		if (country != null) {
+			req.addParam("country",
+					Registry.instance().get(Constants.REGISTRY_COUNTRY)
+							.toString());
+		}
+		Object state = Registry.instance().get(Constants.REGISTRY_STATE);
+		if (state != null) {
+			req.addParam("state",
+					Registry.instance().get(Constants.REGISTRY_STATE)
+							.toString());
+		}
+		Object locality = Registry.instance().get(Constants.REGISTRY_LOCALITY);
+		if (locality != null) {
+			req.addParam("locality",
+					Registry.instance().get(Constants.REGISTRY_LOCALITY)
+							.toString());
+		}
+		Object postalCode = Registry.instance().get(Constants.REGISTRY_POSTALCODE);
+		if (postalCode != null) {
+			req.addParam("postalCode",
+					Registry.instance().get(Constants.REGISTRY_POSTALCODE)
 							.toString());
 		}
 		req.addParam("security", Constants.SECURITY_HASH);
