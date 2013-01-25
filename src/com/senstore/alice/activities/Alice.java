@@ -2613,15 +2613,23 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 
 	@Override
 	public void onLocationTaskPostExecute(Address address) {
-		country = address.getCountryName();
-		state = address.getAdminArea();
-		locality = address.getLocality();
-		postalCode = address.getPostalCode();
+		if (address.getCountryName() != null) {
+			country = address.getCountryName();
+		}
+		if (address.getAdminArea() != null) {
+			state = address.getAdminArea();
+		}
+		if (address.getLocality() != null) {
+			locality = address.getLocality();
+		}
+		if (address.getPostalCode() != null) {
+			postalCode = address.getPostalCode();
+		}
 		Registry.instance().put(Constants.REGISTRY_COUNTRY, country);
 		Registry.instance().put(Constants.REGISTRY_STATE, state);
 		Registry.instance().put(Constants.REGISTRY_LOCALITY, locality);
 		Registry.instance().put(Constants.REGISTRY_POSTALCODE, postalCode);
-		Toast.makeText(getApplicationContext(), "Country = "+ country + ", State = " + state + ", Locality = " + locality + ", Zip = " + postalCode, Toast.LENGTH_SHORT).show();
+		Toast.makeText(getApplicationContext(), "Country = "+ country + ", State = " + state + ", Locality = " + locality + ", Zip = " + postalCode, Toast.LENGTH_LONG).show();
 		doLog(Integer.toString(Constants.LOG_LOCATION));
 	}
 	
