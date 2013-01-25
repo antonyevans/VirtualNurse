@@ -27,7 +27,11 @@ public class Constants {
 	public static String REGISTRY_CONTEXT="context";
 	public static String REGISTRY_LOCATION="deviceLocation";
 	public static String REGISTRY_CALL="canCallDoctor";
-
+	public static String REGISTRY_COUNTRY="country";
+	public static String REGISTRY_STATE="state";
+	public static String REGISTRY_LOCALITY="locality";
+	public static String REGISTRY_POSTALCODE="postalCode";
+	
 	// Do not forget to add the trailing '/'
 	public static String SERVER_URL = "http://www.senstore.com/";
 

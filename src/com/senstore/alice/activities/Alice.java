@@ -28,6 +28,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
 import android.location.Location;
 import android.media.AudioManager;
 import android.net.Uri;
@@ -66,8 +67,10 @@ import com.nuance.nmdp.speechkit.SpeechKit;
 import com.nuance.nmdp.speechkit.Vocalizer;
 import com.senstore.alice.harvard.R;
 import com.senstore.alice.listeners.AsyncTasksListener;
+import com.senstore.alice.listeners.LocationTasksListener;
 import com.senstore.alice.location.AliceLocation;
 import com.senstore.alice.location.AliceLocation.LocationResult;
+import com.senstore.alice.location.ReverseGeocodingTask;
 import com.senstore.alice.menus.MenuGuide;
 import com.senstore.alice.menus.CategoryGuide;
 import com.senstore.alice.menus.BodyGuide;
@@ -95,7 +98,7 @@ import com.google.android.vending.licensing.Policy;
 import com.google.android.vending.licensing.ServerManagedPolicy;
 import com.flurry.android.FlurryAgent;
 
-public class Alice extends Activity implements AsyncTasksListener,
+public class Alice extends Activity implements AsyncTasksListener, LocationTasksListener,
 		TextToSpeech.OnInitListener {
 
 	private BackupManager mBackupManager;
@@ -131,8 +134,10 @@ public class Alice extends Activity implements AsyncTasksListener,
 	private static final int HOME = 7;
 
 	final AsyncTasksListener listener = this;
-
+	final LocationTasksListener locationListener = this;
+	
 	private DiagnosisAsyncTask diagnosisTask;
+	private ReverseGeocodingTask locationTask;
 
 	private View chatView;
 	private ChatListView chatlist;
@@ -175,6 +180,10 @@ public class Alice extends Activity implements AsyncTasksListener,
 	private boolean everMute = false;
 	private int usageCount = 0;
 	private int cohort1;
+	private String country;
+	private String state;
+	private String locality;
+	private String postalCode;
 
 	private String talkResp = "";
 
@@ -275,6 +284,10 @@ public class Alice extends Activity implements AsyncTasksListener,
         usageCount = settings.getInt("usageCount", 0);
         int randInt = new Random().nextInt(2) + 1;
         cohort1 = settings.getInt("cohort1", randInt);
+        country = settings.getString("country", null);
+        state = settings.getString("state", null);
+        locality = settings.getString("locality", null);
+        postalCode = settings.getString("postalCode", null);
 	       
 		// Register the Background Logger Broadcast Receiver
 		initLogBroadcastReceiver();
@@ -1415,7 +1428,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		if (result == null) {
 			// This shouldn't really happen unless we have a bad server connection
 			FlurryAgent.logEvent("Diagnosis returned null");
-			Toast.makeText(getApplicationContext(), "Weak internet connection, please retry your query", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), "No internet connection, please check your connection and retry your query", Toast.LENGTH_SHORT).show();
 			
 			
 			return;
@@ -1731,6 +1744,15 @@ public class Alice extends Activity implements AsyncTasksListener,
       editor.putBoolean("everMute", everMute);
       editor.putInt("usageCount", usageCount + 1);
       editor.putInt("cohort1", cohort1);
+      editor.putString("country", country);
+      editor.putString("state", state);
+      editor.putString("locality", locality);
+      editor.putString("postalCode", postalCode);
+      
+      country = settings.getString("country", null);
+      state = settings.getString("state", null);
+      locality = settings.getString("locality", null);
+      postalCode = settings.getString("postalCode", null);
 
       // Commit the edits!
       editor.commit();
@@ -1796,7 +1818,7 @@ public class Alice extends Activity implements AsyncTasksListener,
 		} else {
 			// Location is not available. Opt to show alert dialog or ignore
 			Toast.makeText(this, "Location currently unavailable",
-					Toast.LENGTH_LONG);
+					Toast.LENGTH_LONG).show();
 		}
 
 	}
@@ -2589,18 +2611,39 @@ public class Alice extends Activity implements AsyncTasksListener,
 		}
 	}
 
+	@Override
+	public void onLocationTaskPostExecute(Address address) {
+		country = address.getCountryName();
+		state = address.getAdminArea();
+		locality = address.getLocality();
+		postalCode = address.getPostalCode();
+		Registry.instance().put(Constants.REGISTRY_COUNTRY, country);
+		Registry.instance().put(Constants.REGISTRY_STATE, state);
+		Registry.instance().put(Constants.REGISTRY_LOCALITY, locality);
+		Registry.instance().put(Constants.REGISTRY_POSTALCODE, postalCode);
+		Toast.makeText(getApplicationContext(), "Country = "+ country + ", State = " + state + ", Locality = " + locality + ", Zip = " + postalCode, Toast.LENGTH_SHORT).show();
+		doLog(Integer.toString(Constants.LOG_LOCATION));
+	}
+	
 	LocationResult locationResult = new LocationResult() {
 		@Override
 		public void gotLocation(Location location) {
 			// Got the location!
+			
 			if (location != null) {
 				String loc = location.getLatitude() + ","
 						+ location.getLongitude();
 				//Log.i(Constants.TAG, "Logging location " + loc);
 				Registry.instance().put(Constants.REGISTRY_LOCATION, loc);
 
-				doLog(Integer.toString(Constants.LOG_LOCATION));
-
+				
+				//Now do reverse Geocoding
+				
+				locationTask = new ReverseGeocodingTask();
+				locationTask.setmContext(Alice.this);
+				locationTask.setLocation(location);
+				locationTask.setListener(locationListener);
+				locationTask.execute();
 			}
 
 		}
