@@ -72,9 +72,11 @@ public class ReverseGeocodingTask extends AsyncTask<Location, Void, Address> {
             // Call the synchronous getFromLocation() method by passing in the lat/long values.
             addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
         } catch (IOException e) {
-            e.printStackTrace();
-            FlurryAgent.onError("Geocoder error", "Response Code" + e, "");
-        }
+            //e.printStackTrace();
+            //FlurryAgent.onError("Geocoder error", "Response Code" + e, "");
+        } catch (Exception e){
+			FlurryAgent.onError("Geocoder error", "Error: " + e, "");
+		}
         
         if (addresses != null && addresses.size() > 0) {
             Address address = addresses.get(0);
