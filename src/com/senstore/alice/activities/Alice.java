@@ -1867,6 +1867,21 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		}
 
 	}
+	
+	public void findDoctor() {
+		Uri webpage = Uri.parse("http://www.google.com/search?q=doctor");
+		Intent webIntent = new Intent(Intent.ACTION_VIEW, webpage);
+		
+		// Verify it resolves
+		PackageManager packageManager = getPackageManager();
+		List<ResolveInfo> activities = packageManager.queryIntentActivities(webIntent, 0);
+		boolean isIntentSafe = activities.size() > 0;
+		  
+		// Start an activity if it's safe
+		if (isIntentSafe) {
+		    startActivity(webIntent);
+		}
+	}
 
 	// custom adapter for the ChatListview
 	public class AliceChatAdapter extends BaseAdapter {
@@ -2179,18 +2194,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 						stopTTS();
 						
 						// Build the intent
-						Uri webpage = Uri.parse("http://www.google.com/search?q=doctor");
-						Intent webIntent = new Intent(Intent.ACTION_VIEW, webpage);
-
-						// Verify it resolves
-						PackageManager packageManager = getPackageManager();
-						List<ResolveInfo> activities = packageManager.queryIntentActivities(webIntent, 0);
-						boolean isIntentSafe = activities.size() > 0;
-						  
-						// Start an activity if it's safe
-						if (isIntentSafe) {
-						    startActivity(webIntent);
-						}
+						findDoctor();
 
 						/*if (canCallDoctor) {
 							doLog(Integer.toString(Constants.LOG_CALL_DOCTOR));
