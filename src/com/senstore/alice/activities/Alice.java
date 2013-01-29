@@ -2712,24 +2712,28 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	
 	LocationResult locationResult = new LocationResult() {
 		@Override
-		public void gotLocation(Location location) {
+		public void gotLocation(final Location location) {
 			// Got the location!
 			
-			if (location != null) {
-				String loc = location.getLatitude() + ","
-						+ location.getLongitude();
-				//Log.i(Constants.TAG, "Logging location " + loc);
-				Registry.instance().put(Constants.REGISTRY_LOCATION, loc);
-
-				
-				//Now do reverse Geocoding
-				
-				locationTask = new ReverseGeocodingTask();
-				locationTask.setmContext(Alice.this);
-				locationTask.setLocation(location);
-				locationTask.setListener(locationListener);
-				locationTask.execute();
-			}
+			Alice.this.runOnUiThread(new Runnable() {
+				  public void run() {
+					if (location != null) {
+						String loc = location.getLatitude() + ","
+								+ location.getLongitude();
+						//Log.i(Constants.TAG, "Logging location " + loc);
+						Registry.instance().put(Constants.REGISTRY_LOCATION, loc);
+		
+						
+						//Now do reverse Geocoding
+						
+						locationTask = new ReverseGeocodingTask();
+						locationTask.setmContext(Alice.this);
+						locationTask.setLocation(location);
+						locationTask.setListener(locationListener);
+						locationTask.execute();
+					}
+				  }
+			});
 
 		}
 	};
