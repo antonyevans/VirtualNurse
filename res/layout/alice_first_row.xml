@@ -37,7 +37,7 @@
             
             </LinearLayout>
             
-            <include layout="@layout/share_app_btn"/>
+            <include layout="@layout/blank_btn"/>
             
                 </LinearLayout>
         </ScrollView>

@@ -46,6 +46,8 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AdapterView.OnItemClickListener;
@@ -152,6 +154,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	private View partnerView;
 	private View infoView;
 	private View textinputView;
+	private View webView;
 
 	private ListView list;
     private List<String> List_file;
@@ -1038,6 +1041,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 				lightbox.addView(b);
 
 			}
+			
 			break;
 		case BODY:
 		case CATEGORY:
@@ -1143,21 +1147,36 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 			break;
 		}
 		
+		View currentView = flipper.getCurrentView();
 		
-		Button shareBtnMain = (Button) menuView.findViewById(R.id.share_app);
-		
-		shareBtnMain.setOnClickListener(new OnClickListener() {
+		try {
+			Button mButton=(Button) currentView.findViewById(R.id.blank_btn);
+			
+			mButton.setText("Find Doctor");
+			
+			mButton.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				//event tracking
-				    		
-	    		FlurryAgent.logEvent("Share App Btn pressed");
-	    		shareApp("Share App Btn pressed");
+				@Override
+				public void onClick(View v) {
+					//event tracking
+					
+					Map<String, String> flurryParams = new HashMap<String, String>(); 
+			    		flurryParams.put("Guide", "Menu Screen");
+			    		flurryParams.put("Input", v.toString());
+			    		flurryParams.put("Country", country);
+			    		flurryParams.put("State", state);
+			    		flurryParams.put("Locality", locality);
 	    		
-			}
+		    		FlurryAgent.logEvent("Find Doctor", flurryParams);
+		    		
+		    		findDoctor();
+		    		
+				}
 
-		});
+			});
+		} catch (Exception e) {
+			Log.i(Constants.TAG,"Button Exception" +e);
+		}
 		
 	}
 
@@ -1869,7 +1888,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	}
 	
 	public void findDoctor() {
-		Uri webpage = Uri.parse("http://www.google.com/search?q=doctor");
+		/*Uri webpage = Uri.parse("http://www.google.com/search?q=doctor");
 		Intent webIntent = new Intent(Intent.ACTION_VIEW, webpage);
 		
 		// Verify it resolves
@@ -1880,7 +1899,28 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		// Start an activity if it's safe
 		if (isIntentSafe) {
 		    startActivity(webIntent);
-		}
+		}*/
+		
+		webView = inflater.inflate(R.layout.webview, null);
+		flipper.addView(webView);
+		flipper.showNext();
+		
+		WebView actualWebView = (WebView) webView.findViewById(R.id.webview);
+		WebSettings webSettings = actualWebView.getSettings();
+		//webSettings.setLoadWithOverviewMode(true);
+		webSettings.setUseWideViewPort(true);
+		webSettings.setDefaultZoom(WebSettings.ZoomDensity.FAR);
+		webSettings.setJavaScriptEnabled(true);
+		webSettings.setSupportZoom(true);
+		
+		try {
+            // load the url
+			actualWebView.loadUrl("http://senstore.com/livedoctor");
+        } catch (Exception e) {
+            e.printStackTrace();
+            
+        }
+		
 	}
 
 	// custom adapter for the ChatListview
