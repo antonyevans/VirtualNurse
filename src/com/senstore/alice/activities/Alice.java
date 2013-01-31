@@ -1185,7 +1185,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	    		
 		    		FlurryAgent.logEvent("Find Doctor", flurryParams);
 		    		
-		    		findDoctor();
+		    		findDoctor("Main Page");
 		    		
 				}
 
@@ -1918,7 +1918,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 
 	}
 	
-	public void findDoctor() {
+	public void findDoctor(String source) {
 		/*Uri webpage = Uri.parse("http://www.google.com/search?q=doctor");
 		Intent webIntent = new Intent(Intent.ACTION_VIEW, webpage);
 		
@@ -1932,7 +1932,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		    startActivity(webIntent);
 		}*/
 		//track event
-		GAtracker.sendEvent("ui_action", "button_press", "play_button", null);
+		GAtracker.sendEvent("Find Doctor", "button_press", source, null);
 		
 		//load the webview
 		webView = inflater.inflate(R.layout.webview, null);
@@ -2275,7 +2275,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 						stopTTS();
 						
 						// Build the intent
-						findDoctor();
+						findDoctor("Recommendation");
 
 						/*if (canCallDoctor) {
 							doLog(Integer.toString(Constants.LOG_CALL_DOCTOR));
