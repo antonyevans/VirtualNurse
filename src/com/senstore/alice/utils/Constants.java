@@ -7,7 +7,7 @@ package com.senstore.alice.utils;
  */
 public class Constants {
 	
-	public static String FLURRY_API = "ZYMKMN73T3JGN6YYR8B8";
+	public static String FLURRY_API = "FILLOUTLATER";
 	public static Integer RATE_IT = 2;
 	public static Integer SHARE_IT = 1;
 	
