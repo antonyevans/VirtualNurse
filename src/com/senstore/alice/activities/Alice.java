@@ -1931,19 +1931,15 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		if (isIntentSafe) {
 		    startActivity(webIntent);
 		}*/
-		
+		//track event
 		GAtracker.sendEvent("ui_action", "button_press", "play_button", null);
+		
+		//load the webview
 		webView = inflater.inflate(R.layout.webview, null);
 		flipper.addView(webView);
 		flipper.showNext();
 		
 		WebView actualWebView = (WebView) webView.findViewById(R.id.webview);
-		WebSettings webSettings = actualWebView.getSettings();
-		//webSettings.setLoadWithOverviewMode(true);
-		webSettings.setUseWideViewPort(true);
-		webSettings.setDefaultZoom(WebSettings.ZoomDensity.FAR);
-		webSettings.setJavaScriptEnabled(true);
-		webSettings.setSupportZoom(true);
 		
 		try {
             // load the url
@@ -1952,6 +1948,13 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
             e.printStackTrace();
             
         }
+		WebSettings webSettings = actualWebView.getSettings();
+		//webSettings.setLoadWithOverviewMode(true);
+		webSettings.setUseWideViewPort(true);
+		webSettings.setDefaultZoom(WebSettings.ZoomDensity.FAR);
+		webSettings.setJavaScriptEnabled(true);
+        webSettings.setBuiltInZoomControls(true);
+		webSettings.setSupportZoom(true); 
 		
 	}
 
