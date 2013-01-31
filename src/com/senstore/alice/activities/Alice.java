@@ -93,6 +93,7 @@ import com.senstore.alice.utils.Constants.PurchaseState;
 import com.senstore.alice.utils.Constants.ResponseCode;
 import com.senstore.alice.billing.ResponseHandler;
 
+import com.google.analytics.tracking.android.EasyTracker;
 import com.google.android.vending.licensing.AESObfuscator;
 import com.google.android.vending.licensing.LicenseChecker;
 import com.google.android.vending.licensing.LicenseCheckerCallback;
@@ -1746,6 +1747,8 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
     @Override
     protected void onStart()  {
     	super.onStart();
+    	EasyTracker.getInstance().activityStart(this);
+    	
     	String app_ver = "";
     	try {
     	    app_ver = this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionName;
@@ -1778,7 +1781,10 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
     @Override
     protected void onStop(){
       super.onStop();
-
+      
+      //stop the google analytics tracker
+      EasyTracker.getInstance().activityStop(this);
+      
       //stop the flurry agent
       FlurryAgent.onEndSession(this);
        

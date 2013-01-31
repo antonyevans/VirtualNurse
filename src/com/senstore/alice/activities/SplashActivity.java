@@ -3,11 +3,14 @@
  */
 package com.senstore.alice.activities;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Pattern;
 
 import com.flurry.android.FlurryAgent;
+import com.google.analytics.tracking.android.EasyTracker;
 import com.senstore.alice.harvard.R;
 import com.senstore.alice.services.MyPrefsBackupAgent;
 import com.senstore.alice.utils.Constants;
@@ -19,6 +22,7 @@ import android.app.backup.RestoreObserver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.Spannable;
@@ -81,6 +85,20 @@ public class SplashActivity extends Activity {
 	    ((TextView)askTCsDialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
 	}
 	
+	public void setReferral(String referrer) {
+		SharedPreferences settings = getSharedPreferences(MyPrefsBackupAgent.PREFS, MODE_PRIVATE);
+		SharedPreferences.Editor editor = settings.edit();
+		editor.putString("referrer", referrer);
+		editor.commit();
+	      
+	    //And backup 
+		mBackupManager.dataChanged();
+		
+		Map<String, String> flurryParams = new HashMap<String, String>(); 
+			flurryParams.put("Referrer", referrer);
+
+		FlurryAgent.logEvent("Set referral", flurryParams);
+	}
 	
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
@@ -88,6 +106,25 @@ public class SplashActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		// Get the intent that started this Activity.
+	    Intent intent = this.getIntent();
+	    Uri uri = intent.getData();
+
+	    // Call setContext() here so that we can access EasyTracker
+	    // to update campaign information before calling activityStart().
+	    EasyTracker.getInstance().setContext(this);
+	    
+	    if (uri != null) {
+	        if(uri.getQueryParameter("utm_source") != null) {    // Use campaign parameters if avaialble.
+	          EasyTracker.getTracker().setCampaign(uri.getPath()); 
+	          setReferral(uri.getQueryParameter("utm_source"));
+	        } else if (uri.getQueryParameter("referrer") != null) {    // Otherwise, try to find a referrer parameter.
+	          EasyTracker.getTracker().setReferrer(uri.getQueryParameter("referrer"));
+	          setReferral(uri.getQueryParameter("referrer"));
+	        }
+	      }
+		
 		//load preferences file
 		mBackupManager = new BackupManager(this);
 		try { 
@@ -141,5 +178,20 @@ public class SplashActivity extends Activity {
 		};
 		
 	}
+	
+	  @Override
+	  public void onStart() {
+	    super.onStart();
+	    EasyTracker.getInstance().activityStart(this);
+	    // The rest of your onStart() code.
+	  }
+	
+	
+	  @Override
+	  public void onStop() {
+	    super.onStop();
+	    EasyTracker.getInstance().activityStop(this);
+	    // The rest of your onStop() code.
+	  }
 
 }
