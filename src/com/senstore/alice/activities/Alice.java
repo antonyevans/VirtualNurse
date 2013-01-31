@@ -188,6 +188,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	private String state;
 	private String locality;
 	private String postalCode;
+	private String referrer;
 
 	private String talkResp = "";
 
@@ -291,6 +292,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
         state = settings.getString("state", null);
         locality = settings.getString("locality", null);
         postalCode = settings.getString("postalCode", null);
+        referrer = settings.getString("referrer", null);
 	       
 		// Register the Background Logger Broadcast Receiver
 		initLogBroadcastReceiver();
@@ -515,6 +517,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
         	flurryParams.put("Country", country);
     		flurryParams.put("State", state);
     		flurryParams.put("Locality", locality);
+    		flurryParams.put("referrer", referrer);
         
 		FlurryAgent.logEvent("toggleTalk", flurryParams);
 		
@@ -760,6 +763,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	    				flurryParams.put("Country", country);
 			    		flurryParams.put("State", state);
 			    		flurryParams.put("Locality", locality);
+			    		flurryParams.put("referrer", referrer);
 	    			FlurryAgent.logEvent("Share App", flurryParams);
 	                break;
 	            }
@@ -778,6 +782,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		    				flurryParams.put("Country", country);
 				    		flurryParams.put("State", state);
 				    		flurryParams.put("Locality", locality);
+				    		flurryParams.put("referrer", referrer);
 	    				FlurryAgent.logEvent("Share App", flurryParams);
 		                break;
 		            }
@@ -792,6 +797,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 					flurryParams.put("Country", country);
 		    		flurryParams.put("State", state);
 		    		flurryParams.put("Locality", locality);
+		    		flurryParams.put("referrer", referrer);
 				FlurryAgent.logEvent("Share App", flurryParams);
 	        }
 	    }
@@ -1167,6 +1173,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 			    		flurryParams.put("Country", country);
 			    		flurryParams.put("State", state);
 			    		flurryParams.put("Locality", locality);
+			    		flurryParams.put("referrer", referrer);
 	    		
 		    		FlurryAgent.logEvent("Find Doctor", flurryParams);
 		    		
@@ -1221,6 +1228,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 			flurryParams.put("Country", country);
     		flurryParams.put("State", state);
     		flurryParams.put("Locality", locality);
+    		flurryParams.put("referrer", referrer);
 		
 		FlurryAgent.logEvent("Get guides", flurryParams);
 		
@@ -1253,6 +1261,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
     		flurryParams.put("Country", country);
     		flurryParams.put("State", state);
     		flurryParams.put("Locality", locality);
+    		flurryParams.put("referrer", referrer);
     		
 		View currentView = flipper.getCurrentView();
 		
@@ -1299,6 +1308,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
     		flurryParams.put("Country", country);
     		flurryParams.put("State", state);
     		flurryParams.put("Locality", locality);
+    		flurryParams.put("referrer", referrer);
     		
 		if (!everMute) {
 			canTalk = true;
@@ -1698,6 +1708,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	    			flurryParams.put("Country", country);
 		    		flurryParams.put("State", state);
 		    		flurryParams.put("Locality", locality);
+		    		flurryParams.put("referrer", referrer);
 	    			
 	    		FlurryAgent.logEvent("Purchase Reponse", flurryParams);
             } else if (responseCode == ResponseCode.RESULT_USER_CANCELED) {
@@ -1712,6 +1723,8 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	    			flurryParams.put("Country", country);
 		    		flurryParams.put("State", state);
 		    		flurryParams.put("Locality", locality);
+		    		flurryParams.put("referrer", referrer);
+		    		
     			FlurryAgent.logEvent("Purchase Reponse", flurryParams);	
             } else if (responseCode == ResponseCode.RESULT_SERVICE_UNAVAILABLE) {
                 if (Constants.DEBUG) {
@@ -1725,6 +1738,8 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	    			flurryParams.put("Country", country);
 		    		flurryParams.put("State", state);
 		    		flurryParams.put("Locality", locality);
+		    		flurryParams.put("referrer", referrer);
+		    		
     			FlurryAgent.logEvent("Purchase Reponse", flurryParams);
             } else {
                 if (Constants.DEBUG) {
@@ -1738,6 +1753,8 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	    			flurryParams.put("Country", country);
 		    		flurryParams.put("State", state);
 		    		flurryParams.put("Locality", locality);
+		    		flurryParams.put("referrer", referrer);
+		    		
     			FlurryAgent.logEvent("Purchase Reponse", flurryParams);
             }
         }
@@ -1997,6 +2014,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	    		flurryParams.put("Country", country);
 	    		flurryParams.put("State", state);
 	    		flurryParams.put("Locality", locality);
+	    		flurryParams.put("referrer", referrer);
 	    		
 	    	FlurryAgent.logEvent("Response", flurryParams);
 			
@@ -2033,6 +2051,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 				    		flurryParams.put("Country", country);
 				    		flurryParams.put("State", state);
 				    		flurryParams.put("Locality", locality);
+				    		flurryParams.put("referrer", referrer);
 			    		
 				    	FlurryAgent.logEvent("Remove response", flurryParams);
 						
@@ -2127,6 +2146,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 				    		flurryParams.put("Country", country);
 				    		flurryParams.put("State", state);
 				    		flurryParams.put("Locality", locality);
+				    		flurryParams.put("referrer", referrer);
 		    		
 			    		FlurryAgent.logEvent("Remove response", flurryParams);
 						
@@ -2160,6 +2180,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 				    		flurryParams.put("Country", country);
 				    		flurryParams.put("State", state);
 				    		flurryParams.put("Locality", locality);
+				    		flurryParams.put("referrer", referrer);
 			    		
 			    		FlurryAgent.logEvent("Show Map", flurryParams);
 			    		
@@ -2200,6 +2221,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 				    		flurryParams.put("Country", country);
 				    		flurryParams.put("State", state);
 				    		flurryParams.put("Locality", locality);
+				    		flurryParams.put("referrer", referrer);
 		    		
 			    		FlurryAgent.logEvent("Remove response", flurryParams);
 						
@@ -2234,6 +2256,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 				    		flurryParams.put("Country", country);
 				    		flurryParams.put("State", state);
 				    		flurryParams.put("Locality", locality);
+				    		flurryParams.put("referrer", referrer);
 			    		
 			    		FlurryAgent.logEvent("Find Doctor", flurryParams);
 			    		
@@ -2287,6 +2310,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 				    		flurryParams.put("Country", country);
 				    		flurryParams.put("State", state);
 				    		flurryParams.put("Locality", locality);
+				    		flurryParams.put("referrer", referrer);
 		    		
 			    		FlurryAgent.logEvent("Remove response", flurryParams);
 						
@@ -2356,6 +2380,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 				    		flurryParams.put("Country", country);
 				    		flurryParams.put("State", state);
 				    		flurryParams.put("Locality", locality);
+				    		flurryParams.put("referrer", referrer);
 		    		
 			    		FlurryAgent.logEvent("Remove response", flurryParams);
 			    		
