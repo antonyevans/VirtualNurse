@@ -94,6 +94,8 @@ import com.senstore.alice.utils.Constants.ResponseCode;
 import com.senstore.alice.billing.ResponseHandler;
 
 import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.GoogleAnalytics;
+import com.google.analytics.tracking.android.Tracker;
 import com.google.android.vending.licensing.AESObfuscator;
 import com.google.android.vending.licensing.LicenseChecker;
 import com.google.android.vending.licensing.LicenseCheckerCallback;
@@ -105,6 +107,8 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		TextToSpeech.OnInitListener {
 
 	private BackupManager mBackupManager;
+	private GoogleAnalytics mGaInstance;
+	private Tracker GAtracker;
 	
 	//Variables for licensing
 	private LicenseCheckerCallback mLicenseCheckerCallback;
@@ -215,6 +219,10 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		Log.i(Constants.TAG,"Oncreate");
 		//create backupmanager
 		mBackupManager = new BackupManager(this);
+		EasyTracker.getInstance().setContext(this);
+		// Use the GoogleAnalytics singleton to get a Tracker.
+		mGaInstance = GoogleAnalytics.getInstance(this);
+	    GAtracker = mGaInstance.getTracker("UA-38084084-1");
 		
 		//setup licensing
 		
@@ -1924,6 +1932,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		    startActivity(webIntent);
 		}*/
 		
+		GAtracker.sendEvent("ui_action", "button_press", "play_button", null);
 		webView = inflater.inflate(R.layout.webview, null);
 		flipper.addView(webView);
 		flipper.showNext();
