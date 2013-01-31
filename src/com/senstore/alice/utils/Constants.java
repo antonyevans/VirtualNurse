@@ -12,7 +12,7 @@ public class Constants {
 	public static Integer SHARE_IT = 1;
 	
 	public static String TAG = "Alice";
-	public static String APP_NAME = "Complete";
+	public static String APP_NAME = "Kindle";
 	public static String PURCHASE_TYPE = "WomensSexualHealth";
 	
 	public static String LOG_SERVICE_NAME = "AliceBackgroundLogService";
