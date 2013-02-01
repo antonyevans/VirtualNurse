@@ -31,7 +31,7 @@
         android:layout_below="@+id/alice_pic"
         android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:text="Virtual Nurse\n\nThe Best Android\nSymptom Checker"
+        android:text="Virtual Nurse\n\nThe Best Kindle\nSymptom Checker"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>
