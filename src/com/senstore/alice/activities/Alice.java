@@ -356,13 +356,13 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		if (usageCount == 0) {
 			FlurryAgent.logEvent("Show How to dialog");			
 			showHowTo();
-		} else if (usageCount == Constants.RATE_IT) {
+		} /*else if (usageCount == Constants.RATE_IT) {
 			FlurryAgent.logEvent("Show Rate it!");
 			rateItDialog();
 		} else if (usageCount == Constants.SHARE_IT) {
 			FlurryAgent.logEvent("Ask Share it!");
 			askShareApp();
-		}
+		}*/
 		
 
 	}
@@ -495,7 +495,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	        List_file.add(getString(R.string.info_TCs));
 	        List_file.add(getString(R.string.info_privacy));
 	        List_file.add(getString(R.string.info_share));
-	        List_file.add(getString(R.string.info_rate));
+	        //List_file.add(getString(R.string.info_rate));
 	        List_file.add(getString(R.string.info_contact));
 	           
 	        list.setAdapter(new ArrayAdapter<String>(this, R.layout.info_item, List_file));
