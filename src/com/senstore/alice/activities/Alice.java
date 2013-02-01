@@ -215,7 +215,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		EasyTracker.getInstance().setContext(this);
 		// Use the GoogleAnalytics singleton to get a Tracker.
 		mGaInstance = GoogleAnalytics.getInstance(this);
-	    GAtracker = mGaInstance.getTracker("UA-38084084-1");
+	    GAtracker = mGaInstance.getTracker("UA-38084084-2");
 		
 		//setup licensing
 		 

@@ -7,9 +7,9 @@ package com.senstore.alice.utils;
  */
 public class Constants {
 	
-	public static String FLURRY_API = "FILLOUTLATER";
+	public static String FLURRY_API = "6HXNF7VS9TNWH72D7CSN";
 	public static Integer RATE_IT = 2;
-	public static Integer SHARE_IT = 1;
+	public static Integer SHARE_IT = 10;
 	
 	public static String TAG = "Alice";
 	public static String APP_NAME = "Kindle";

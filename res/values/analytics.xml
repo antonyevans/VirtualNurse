@@ -4,7 +4,7 @@
 	tools:ignore="TypographyDashes">
 	
   <!--Replace placeholder ID with your tracking ID-->
-  <string name="ga_trackingId">UA-38084084-1</string>
+  <string name="ga_trackingId">UA-38084084-2</string>
 
   <!--Enable automatic activity tracking-->
   <bool name="ga_autoActivityTracking">true</bool>
