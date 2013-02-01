@@ -96,11 +96,6 @@ import com.senstore.alice.billing.ResponseHandler;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.GoogleAnalytics;
 import com.google.analytics.tracking.android.Tracker;
-import com.google.android.vending.licensing.AESObfuscator;
-import com.google.android.vending.licensing.LicenseChecker;
-import com.google.android.vending.licensing.LicenseCheckerCallback;
-import com.google.android.vending.licensing.Policy;
-import com.google.android.vending.licensing.ServerManagedPolicy;
 import com.flurry.android.FlurryAgent;
 
 public class Alice extends Activity implements AsyncTasksListener, LocationTasksListener,
@@ -111,8 +106,6 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	private Tracker GAtracker;
 	
 	//Variables for licensing
-	private LicenseCheckerCallback mLicenseCheckerCallback;
-    private LicenseChecker mChecker;
     private boolean bRetry = true;
 	
 	private boolean canCallDoctor = false;
@@ -225,15 +218,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	    GAtracker = mGaInstance.getTracker("UA-38084084-1");
 		
 		//setup licensing
-		
-		// Library calls this when it's done.
-        mLicenseCheckerCallback = new MyLicenseCheckerCallback();
-        // Construct the LicenseChecker with a policy.
-        mChecker = new LicenseChecker(
-            this, new ServerManagedPolicy(this,
-                new AESObfuscator(AppInfo.SALT, getPackageName(), Utils.getUserID(this))),
-            AppInfo.BASE64_PUBLIC_KEY);
-        doLicenseCheck(); 
+		 
 		
 		// Set Full Screen Since we have a Tittle Bar
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -382,84 +367,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 
 	}
 
-	private void doLicenseCheck() {
-        
-        setProgressBarIndeterminateVisibility(true);
-        mChecker.checkAccess(mLicenseCheckerCallback);
-    }
-	
-    private class MyLicenseCheckerCallback implements LicenseCheckerCallback {
-        public void allow(int policyReason) {
-            if (isFinishing()) {
-                // Don't update UI if Activity is finishing.
-                return;
-            }
-            // Should allow user access.
-            FlurryAgent.logEvent("License Allowed");
-            //Toast.makeText(getApplicationContext(), "License Permission Granted", Toast.LENGTH_SHORT).show();
-        }
 
-        public void dontAllow(int policyReason) {
-            if (isFinishing()) {
-                // Don't update UI if Activity is finishing.
-                return;
-            }
-            
-            // Should not allow access. In most cases, the app should assume
-            // the user has access unless it encounters this. If it does,
-            // the app should inform the user of their unlicensed ways
-            // and then either shut down the app or limit the user to a
-            // restricted set of features.
-            // In this example, we show a dialog that takes the user to Market.
-            // If the reason for the lack of license is that the service is
-            // unavailable or there is another problem, we display a
-            // retry button on the dialog and a different message.
-            FlurryAgent.logEvent("License Not Allowed");
-            //Toast.makeText(getApplicationContext(), "License Not Allowed", Toast.LENGTH_LONG).show();
-            //showNotLicensedDialog();
-        }
-
-        public void applicationError(int errorCode) {
-            if (isFinishing()) {
-                // Don't update UI if Activity is finishing.
-                return;
-            }
-            // This is a polite way of saying the developer made a mistake
-            // while setting up or calling the license checker library.
-            // Please examine the error code and fix the error.
-            //Toast.makeText(getApplicationContext(), "License Error", Toast.LENGTH_LONG).show();
-            FlurryAgent.onError("Licensing Error","Licensing Application Error",Integer.toString(errorCode));
-        }
-    }
-
-    private void showNotLicensedDialog() {
-    	AlertDialog.Builder notAllowedBuilder = new AlertDialog.Builder(this);
-        notAllowedBuilder.setTitle("Unlicensed Application")
-            .setCancelable(false)
-        	.setMessage(bRetry ? "Error with application license, would you like to retry?" : "Please download a new version of the app from Google Play")
-            .setNegativeButton(bRetry ? "Retry License" : "Download App", new DialogInterface.OnClickListener() {
-                boolean mRetry = bRetry;
-                public void onClick(DialogInterface dialog, int which) {
-                    if ( mRetry ) {
-                    	FlurryAgent.logEvent("Retry License");
-                    	bRetry = false;
-                        doLicenseCheck();
-                    } else {
-                    	FlurryAgent.logEvent("License Failed - going to Play");
-                        Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(
-                                "https://play.google.com/store/apps/details?id=" + getPackageName()));
-                            startActivity(marketIntent);                        
-                    }
-                }
-            })
-            .setPositiveButton("Quit", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                	FlurryAgent.logEvent("License Failed - Quit");
-                	finish();
-                }
-            }).create();
-        notAllowedBuilder.show();
-    }
 
 	private void initAndroidTTS() {
 		// Initialize text-to-speech. This is an asynchronous operation.
@@ -1845,7 +1753,6 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
         mBillingService.unbind();
         ResponseHandler.unregister(mAlicePurchaseObserver); 
 		killTTS();
-		mChecker.onDestroy();
 		super.onDestroy();
 	}
 
