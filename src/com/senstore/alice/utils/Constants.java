@@ -7,12 +7,12 @@ package com.senstore.alice.utils;
  */
 public class Constants {
 	
-	public static String FLURRY_API = "6HXNF7VS9TNWH72D7CSN";
+	public static String FLURRY_API = "ZD4Z2KN7FZMZKRFSN8ZV";
 	public static Integer RATE_IT = 2;
 	public static Integer SHARE_IT = 10;
 	
 	public static String TAG = "Alice";
-	public static String APP_NAME = "Kindle";
+	public static String APP_NAME = "Nook";
 	public static String PURCHASE_TYPE = "WomensSexualHealth";
 	
 	public static String LOG_SERVICE_NAME = "AliceBackgroundLogService";
