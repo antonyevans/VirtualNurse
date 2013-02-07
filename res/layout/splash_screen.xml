@@ -17,11 +17,11 @@
 
     <ImageView
         android:id="@+id/alice_pic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="450dp"
+        android:layout_height="450dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="14dp"
+        android:layout_marginTop="100dp"
         android:src="@drawable/alice_splash" />
 
     <TextView
@@ -30,8 +30,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/alice_pic"
         android:layout_centerHorizontal="true"
+        android:textSize="40dp"
         android:gravity="center"
-        android:text="Virtual Nurse\n\nThe Best Android\nSymptom Checker"
+        android:text="Virtual Nurse\n\nThe Best Nook\nSymptom Checker"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>
