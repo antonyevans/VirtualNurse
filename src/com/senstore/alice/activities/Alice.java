@@ -356,13 +356,13 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		if (usageCount == 0) {
 			FlurryAgent.logEvent("Show How to dialog");			
 			showHowTo();
-		} else if (usageCount == Constants.RATE_IT) {
+		} /*else if (usageCount == Constants.RATE_IT) {
 			FlurryAgent.logEvent("Show Rate it!");
 			rateItDialog();
-		} else if (usageCount == Constants.SHARE_IT) {
+		} *//*else if (usageCount == Constants.SHARE_IT) {
 			FlurryAgent.logEvent("Ask Share it!");
 			askShareApp();
-		}
+		}*/
 		
 
 	}
@@ -1352,9 +1352,13 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	}
 	
 	public void rateIt() {
-		Intent intent = new Intent(Intent.ACTION_VIEW);
+		/*Intent intent = new Intent(Intent.ACTION_VIEW);
  	   	intent.setData(Uri.parse("http://www.amazon.com/gp/mas/dl/android?p=" + getApplicationContext().getPackageName()));
- 	   	startActivity(intent);
+ 	   	startActivity(intent);*/
+ 	   	Intent i = new Intent();
+	 	i.setAction("com.bn.sdk.shop.details");
+	 	i.putExtra("product_details_ean",Constants.EAN); // Your real EAN goes here
+	 	startActivity(i);
 	}
 	
 	public AlertDialog simpleMessage(String message) {

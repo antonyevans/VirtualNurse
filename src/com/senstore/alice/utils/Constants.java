@@ -14,6 +14,7 @@ public class Constants {
 	public static String TAG = "Alice";
 	public static String APP_NAME = "Nook";
 	public static String PURCHASE_TYPE = "WomensSexualHealth";
+	public static String EAN = "xxx";
 	
 	public static String LOG_SERVICE_NAME = "AliceBackgroundLogService";
 	public static String LOG_SERVICE_IN_MSG = "log_type";
