@@ -52,7 +52,7 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:paddingTop="10dp"
-                android:textSize="20sp"
+                android:textSize="15sp"
                 android:id="@+id/description"
                 android:textColor="@android:color/black" />
                 </LinearLayout>
