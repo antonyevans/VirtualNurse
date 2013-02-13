@@ -63,6 +63,7 @@
                         android:layout_marginRight="10dp"
                         android:layout_marginTop="10dp"
                         android:padding="0dp"
+                        style="@style/ChatFontSize"
                         android:text=""
                         android:textColor="@android:color/black" />
                 </LinearLayout>

@@ -889,6 +889,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		b.setBackgroundDrawable(btnBg);
 
 		b.setText(name);
+		b.setTextAppearance(this, R.style.ChatFontSize);
 
 		b.setOnClickListener(new OnClickListener() {
 			
@@ -2019,6 +2020,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 					bo.setBackgroundDrawable(btnBg);
 
 					bo.setText(key);
+					bo.setTextAppearance(this.context, R.style.ChatFontSize);
 
 					bo.setOnClickListener(new OnClickListener() {
 
@@ -2348,6 +2350,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 					bo.setBackgroundDrawable(btnBg);
 
 					bo.setText(key);
+					bo.setTextAppearance(this.context, R.style.ChatFontSize);
 
 					bo.setOnClickListener(new OnClickListener() {
 
