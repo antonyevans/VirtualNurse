@@ -72,16 +72,16 @@
     <!-- Styles for Splash Screen. -->
 	
 	<style name="SplashFontVN">
-        <item name="android:textSize">30sp</item>
+        <item name="android:textSize">55sp</item>
     </style>
     
 	<style name="SplashFontBA">
-        <item name="android:textSize">22sp</item>
+        <item name="android:textSize">40sp</item>
     </style>
     
 	<!-- Styles for changing font size -->
 	<style name="ChatFontSize">
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">20sp</item>
     </style>
     
 </resources>    
