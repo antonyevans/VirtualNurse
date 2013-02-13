@@ -33,7 +33,7 @@
         android:layout_height="0px"
 	    android:layout_weight="10"
 	    android:gravity="center"
-	    android:textSize="30sp"
+	    style="@style/SplashFontVN"
         android:text="Virtual Nurse" />
 
     <!-- Best Android text -->
@@ -43,7 +43,7 @@
         android:layout_height="0px"
 	    android:layout_weight="20"
 	    android:gravity="center"
-	    android:textSize="22sp"
+	    style="@style/SplashFontBA"
         android:text="The Best Android\nSymptom Checker" />
 
     <!-- Harvard Logo --> 
