@@ -79,4 +79,9 @@
         <item name="android:textSize">22sp</item>
     </style>
     
+	<!-- Styles for changing font size -->
+	<style name="ChatFontSize">
+        <item name="android:textSize">14sp</item>
+    </style>
+    
 </resources>    

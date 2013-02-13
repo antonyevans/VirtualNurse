@@ -73,6 +73,7 @@
 	                android:paddingLeft="10dp"
 	                android:paddingRight="10dp"
 	                android:paddingTop="10dp"
+	                style="@style/ChatFontSize"
 	                android:text="@string/partner_medical"
 	                android:textColor="@android:color/black" />
                 
@@ -94,6 +95,7 @@
 	                android:paddingLeft="10dp"
 	                android:paddingRight="10dp"
 	                android:paddingTop="10dp"
+	                style="@style/ChatFontSize"
 	                android:text="@string/partner_tech"
 	                android:textColor="@android:color/black" />
                 
@@ -116,6 +118,7 @@
 	                android:paddingBottom="10dp"
 	                android:paddingLeft="10dp"
 	                android:paddingRight="10dp"
+	                style="@style/ChatFontSize"
 	                android:text="@string/partner_business"
 	                android:textColor="@android:color/black" />
                 

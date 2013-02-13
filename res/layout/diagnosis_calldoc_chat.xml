@@ -37,6 +37,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="10dp"
+                    style="@style/ChatFontSize"
                     android:textColor="@android:color/black" />
             </LinearLayout>
         </RelativeLayout>
@@ -108,6 +109,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:layout_marginTop="10dp"
+                        style="@style/ChatFontSize"
                         android:text=""
                         android:textColor="@android:color/black" />
                 </LinearLayout>
