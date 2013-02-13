@@ -88,8 +88,6 @@
 		  </intent-filter>
 		</receiver>
         
-        <uses-library android:name="com.google.android.maps" />
-        
     </application>
 
 </manifest>
