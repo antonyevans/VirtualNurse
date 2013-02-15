@@ -41,12 +41,21 @@
         android:id="@+id/splash_app_ba"
         android:layout_width="fill_parent"
         android:layout_height="0px"
-	    android:layout_weight="20"
+	    android:layout_weight="18"
 	    android:gravity="center"
 	    style="@style/SplashFontBA"
         android:text="The Best Android\nSymptom Checker" />
 
     <!-- Harvard Logo --> 
+    <TextView
+        android:id="@+id/powered_by"
+        android:layout_width="fill_parent"
+        android:layout_height="0px"
+	    android:layout_weight="5"
+	    android:gravity="center"
+	    android:textSize="15sp"
+        android:text="Medical Content Powered By:" />
+    
     <ImageView
 	   	android:id="@+id/harvard_logo"
 	    android:layout_height="0px"
