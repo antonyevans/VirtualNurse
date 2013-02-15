@@ -373,10 +373,13 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 			showHowTo();
 		} else if (usageCount == Constants.RATE_IT) {
 			FlurryAgent.logEvent("Show Rate it!");
-			rateItDialog();
+			getFeedback();
+			//rateItDialog();
 		} else if (usageCount == Constants.SHARE_IT) {
 			FlurryAgent.logEvent("Ask Share it!");
 			askShareApp();
+		} else {
+			getFeedback();
 		}
 		
 
@@ -1229,6 +1232,15 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		startService(msgIntent);
 
 	}
+	
+	private void sendFeedback(String message) {
+		Registry.instance().put(Constants.LOG_FEEDBACK_MSG, message);
+		Intent msgIntent = new Intent(this, BackgroundLogger.class);
+		msgIntent.putExtra(Constants.LOG_SERVICE_IN_MSG, Constants.LOG_SEND_FEEDBACK);
+		msgIntent.putExtra(Constants.LOG_USER_ID, Utils.getUserID(this));
+		msgIntent.putExtra(Constants.LOG_USER_TEL, Utils.getPhoneNumber(this));
+		startService(msgIntent);
+	}
 
 	public void getGuideList(String type, String selection) {
 		Map<String, String> flurryParams = new HashMap<String, String>(); 
@@ -1395,6 +1407,33 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		AlertDialog upgradeDialog = builder.create();
 		upgradeDialog.show(); 
 		
+	}
+	
+	public void getFeedback() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("Do you love this app?");
+		//builder.setMessage("To access this content you need to update to the most recent version of the app.  Please press 'upload' to be taken to the Google Play store")
+		builder.setCancelable(true)
+		       .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		        	   FlurryAgent.logEvent("Yes, love this app");
+		        	   dialog.cancel();
+		        	   rateItDialog();
+		           }
+		       })
+		       .setPositiveButton("No", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		        	   FlurryAgent.logEvent("No, Don't Love this app");
+		        	   dialog.cancel();
+		        	   getFeedbackMsg();
+		           }
+		       });
+		AlertDialog getFeedbackDialog = builder.create();
+		getFeedbackDialog.show(); 
+	}
+	
+	public void getFeedbackMsg() {
+		sendFeedback("This is a test");
 	}
 	
 	public void rateItDialog() {
