@@ -129,6 +129,9 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	private static final int BILLING_NOT_WORKING_DIALOG = 2;
 	private static final int DIALOG_BILLING_NOT_SUPPORTED_ID = 3;	
 	private static final int BILLING_WORKING_DIALOG = 4;
+	private static final int ASK_LOVE_IT_DIALOG = 5;
+	private static final int RATE_IT_DIALOG = 6;
+	private static final int GET_FEEDBACK_DIALOG = 7;
 	
 	//constants for the orange buttons
 	private static final int GUIDE = 0;
@@ -373,13 +376,13 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 			showHowTo();
 		} else if (usageCount == Constants.RATE_IT) {
 			FlurryAgent.logEvent("Show Rate it!");
-			getFeedback();
+			showDialog(ASK_LOVE_IT_DIALOG);
 			//rateItDialog();
 		} else if (usageCount == Constants.SHARE_IT) {
 			FlurryAgent.logEvent("Ask Share it!");
 			askShareApp();
 		} else {
-			getFeedback();
+			showDialog(ASK_LOVE_IT_DIALOG);
 		}
 		
 
@@ -691,7 +694,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 			shareApp("Info: Share");
 		} else if (selection == getString(R.string.info_rate)) {
 			FlurryAgent.logEvent("Info: Rate");
-			rateIt();
+			showDialog(ASK_LOVE_IT_DIALOG);
 		} else if (selection == getString(R.string.info_contact)) {
 			FlurryAgent.logEvent("Info: Contact"); 
 			
@@ -1367,6 +1370,12 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 			return simpleMessage("Problem with billing");
 		case BILLING_WORKING_DIALOG:
 			return simpleMessage("In-app billing supported");
+		case ASK_LOVE_IT_DIALOG:
+			return askLoveIt();
+		case RATE_IT_DIALOG:
+			return rateItDialog();
+		case GET_FEEDBACK_DIALOG:
+			return getFeedbackMsg();
 		}
 
 		return null;
@@ -1409,40 +1418,53 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		
 	}
 	
-	public void getFeedback() {
+	
+	public AlertDialog getFeedbackMsg() {
+		
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle("Do you love this app?");
-		//builder.setMessage("To access this content you need to update to the most recent version of the app.  Please press 'upload' to be taken to the Google Play store")
-		builder.setCancelable(true)
-		       .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+		// Set an EditText view to get user input 
+		final EditText input = new EditText(this);
+		builder.setView(input);
+		
+		builder.setTitle("Please give us feedback");
+		builder.setMessage("Your feedback helps us improve the product for everyone.  Thank you for sharing it with us")
+		       .setCancelable(true)
+		       .setNegativeButton("Send", new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) {
-		        	   FlurryAgent.logEvent("Yes, love this app");
-		        	   dialog.cancel();
-		        	   rateItDialog();
+		        	   //FlurryAgent.logEvent("Feedback: given");
+		        	   String comment = input.getText().toString();
+		        	   sendFeedback(comment);
 		           }
 		       })
-		       .setPositiveButton("No", new DialogInterface.OnClickListener() {
+		       .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) {
-		        	   FlurryAgent.logEvent("No, Don't Love this app");
+		        	   //FlurryAgent.logEvent("Feedback: canceled");
 		        	   dialog.cancel();
-		        	   getFeedbackMsg();
 		           }
 		       });
-		AlertDialog getFeedbackDialog = builder.create();
-		getFeedbackDialog.show(); 
+		
+		//open a keyboard
+		input.requestFocus();
+        input.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                InputMethodManager keyboard = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+                keyboard.showSoftInput(input, 0);
+            }
+        },200);
+        
+		AlertDialog feedbackDialog = builder.create();
+		return feedbackDialog;
 	}
 	
-	public void getFeedbackMsg() {
-		sendFeedback("This is a test");
-	}
-	
-	public void rateItDialog() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle("Rate it!");
+	public AlertDialog rateItDialog() {
+		AlertDialog.Builder builderRate = new AlertDialog.Builder(Alice.this);
+		builderRate.setTitle("Rate it!");
 		LayoutInflater inflater = getLayoutInflater();
 		View dialoglayout = inflater.inflate(R.layout.rate_it, (ViewGroup) getCurrentFocus());
-		builder.setView(dialoglayout);
-		builder.setMessage("Would you like to rate this app?")
+		builderRate.setView(dialoglayout);
+		builderRate.setMessage("Would you like to rate this app?")
 		       .setCancelable(true)
 		       .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) {
@@ -1456,8 +1478,8 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		        	   dialog.cancel();
 		           }
 		       });
-		AlertDialog rateDialog = builder.create();
-		rateDialog.show(); 
+		AlertDialog rateDialog = builderRate.create();
+		return rateDialog;
 		
 	}
 	
@@ -1500,6 +1522,29 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		       });
 		AlertDialog dialog = builder.create();
 		return dialog;		
+	}
+	
+	public AlertDialog askLoveIt() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(Alice.this);
+		builder.setTitle("Do you love this app?");
+		//builder.setMessage("To access this content you need to update to the most recent version of the app.  Please press 'upload' to be taken to the Google Play store")
+		builder.setCancelable(true)
+		       .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		        	   //FlurryAgent.logEvent("Love app: yes");
+		        	   dismissDialog(ASK_LOVE_IT_DIALOG);
+		        	   showDialog(RATE_IT_DIALOG);
+		           }
+		       })
+		       .setPositiveButton("No", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		        	   //FlurryAgent.logEvent("Love app: no");
+		        	   dismissDialog(ASK_LOVE_IT_DIALOG);
+		        	   showDialog(GET_FEEDBACK_DIALOG);
+		           }
+		       });
+		AlertDialog getFeedbackDialog = builder.create();
+		return getFeedbackDialog;
 	}
 	
 	@Override
