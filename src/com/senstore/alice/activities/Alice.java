@@ -1480,9 +1480,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		           }
 		       });
 		AlertDialog rateDialog = builderRate.create();
-		//LayoutInflater inflater = getLayoutInflater();
-		//FrameLayout f1 = (FrameLayout)rateDialog.findViewById(android.R.id.content);
-		//f1.addView(inflater.inflate(R.layout.rate_it, f1, false));
+		
 		return rateDialog;
 		
 	}
