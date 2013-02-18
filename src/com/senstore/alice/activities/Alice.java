@@ -119,6 +119,8 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	private boolean canCallDoctor = false;
 	private TextToSpeech mTts;
 	private boolean isTTSReady = false;
+	private boolean fromInfo = false;
+	private boolean rateLater = false;
 
 	private ResponseReceiver receiver;
 	private String chatQuery = null;
@@ -305,6 +307,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
         locality = settings.getString("locality", null);
         postalCode = settings.getString("postalCode", null);
         referrer = settings.getString("referrer", null);
+        rateLater = settings.getBoolean("rateLater", false);
 	       
 		// Register the Background Logger Broadcast Receiver
 		initLogBroadcastReceiver();
@@ -370,7 +373,6 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 
 		}
 		
-		
 		//show rate it dialog on the RATEIT time someone uses the app
 		if (usageCount == 0) {
 			FlurryAgent.logEvent("Show How to dialog");			
@@ -382,8 +384,8 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		} else if (usageCount == Constants.SHARE_IT) {
 			FlurryAgent.logEvent("Ask Share it!");
 			askShareApp();
-		} else {
-			showDialog(ASK_LOVE_IT_DIALOG);
+		} else if (rateLater && (usageCount % 2 == 0)) {
+			showDialog(RATE_IT_DIALOG);
 		}
 		
 
@@ -596,6 +598,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	        List_file.add(getString(R.string.info_share));
 	        List_file.add(getString(R.string.info_rate));
 	        List_file.add(getString(R.string.info_contact));
+	        List_file.add(getString(R.string.info_feedback));
 	           
 	        list.setAdapter(new ArrayAdapter<String>(this, R.layout.info_item, List_file));
 	        
@@ -695,7 +698,11 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 			shareApp("Info: Share");
 		} else if (selection == getString(R.string.info_rate)) {
 			FlurryAgent.logEvent("Info: Rate");
+			fromInfo = true;
 			showDialog(ASK_LOVE_IT_DIALOG);
+		} else if (selection == getString(R.string.info_feedback)) {
+			FlurryAgent.logEvent("Info: Send Feedback");
+			showDialog(GET_FEEDBACK_DIALOG);
 		} else if (selection == getString(R.string.info_contact)) {
 			FlurryAgent.logEvent("Info: Contact"); 
 			
@@ -1434,14 +1441,14 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		       .setCancelable(true)
 		       .setNegativeButton("Send", new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) {
-		        	   //FlurryAgent.logEvent("Feedback: given");
+		        	   FlurryAgent.logEvent("Feedback: given");
 		        	   String comment = input.getText().toString();
 		        	   sendFeedback(comment);
 		           }
 		       })
 		       .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) {
-		        	   //FlurryAgent.logEvent("Feedback: canceled");
+		        	   FlurryAgent.logEvent("Feedback: canceled");
 		        	   dialog.cancel();
 		           }
 		       });
@@ -1473,12 +1480,14 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		           public void onClick(DialogInterface dialog, int id) {
 		        	   FlurryAgent.logEvent("Yes, Rate it!");
 		        	   rateIt();
+		        	   rateLater = false;
 		           }
 		       })
-		       .setPositiveButton("No", new DialogInterface.OnClickListener() {
+		       .setPositiveButton("Later", new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) {
 		        	   FlurryAgent.logEvent("No, Don't Rate it!");
 		        	   dialog.cancel();
+		        	   rateLater = true;
 		           }
 		       });
 		AlertDialog rateDialog = builderRate.create();
@@ -1535,14 +1544,19 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		builder.setCancelable(true)
 		       .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) {
-		        	   //FlurryAgent.logEvent("Love app: yes");
+		        	   FlurryAgent.logEvent("Love app: yes");
 		        	   dismissDialog(ASK_LOVE_IT_DIALOG);
-		        	   showDialog(RATE_IT_DIALOG);
+		        	   if (fromInfo) {
+		        		   fromInfo = false;
+		        		   rateIt();
+		        	   } else {
+		        		   showDialog(RATE_IT_DIALOG);
+		        	   }
 		           }
 		       })
 		       .setPositiveButton("No", new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) {
-		        	   //FlurryAgent.logEvent("Love app: no");
+		        	   FlurryAgent.logEvent("Love app: no");
 		        	   dismissDialog(ASK_LOVE_IT_DIALOG);
 		        	   showDialog(GET_FEEDBACK_DIALOG);
 		           }
@@ -1914,6 +1928,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
       editor.putString("state", state);
       editor.putString("locality", locality);
       editor.putString("postalCode", postalCode);
+      editor.putBoolean("rateLater", rateLater);
       
       country = settings.getString("country", null);
       state = settings.getString("state", null);
