@@ -21,6 +21,7 @@ public class Constants {
 	public static String LOG_SERVICE_OUT_MSG = "log_result";
 	public static String LOG_USER_ID = "user_id";
 	public static String LOG_USER_TEL = "user_telephone";
+	public static String LOG_FEEDBACK_MSG = "feedback_msg";
 	
 	public static final String ACTION_RESP =
 		      "com.senstore.alice.utils.intent.action.MESSAGE_PROCESSED";
