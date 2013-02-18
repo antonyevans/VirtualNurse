@@ -9,7 +9,7 @@ public class Constants {
 	
 	public static String FLURRY_API = "ZD4Z2KN7FZMZKRFSN8ZV";
 	public static Integer RATE_IT = 2;
-	public static Integer SHARE_IT = 10;
+	public static Integer SHARE_IT = 7;
 	
 	public static String TAG = "Alice";
 	public static String APP_NAME = "Nook";
