@@ -54,6 +54,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -1443,7 +1444,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		           }
 		       });
 		
-		//open a keyboard
+		//open a keyboard 
 		input.requestFocus();
         input.postDelayed(new Runnable() {
             @Override
@@ -1462,7 +1463,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		AlertDialog.Builder builderRate = new AlertDialog.Builder(Alice.this);
 		builderRate.setTitle("Rate it!");
 		LayoutInflater inflater = getLayoutInflater();
-		View dialoglayout = inflater.inflate(R.layout.rate_it, (ViewGroup) getCurrentFocus());
+		View dialoglayout = inflater.inflate(R.layout.rate_it, (ViewGroup) null);
 		builderRate.setView(dialoglayout);
 		builderRate.setMessage("Would you like to rate this app?")
 		       .setCancelable(true)
@@ -1479,6 +1480,9 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		           }
 		       });
 		AlertDialog rateDialog = builderRate.create();
+		//LayoutInflater inflater = getLayoutInflater();
+		//FrameLayout f1 = (FrameLayout)rateDialog.findViewById(android.R.id.content);
+		//f1.addView(inflater.inflate(R.layout.rate_it, f1, false));
 		return rateDialog;
 		
 	}
