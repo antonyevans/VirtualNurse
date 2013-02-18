@@ -36,7 +36,13 @@ public class LogRESTHandler {
 		req.addParam("log_type", log_type);
 		req.addParam("app_name", Constants.APP_NAME);
 		req.addParam("tel_num", user_phone);
-
+		
+		if (log_type.equals(Constants.LOG_SEND_FEEDBACK)) {
+			String message = Registry.instance().get(Constants.LOG_FEEDBACK_MSG)
+					.toString();
+			req.addParam("message", message);
+		}
+		
 		Object loc = Registry.instance().get(Constants.REGISTRY_LOCATION);
 		if (loc != null) {
 			req.addParam("location",

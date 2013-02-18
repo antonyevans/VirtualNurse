@@ -41,7 +41,8 @@
     <string name="info_privacy">Privacy Policy</string>
     <string name="info_share">Share with Friends</string>
     <string name="info_rate">Rate this app!</string>
-    <string name="info_contact">Contact us</string>
+    <string name="info_contact">Contact the developer</string>
+    <string name="info_feedback">Send us feedback</string>
     <string name="menu_body">Please select the body area where you are having problems</string>
     <string name="menu_guide">I\'ve identified a number of possible guides, please select the most relevant one below</string>
     <string name="menu_demographic">Please select your demographic from the list below</string>

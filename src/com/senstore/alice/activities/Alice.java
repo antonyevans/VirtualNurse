@@ -54,6 +54,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -96,6 +97,11 @@ import com.senstore.alice.billing.ResponseHandler;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.GoogleAnalytics;
 import com.google.analytics.tracking.android.Tracker;
+import com.google.android.vending.licensing.AESObfuscator;
+import com.google.android.vending.licensing.LicenseChecker;
+import com.google.android.vending.licensing.LicenseCheckerCallback;
+import com.google.android.vending.licensing.Policy;
+import com.google.android.vending.licensing.ServerManagedPolicy;
 import com.flurry.android.FlurryAgent;
 
 public class Alice extends Activity implements AsyncTasksListener, LocationTasksListener,
@@ -106,11 +112,15 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	private Tracker GAtracker;
 	
 	//Variables for licensing
+	private LicenseCheckerCallback mLicenseCheckerCallback;
+    private LicenseChecker mChecker;
     private boolean bRetry = true;
 	
 	private boolean canCallDoctor = false;
 	private TextToSpeech mTts;
 	private boolean isTTSReady = false;
+	private boolean fromInfo = false;
+	private boolean rateLater = false;
 
 	private ResponseReceiver receiver;
 	private String chatQuery = null;
@@ -122,6 +132,9 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	private static final int BILLING_NOT_WORKING_DIALOG = 2;
 	private static final int DIALOG_BILLING_NOT_SUPPORTED_ID = 3;	
 	private static final int BILLING_WORKING_DIALOG = 4;
+	private static final int ASK_LOVE_IT_DIALOG = 5;
+	private static final int RATE_IT_DIALOG = 6;
+	private static final int GET_FEEDBACK_DIALOG = 7;
 	
 	//constants for the orange buttons
 	private static final int GUIDE = 0;
@@ -215,10 +228,18 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		EasyTracker.getInstance().setContext(this);
 		// Use the GoogleAnalytics singleton to get a Tracker.
 		mGaInstance = GoogleAnalytics.getInstance(this);
-	    GAtracker = mGaInstance.getTracker("UA-38084084-2");
+	    GAtracker = mGaInstance.getTracker("UA-38084084-1");
 		
 		//setup licensing
-		 
+		
+		// Library calls this when it's done.
+        mLicenseCheckerCallback = new MyLicenseCheckerCallback();
+        // Construct the LicenseChecker with a policy.
+        mChecker = new LicenseChecker(
+            this, new ServerManagedPolicy(this,
+                new AESObfuscator(AppInfo.SALT, getPackageName(), Utils.getUserID(this))),
+            AppInfo.BASE64_PUBLIC_KEY);
+        doLicenseCheck(); 
 		
 		// Set Full Screen Since we have a Tittle Bar
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -286,6 +307,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
         locality = settings.getString("locality", null);
         postalCode = settings.getString("postalCode", null);
         referrer = settings.getString("referrer", null);
+        rateLater = settings.getBoolean("rateLater", false);
 	       
 		// Register the Background Logger Broadcast Receiver
 		initLogBroadcastReceiver();
@@ -351,23 +373,102 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 
 		}
 		
-		
 		//show rate it dialog on the RATEIT time someone uses the app
 		if (usageCount == 0) {
 			FlurryAgent.logEvent("Show How to dialog");			
 			showHowTo();
-		} /*else if (usageCount == Constants.RATE_IT) {
+		} else if (usageCount == Constants.RATE_IT) {
 			FlurryAgent.logEvent("Show Rate it!");
-			rateItDialog();
-		} *//*else if (usageCount == Constants.SHARE_IT) {
+			showDialog(ASK_LOVE_IT_DIALOG);
+			//rateItDialog();
+		} else if (usageCount == Constants.SHARE_IT) {
 			FlurryAgent.logEvent("Ask Share it!");
 			askShareApp();
-		}*/
+		} else if (rateLater && (usageCount % 2 == 0)) {
+			showDialog(RATE_IT_DIALOG);
+		}
 		
 
 	}
 
+	private void doLicenseCheck() {
+        
+        setProgressBarIndeterminateVisibility(true);
+        mChecker.checkAccess(mLicenseCheckerCallback);
+    }
+	
+    private class MyLicenseCheckerCallback implements LicenseCheckerCallback {
+        public void allow(int policyReason) {
+            if (isFinishing()) {
+                // Don't update UI if Activity is finishing.
+                return;
+            }
+            // Should allow user access.
+            FlurryAgent.logEvent("License Allowed");
+            //Toast.makeText(getApplicationContext(), "License Permission Granted", Toast.LENGTH_SHORT).show();
+        }
 
+        public void dontAllow(int policyReason) {
+            if (isFinishing()) {
+                // Don't update UI if Activity is finishing.
+                return;
+            }
+            
+            // Should not allow access. In most cases, the app should assume
+            // the user has access unless it encounters this. If it does,
+            // the app should inform the user of their unlicensed ways
+            // and then either shut down the app or limit the user to a
+            // restricted set of features.
+            // In this example, we show a dialog that takes the user to Market.
+            // If the reason for the lack of license is that the service is
+            // unavailable or there is another problem, we display a
+            // retry button on the dialog and a different message.
+            FlurryAgent.logEvent("License Not Allowed");
+            //Toast.makeText(getApplicationContext(), "License Not Allowed", Toast.LENGTH_LONG).show();
+            //showNotLicensedDialog();
+        }
+
+        public void applicationError(int errorCode) {
+            if (isFinishing()) {
+                // Don't update UI if Activity is finishing.
+                return;
+            }
+            // This is a polite way of saying the developer made a mistake
+            // while setting up or calling the license checker library.
+            // Please examine the error code and fix the error.
+            //Toast.makeText(getApplicationContext(), "License Error", Toast.LENGTH_LONG).show();
+            FlurryAgent.onError("Licensing Error","Licensing Application Error",Integer.toString(errorCode));
+        }
+    }
+
+    private void showNotLicensedDialog() {
+    	AlertDialog.Builder notAllowedBuilder = new AlertDialog.Builder(this);
+        notAllowedBuilder.setTitle("Unlicensed Application")
+            .setCancelable(false)
+        	.setMessage(bRetry ? "Error with application license, would you like to retry?" : "Please download a new version of the app from Google Play")
+            .setNegativeButton(bRetry ? "Retry License" : "Download App", new DialogInterface.OnClickListener() {
+                boolean mRetry = bRetry;
+                public void onClick(DialogInterface dialog, int which) {
+                    if ( mRetry ) {
+                    	FlurryAgent.logEvent("Retry License");
+                    	bRetry = false;
+                        doLicenseCheck();
+                    } else {
+                    	FlurryAgent.logEvent("License Failed - going to Play");
+                        Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(
+                                "https://play.google.com/store/apps/details?id=" + getPackageName()));
+                            startActivity(marketIntent);                        
+                    }
+                }
+            })
+            .setPositiveButton("Quit", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                	FlurryAgent.logEvent("License Failed - Quit");
+                	finish();
+                }
+            }).create();
+        notAllowedBuilder.show();
+    }
 
 	private void initAndroidTTS() {
 		// Initialize text-to-speech. This is an asynchronous operation.
@@ -497,6 +598,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	        List_file.add(getString(R.string.info_share));
 	        List_file.add(getString(R.string.info_rate));
 	        List_file.add(getString(R.string.info_contact));
+	        List_file.add(getString(R.string.info_feedback));
 	           
 	        list.setAdapter(new ArrayAdapter<String>(this, R.layout.info_item, List_file));
 	        
@@ -596,7 +698,11 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 			shareApp("Info: Share");
 		} else if (selection == getString(R.string.info_rate)) {
 			FlurryAgent.logEvent("Info: Rate");
-			rateIt();
+			fromInfo = true;
+			showDialog(ASK_LOVE_IT_DIALOG);
+		} else if (selection == getString(R.string.info_feedback)) {
+			FlurryAgent.logEvent("Info: Send Feedback");
+			showDialog(GET_FEEDBACK_DIALOG);
 		} else if (selection == getString(R.string.info_contact)) {
 			FlurryAgent.logEvent("Info: Contact"); 
 			
@@ -1137,6 +1243,15 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		startService(msgIntent);
 
 	}
+	
+	private void sendFeedback(String message) {
+		Registry.instance().put(Constants.LOG_FEEDBACK_MSG, message);
+		Intent msgIntent = new Intent(this, BackgroundLogger.class);
+		msgIntent.putExtra(Constants.LOG_SERVICE_IN_MSG, Constants.LOG_SEND_FEEDBACK);
+		msgIntent.putExtra(Constants.LOG_USER_ID, Utils.getUserID(this));
+		msgIntent.putExtra(Constants.LOG_USER_TEL, Utils.getPhoneNumber(this));
+		startService(msgIntent);
+	}
 
 	public void getGuideList(String type, String selection) {
 		Map<String, String> flurryParams = new HashMap<String, String>(); 
@@ -1263,6 +1378,12 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 			return simpleMessage("Problem with billing");
 		case BILLING_WORKING_DIALOG:
 			return simpleMessage("In-app billing supported");
+		case ASK_LOVE_IT_DIALOG:
+			return askLoveIt();
+		case RATE_IT_DIALOG:
+			return rateItDialog();
+		case GET_FEEDBACK_DIALOG:
+			return getFeedbackMsg();
 		}
 
 		return null;
@@ -1305,28 +1426,73 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		
 	}
 	
-	public void rateItDialog() {
+	
+	public AlertDialog getFeedbackMsg() {
+		
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle("Rate it!");
+		// Set an EditText view to get user input 
+		final EditText input = new EditText(this);
+		input.setHeight(200);
+		input.setGravity(Gravity.TOP);
+		builder.setView(input);
+		
+		builder.setTitle("Please give us feedback");
+		builder.setMessage("Your feedback helps us improve the product for everyone.  Thank you for sharing it with us")
+		       .setCancelable(true)
+		       .setNegativeButton("Send", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		        	   FlurryAgent.logEvent("Feedback: given");
+		        	   String comment = input.getText().toString();
+		        	   sendFeedback(comment);
+		           }
+		       })
+		       .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		        	   FlurryAgent.logEvent("Feedback: canceled");
+		        	   dialog.cancel();
+		           }
+		       });
+		
+		//open a keyboard 
+		input.requestFocus();
+        input.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                InputMethodManager keyboard = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+                keyboard.showSoftInput(input, 0);
+            }
+        },100);
+        
+		AlertDialog feedbackDialog = builder.create();
+		return feedbackDialog;
+	}
+	
+	public AlertDialog rateItDialog() {
+		AlertDialog.Builder builderRate = new AlertDialog.Builder(Alice.this);
+		builderRate.setTitle("Rate it!");
 		LayoutInflater inflater = getLayoutInflater();
-		View dialoglayout = inflater.inflate(R.layout.rate_it, (ViewGroup) getCurrentFocus());
-		builder.setView(dialoglayout);
-		builder.setMessage("Would you like to rate this app?")
+		View dialoglayout = inflater.inflate(R.layout.rate_it, (ViewGroup) null);
+		builderRate.setView(dialoglayout);
+		builderRate.setMessage("Would you like to rate this app?")
 		       .setCancelable(true)
 		       .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) {
 		        	   FlurryAgent.logEvent("Yes, Rate it!");
 		        	   rateIt();
+		        	   rateLater = false;
 		           }
 		       })
-		       .setPositiveButton("No", new DialogInterface.OnClickListener() {
+		       .setPositiveButton("Later", new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) {
 		        	   FlurryAgent.logEvent("No, Don't Rate it!");
 		        	   dialog.cancel();
+		        	   rateLater = true;
 		           }
 		       });
-		AlertDialog rateDialog = builder.create();
-		rateDialog.show(); 
+		AlertDialog rateDialog = builderRate.create();
+		
+		return rateDialog;
 		
 	}
 	
@@ -1353,13 +1519,9 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	}
 	
 	public void rateIt() {
-		/*Intent intent = new Intent(Intent.ACTION_VIEW);
- 	   	intent.setData(Uri.parse("http://www.amazon.com/gp/mas/dl/android?p=" + getApplicationContext().getPackageName()));
- 	   	startActivity(intent);*/
- 	   	Intent i = new Intent();
-	 	i.setAction("com.bn.sdk.shop.details");
-	 	i.putExtra("product_details_ean",Constants.EAN); // Your real EAN goes here
-	 	startActivity(i);
+		Intent intent = new Intent(Intent.ACTION_VIEW);
+ 	   	intent.setData(Uri.parse("market://details?id=" + getApplicationContext().getPackageName()));
+ 	   	startActivity(intent);
 	}
 	
 	public AlertDialog simpleMessage(String message) {
@@ -1373,6 +1535,34 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		       });
 		AlertDialog dialog = builder.create();
 		return dialog;		
+	}
+	
+	public AlertDialog askLoveIt() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(Alice.this);
+		builder.setTitle("Do you love this app?");
+		//builder.setMessage("To access this content you need to update to the most recent version of the app.  Please press 'upload' to be taken to the Google Play store")
+		builder.setCancelable(true)
+		       .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		        	   FlurryAgent.logEvent("Love app: yes");
+		        	   dismissDialog(ASK_LOVE_IT_DIALOG);
+		        	   if (fromInfo) {
+		        		   fromInfo = false;
+		        		   rateIt();
+		        	   } else {
+		        		   showDialog(RATE_IT_DIALOG);
+		        	   }
+		           }
+		       })
+		       .setPositiveButton("No", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		        	   FlurryAgent.logEvent("Love app: no");
+		        	   dismissDialog(ASK_LOVE_IT_DIALOG);
+		        	   showDialog(GET_FEEDBACK_DIALOG);
+		           }
+		       });
+		AlertDialog getFeedbackDialog = builder.create();
+		return getFeedbackDialog;
 	}
 	
 	@Override
@@ -1738,6 +1928,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
       editor.putString("state", state);
       editor.putString("locality", locality);
       editor.putString("postalCode", postalCode);
+      editor.putBoolean("rateLater", rateLater);
       
       country = settings.getString("country", null);
       state = settings.getString("state", null);
@@ -1758,6 +1949,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
         mBillingService.unbind();
         ResponseHandler.unregister(mAlicePurchaseObserver); 
 		killTTS();
+		mChecker.onDestroy();
 		super.onDestroy();
 	}
 
