@@ -1425,6 +1425,8 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		// Set an EditText view to get user input 
 		final EditText input = new EditText(this);
+		input.setHeight(200);
+		input.setGravity(Gravity.TOP);
 		builder.setView(input);
 		
 		builder.setTitle("Please give us feedback");
@@ -1453,7 +1455,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
                 getSystemService(Context.INPUT_METHOD_SERVICE);
                 keyboard.showSoftInput(input, 0);
             }
-        },200);
+        },100);
         
 		AlertDialog feedbackDialog = builder.create();
 		return feedbackDialog;
