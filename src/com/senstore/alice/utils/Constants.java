@@ -51,7 +51,8 @@ public class Constants {
 	public static int LOG_CALL_DOCTOR = 3;
 	public static String LOG_CALL_DOCTOR_ACCEPT = "4a";
 	public static String LOG_CALL_DOCTOR_REJECT = "4b";
-
+	public static String LOG_SEND_FEEDBACK = "5";
+	
 	// Selection of guide.
 	// and
 	// Response of question
