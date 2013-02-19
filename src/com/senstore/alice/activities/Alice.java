@@ -54,6 +54,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -111,6 +112,8 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	private boolean canCallDoctor = false;
 	private TextToSpeech mTts;
 	private boolean isTTSReady = false;
+	private boolean fromInfo = false;
+	private boolean rateLater = false;
 
 	private ResponseReceiver receiver;
 	private String chatQuery = null;
@@ -122,6 +125,9 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	private static final int BILLING_NOT_WORKING_DIALOG = 2;
 	private static final int DIALOG_BILLING_NOT_SUPPORTED_ID = 3;	
 	private static final int BILLING_WORKING_DIALOG = 4;
+	private static final int ASK_LOVE_IT_DIALOG = 5;
+	private static final int RATE_IT_DIALOG = 6;
+	private static final int GET_FEEDBACK_DIALOG = 7;
 	
 	//constants for the orange buttons
 	private static final int GUIDE = 0;
@@ -286,6 +292,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
         locality = settings.getString("locality", null);
         postalCode = settings.getString("postalCode", null);
         referrer = settings.getString("referrer", null);
+        rateLater = settings.getBoolean("rateLater", false);
 	       
 		// Register the Background Logger Broadcast Receiver
 		initLogBroadcastReceiver();
@@ -351,17 +358,19 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 
 		}
 		
-		
 		//show rate it dialog on the RATEIT time someone uses the app
 		if (usageCount == 0) {
 			FlurryAgent.logEvent("Show How to dialog");			
 			showHowTo();
 		} else if (usageCount == Constants.RATE_IT) {
 			FlurryAgent.logEvent("Show Rate it!");
-			rateItDialog();
+			showDialog(ASK_LOVE_IT_DIALOG);
+			//rateItDialog();
 		} else if (usageCount == Constants.SHARE_IT) {
 			FlurryAgent.logEvent("Ask Share it!");
 			askShareApp();
+		} else if (rateLater && (usageCount % 2 == 0)) {
+			showDialog(RATE_IT_DIALOG);
 		}
 		
 
@@ -497,6 +506,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	        List_file.add(getString(R.string.info_share));
 	        List_file.add(getString(R.string.info_rate));
 	        List_file.add(getString(R.string.info_contact));
+	        List_file.add(getString(R.string.info_feedback));
 	           
 	        list.setAdapter(new ArrayAdapter<String>(this, R.layout.info_item, List_file));
 	        
@@ -596,7 +606,11 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 			shareApp("Info: Share");
 		} else if (selection == getString(R.string.info_rate)) {
 			FlurryAgent.logEvent("Info: Rate");
-			rateIt();
+			fromInfo = true;
+			showDialog(ASK_LOVE_IT_DIALOG);
+		} else if (selection == getString(R.string.info_feedback)) {
+			FlurryAgent.logEvent("Info: Send Feedback");
+			showDialog(GET_FEEDBACK_DIALOG);
 		} else if (selection == getString(R.string.info_contact)) {
 			FlurryAgent.logEvent("Info: Contact"); 
 			
@@ -889,6 +903,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		b.setBackgroundDrawable(btnBg);
 
 		b.setText(name);
+		b.setTextAppearance(this, R.style.ChatFontSize);
 
 		b.setOnClickListener(new OnClickListener() {
 			
@@ -1136,6 +1151,15 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		startService(msgIntent);
 
 	}
+	
+	private void sendFeedback(String message) {
+		Registry.instance().put(Constants.LOG_FEEDBACK_MSG, message);
+		Intent msgIntent = new Intent(this, BackgroundLogger.class);
+		msgIntent.putExtra(Constants.LOG_SERVICE_IN_MSG, Constants.LOG_SEND_FEEDBACK);
+		msgIntent.putExtra(Constants.LOG_USER_ID, Utils.getUserID(this));
+		msgIntent.putExtra(Constants.LOG_USER_TEL, Utils.getPhoneNumber(this));
+		startService(msgIntent);
+	}
 
 	public void getGuideList(String type, String selection) {
 		Map<String, String> flurryParams = new HashMap<String, String>(); 
@@ -1262,6 +1286,12 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 			return simpleMessage("Problem with billing");
 		case BILLING_WORKING_DIALOG:
 			return simpleMessage("In-app billing supported");
+		case ASK_LOVE_IT_DIALOG:
+			return askLoveIt();
+		case RATE_IT_DIALOG:
+			return rateItDialog();
+		case GET_FEEDBACK_DIALOG:
+			return getFeedbackMsg();
 		}
 
 		return null;
@@ -1304,28 +1334,73 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		
 	}
 	
-	public void rateItDialog() {
+	
+	public AlertDialog getFeedbackMsg() {
+		
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle("Rate it!");
+		// Set an EditText view to get user input 
+		final EditText input = new EditText(this);
+		input.setHeight(200);
+		input.setGravity(Gravity.TOP);
+		builder.setView(input);
+		
+		builder.setTitle("Please give us feedback");
+		builder.setMessage("Your feedback helps us improve the product for everyone.  Thank you for sharing it with us")
+		       .setCancelable(true)
+		       .setNegativeButton("Send", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		        	   FlurryAgent.logEvent("Feedback: given");
+		        	   String comment = input.getText().toString();
+		        	   sendFeedback(comment);
+		           }
+		       })
+		       .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		        	   FlurryAgent.logEvent("Feedback: canceled");
+		        	   dialog.cancel();
+		           }
+		       });
+		
+		//open a keyboard 
+		input.requestFocus();
+        input.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                InputMethodManager keyboard = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+                keyboard.showSoftInput(input, 0);
+            }
+        },100);
+        
+		AlertDialog feedbackDialog = builder.create();
+		return feedbackDialog;
+	}
+	
+	public AlertDialog rateItDialog() {
+		AlertDialog.Builder builderRate = new AlertDialog.Builder(Alice.this);
+		builderRate.setTitle("Rate it!");
 		LayoutInflater inflater = getLayoutInflater();
-		View dialoglayout = inflater.inflate(R.layout.rate_it, (ViewGroup) getCurrentFocus());
-		builder.setView(dialoglayout);
-		builder.setMessage("Would you like to rate this app?")
+		View dialoglayout = inflater.inflate(R.layout.rate_it, (ViewGroup) null);
+		builderRate.setView(dialoglayout);
+		builderRate.setMessage("Would you like to rate this app?")
 		       .setCancelable(true)
 		       .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) {
 		        	   FlurryAgent.logEvent("Yes, Rate it!");
 		        	   rateIt();
+		        	   rateLater = false;
 		           }
 		       })
-		       .setPositiveButton("No", new DialogInterface.OnClickListener() {
+		       .setPositiveButton("Later", new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) {
 		        	   FlurryAgent.logEvent("No, Don't Rate it!");
 		        	   dialog.cancel();
+		        	   rateLater = true;
 		           }
 		       });
-		AlertDialog rateDialog = builder.create();
-		rateDialog.show(); 
+		AlertDialog rateDialog = builderRate.create();
+		
+		return rateDialog;
 		
 	}
 	
@@ -1368,6 +1443,34 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		       });
 		AlertDialog dialog = builder.create();
 		return dialog;		
+	}
+	
+	public AlertDialog askLoveIt() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(Alice.this);
+		builder.setTitle("Do you love this app?");
+		//builder.setMessage("To access this content you need to update to the most recent version of the app.  Please press 'upload' to be taken to the Google Play store")
+		builder.setCancelable(true)
+		       .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		        	   FlurryAgent.logEvent("Love app: yes");
+		        	   dismissDialog(ASK_LOVE_IT_DIALOG);
+		        	   if (fromInfo) {
+		        		   fromInfo = false;
+		        		   rateIt();
+		        	   } else {
+		        		   showDialog(RATE_IT_DIALOG);
+		        	   }
+		           }
+		       })
+		       .setPositiveButton("No", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		        	   FlurryAgent.logEvent("Love app: no");
+		        	   dismissDialog(ASK_LOVE_IT_DIALOG);
+		        	   showDialog(GET_FEEDBACK_DIALOG);
+		           }
+		       });
+		AlertDialog getFeedbackDialog = builder.create();
+		return getFeedbackDialog;
 	}
 	
 	@Override
@@ -1733,6 +1836,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
       editor.putString("state", state);
       editor.putString("locality", locality);
       editor.putString("postalCode", postalCode);
+      editor.putBoolean("rateLater", rateLater);
       
       country = settings.getString("country", null);
       state = settings.getString("state", null);
@@ -2015,6 +2119,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 					bo.setBackgroundDrawable(btnBg);
 
 					bo.setText(key);
+					bo.setTextAppearance(this.context, R.style.ChatFontSize);
 
 					bo.setOnClickListener(new OnClickListener() {
 
@@ -2344,6 +2449,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 					bo.setBackgroundDrawable(btnBg);
 
 					bo.setText(key);
+					bo.setTextAppearance(this.context, R.style.ChatFontSize);
 
 					bo.setOnClickListener(new OnClickListener() {
 

@@ -52,6 +52,7 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:paddingTop="10dp"
+                style="@style/ChatFontSize"
                 android:id="@+id/description"
                 android:textColor="@android:color/black" />
                 </LinearLayout>

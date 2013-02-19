@@ -27,8 +27,9 @@ public class BackgroundLogger extends IntentService {
 	private static final int CALL_DOCTOR = 2;
 	private static final int CALL_DOCTOR_ACCEPT = 3;
 	private static final int CALL_DOCTOR_REJECT = 4;
+	private static final int SEND_FEEDBACK = 5;
 
-	String[] TYPES = { "1", "2", "3", "4a", "4b" };
+	String[] TYPES = { "1", "2", "3", "4a", "4b", "5" };
 
 	/**
 	 * This function finds the corresponding "enum" integer to the given data
@@ -60,7 +61,7 @@ public class BackgroundLogger extends IntentService {
 		user_tel = intent.getStringExtra(Constants.LOG_USER_TEL);
 		
 		LogRESTHandler handler = new LogRESTHandler();
-
+		
 		switch (identifyType(msg)) {
 		case ERROR: {
 			break;
@@ -120,6 +121,17 @@ public class BackgroundLogger extends IntentService {
 				cdrIntent.putExtra(Constants.LOG_SERVICE_OUT_MSG,
 						logcdr.getLogType());
 				sendBroadcast(cdrIntent);
+			}
+			break;
+		case SEND_FEEDBACK:
+			ActionLog logFeedback = handler.log(msg, user_id, user_tel);
+			if (logFeedback != null) {
+				Intent feedbackIntent = new Intent();
+				feedbackIntent.setAction(Constants.ACTION_RESP);
+				feedbackIntent.addCategory(Intent.CATEGORY_DEFAULT);
+				feedbackIntent.putExtra(Constants.LOG_SERVICE_OUT_MSG,
+						logFeedback.getLogType());
+				sendBroadcast(feedbackIntent);
 			}
 			break;
 		default:

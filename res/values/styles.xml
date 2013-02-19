@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
     
     <!-- Base application theme is the default theme. -->
     <style name="Theme" parent="android:Theme"></style>
@@ -69,5 +69,19 @@
         <item name="android:background">@drawable/barbottom</item>
     </style>
     
+    <!-- Styles for Splash Screen. -->
+	
+	<style name="SplashFontVN">
+        <item name="android:textSize">30sp</item>
+    </style>
+    
+	<style name="SplashFontBA">
+        <item name="android:textSize">22sp</item>
+    </style>
+    
+	<!-- Styles for changing font size -->
+	<style name="ChatFontSize">
+        <item name="android:textSize">14sp</item>
+    </style>
     
 </resources>    

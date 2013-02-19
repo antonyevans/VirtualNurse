@@ -9,7 +9,7 @@ public class Constants {
 	
 	public static String FLURRY_API = "6HXNF7VS9TNWH72D7CSN";
 	public static Integer RATE_IT = 2;
-	public static Integer SHARE_IT = 10;
+	public static Integer SHARE_IT = 7;
 	
 	public static String TAG = "Alice";
 	public static String APP_NAME = "Kindle";
@@ -20,6 +20,8 @@ public class Constants {
 	public static String LOG_SERVICE_OUT_MSG = "log_result";
 	public static String LOG_USER_ID = "user_id";
 	public static String LOG_USER_TEL = "user_telephone";
+	public static String LOG_FEEDBACK_MSG = "feedback_msg";
+	
 	
 	public static final String ACTION_RESP =
 		      "com.senstore.alice.utils.intent.action.MESSAGE_PROCESSED";
@@ -49,6 +51,7 @@ public class Constants {
 	public static int LOG_CALL_DOCTOR = 3;
 	public static String LOG_CALL_DOCTOR_ACCEPT = "4a";
 	public static String LOG_CALL_DOCTOR_REJECT = "4b";
+	public static String LOG_SEND_FEEDBACK = "5";
 
 	// Selection of guide.
 	// and
