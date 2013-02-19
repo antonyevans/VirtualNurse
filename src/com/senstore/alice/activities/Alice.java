@@ -97,11 +97,11 @@ import com.senstore.alice.billing.ResponseHandler;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.GoogleAnalytics;
 import com.google.analytics.tracking.android.Tracker;
-import com.google.android.vending.licensing.AESObfuscator;
-import com.google.android.vending.licensing.LicenseChecker;
-import com.google.android.vending.licensing.LicenseCheckerCallback;
-import com.google.android.vending.licensing.Policy;
-import com.google.android.vending.licensing.ServerManagedPolicy;
+//import com.google.android.vending.licensing.AESObfuscator;
+//import com.google.android.vending.licensing.LicenseChecker;
+//import com.google.android.vending.licensing.LicenseCheckerCallback;
+//import com.google.android.vending.licensing.Policy;
+//import com.google.android.vending.licensing.ServerManagedPolicy;
 import com.flurry.android.FlurryAgent;
 
 public class Alice extends Activity implements AsyncTasksListener, LocationTasksListener,
@@ -112,8 +112,8 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	private Tracker GAtracker;
 	
 	//Variables for licensing
-	private LicenseCheckerCallback mLicenseCheckerCallback;
-    private LicenseChecker mChecker;
+	//private LicenseCheckerCallback mLicenseCheckerCallback;
+    //private LicenseChecker mChecker;
     private boolean bRetry = true;
 	
 	private boolean canCallDoctor = false;
@@ -233,13 +233,13 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		//setup licensing
 		
 		// Library calls this when it's done.
-        mLicenseCheckerCallback = new MyLicenseCheckerCallback();
+       /* mLicenseCheckerCallback = new MyLicenseCheckerCallback();
         // Construct the LicenseChecker with a policy.
         mChecker = new LicenseChecker(
             this, new ServerManagedPolicy(this,
                 new AESObfuscator(AppInfo.SALT, getPackageName(), Utils.getUserID(this))),
             AppInfo.BASE64_PUBLIC_KEY);
-        doLicenseCheck(); 
+        doLicenseCheck(); */
 		
 		// Set Full Screen Since we have a Tittle Bar
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -391,13 +391,13 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 
 	}
 
-	private void doLicenseCheck() {
+	/*private void doLicenseCheck() {
         
         setProgressBarIndeterminateVisibility(true);
         mChecker.checkAccess(mLicenseCheckerCallback);
-    }
+    }*/
 	
-    private class MyLicenseCheckerCallback implements LicenseCheckerCallback {
+    /*private class MyLicenseCheckerCallback implements LicenseCheckerCallback {
         public void allow(int policyReason) {
             if (isFinishing()) {
                 // Don't update UI if Activity is finishing.
@@ -439,9 +439,9 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
             //Toast.makeText(getApplicationContext(), "License Error", Toast.LENGTH_LONG).show();
             FlurryAgent.onError("Licensing Error","Licensing Application Error",Integer.toString(errorCode));
         }
-    }
+    }*/
 
-    private void showNotLicensedDialog() {
+    /*private void showNotLicensedDialog() {
     	AlertDialog.Builder notAllowedBuilder = new AlertDialog.Builder(this);
         notAllowedBuilder.setTitle("Unlicensed Application")
             .setCancelable(false)
@@ -468,7 +468,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
                 }
             }).create();
         notAllowedBuilder.show();
-    }
+    }*/
 
 	private void initAndroidTTS() {
 		// Initialize text-to-speech. This is an asynchronous operation.
@@ -1519,9 +1519,10 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	}
 	
 	public void rateIt() {
-		Intent intent = new Intent(Intent.ACTION_VIEW);
- 	   	intent.setData(Uri.parse("market://details?id=" + getApplicationContext().getPackageName()));
- 	   	startActivity(intent);
+		Intent i = new Intent();
+		i.setAction( "com.bn.sdk.shop.details" );
+		i.putExtra( "product_details_ean" , Constants.EAN );
+		startActivity( i );
 	}
 	
 	public AlertDialog simpleMessage(String message) {
@@ -1949,7 +1950,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
         mBillingService.unbind();
         ResponseHandler.unregister(mAlicePurchaseObserver); 
 		killTTS();
-		mChecker.onDestroy();
+		//mChecker.onDestroy();
 		super.onDestroy();
 	}
 
