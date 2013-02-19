@@ -44,7 +44,7 @@
 	    android:layout_weight="18"
 	    android:gravity="center"
 	    style="@style/SplashFontBA"
-        android:text="The Best Android\nSymptom Checker" />
+        android:text="The Best Nook\nSymptom Checker" />
 
     <!-- Harvard Logo --> 
     <TextView
@@ -53,7 +53,7 @@
         android:layout_height="0px"
 	    android:layout_weight="5"
 	    android:gravity="center"
-	    android:textSize="15sp"
+	    android:textSize="20sp"
         android:text="Medical Content Powered By:" />
     
     <ImageView
