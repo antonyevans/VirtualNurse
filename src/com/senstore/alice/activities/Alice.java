@@ -2024,42 +2024,71 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	}
 	
 	public void findDoctor(String source) {
-		/*Uri webpage = Uri.parse("http://www.google.com/search?q=doctor");
-		Intent webIntent = new Intent(Intent.ACTION_VIEW, webpage);
 		
-		// Verify it resolves
-		PackageManager packageManager = getPackageManager();
-		List<ResolveInfo> activities = packageManager.queryIntentActivities(webIntent, 0);
-		boolean isIntentSafe = activities.size() > 0;
-		  
-		// Start an activity if it's safe
-		if (isIntentSafe) {
-		    startActivity(webIntent);
-		}*/
 		//track event
 		GAtracker.sendEvent("Find Doctor", "button_press", source, null);
 		
-		//load the webview
-		webView = inflater.inflate(R.layout.webview, null);
-		flipper.addView(webView);
-		flipper.showNext();
-		
-		WebView actualWebView = (WebView) webView.findViewById(R.id.webview);
-		
-		try {
-            // load the url
-			actualWebView.loadUrl("http://senstore.com/livedoctor");
-        } catch (Exception e) {
-            e.printStackTrace();
-            
-        }
-		WebSettings webSettings = actualWebView.getSettings();
-		//webSettings.setLoadWithOverviewMode(true);
-		webSettings.setUseWideViewPort(true);
-		webSettings.setDefaultZoom(WebSettings.ZoomDensity.FAR);
-		webSettings.setJavaScriptEnabled(true);
-        webSettings.setBuiltInZoomControls(true);
-		webSettings.setSupportZoom(true); 
+		String countryCheck = country.replaceAll("\\s","").toLowerCase();
+		Log.i("Alice",countryCheck);
+		if (countryCheck.equals("unitedstates") || (country.equals(null) || country.equals(""))) {
+			
+			//send to ZocDoc
+			Uri webpage = Uri.parse("http://zocdoc.com/link/40df9e6e-86dc-48d5-b73a-9f4cb13e5122");
+			Intent webIntent = new Intent(Intent.ACTION_VIEW, webpage);
+			
+			// Verify it resolves
+			PackageManager packageManager = getPackageManager();
+			List<ResolveInfo> activities = packageManager.queryIntentActivities(webIntent, 0);
+			boolean isIntentSafe = activities.size() > 0;
+			  
+			//Flurry track
+			Map<String, String> flurryParams = new HashMap<String, String>(); 
+				flurryParams.put("Type", "ZocDoc");
+				flurryParams.put("Source", source);
+				flurryParams.put("Country", country);
+	    		flurryParams.put("State", state);
+	    		flurryParams.put("Locality", locality);
+	    		flurryParams.put("referrer", referrer);
+	    		flurryParams.put("isIntentSafe", String.valueOf(isIntentSafe));
+    		FlurryAgent.logEvent("Find Doctor - ZocDoc", flurryParams);
+			
+			// Start an activity if it's safe
+			if (isIntentSafe) {
+			    startActivity(webIntent);
+			}
+		} else {
+			//load the webview for livePerson
+			webView = inflater.inflate(R.layout.webview, null);
+			flipper.addView(webView);
+			flipper.showNext();
+			
+			WebView actualWebView = (WebView) webView.findViewById(R.id.webview);
+			
+			//Flurry track
+			Map<String, String> flurryParams = new HashMap<String, String>(); 
+				flurryParams.put("Type", "LivePerson");
+				flurryParams.put("Source", source);
+				flurryParams.put("Country", country);
+	    		flurryParams.put("State", state);
+	    		flurryParams.put("Locality", locality);
+	    		flurryParams.put("referrer", referrer);
+    		FlurryAgent.logEvent("Find Doctor - LivePerson", flurryParams);
+			
+			try {
+	            // load the url
+				actualWebView.loadUrl("http://senstore.com/livedoctor");
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            
+	        }
+			WebSettings webSettings = actualWebView.getSettings();
+			//webSettings.setLoadWithOverviewMode(true);
+			webSettings.setUseWideViewPort(true);
+			webSettings.setDefaultZoom(WebSettings.ZoomDensity.FAR);
+			webSettings.setJavaScriptEnabled(true);
+	        webSettings.setBuiltInZoomControls(true);
+			webSettings.setSupportZoom(true); 
+		}
 		
 	}
 
