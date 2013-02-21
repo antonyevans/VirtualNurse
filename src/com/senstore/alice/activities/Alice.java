@@ -80,6 +80,7 @@ import com.senstore.alice.menus.BodyGuide;
 import com.senstore.alice.menus.DemographicGuide;
 import com.senstore.alice.models.Diagnosis;
 import com.senstore.alice.models.Guide;
+import com.senstore.alice.models.Purchase;
 import com.senstore.alice.services.BackgroundLogger;
 import com.senstore.alice.services.MyPrefsBackupAgent;
 import com.senstore.alice.services.BillingService.RequestPurchase;
@@ -89,6 +90,7 @@ import com.senstore.alice.utils.Registry;
 import com.senstore.alice.utils.Utils;
 import com.senstore.alice.views.ChatListView;
 import com.senstore.alice.services.BillingService;
+import com.senstore.alice.api.PurchaseRESTHandler;
 import com.senstore.alice.billing.PurchaseObserver;
 import com.senstore.alice.utils.Constants.PurchaseState;
 import com.senstore.alice.utils.Constants.ResponseCode;
@@ -2851,6 +2853,18 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		 
 		    //Check purchaseResponse.getPurchaseRequestStatus();
 		    //If SUCCESSFUL, fulfill content;
+			
+			switch (purchaseResponse.getPurchaseRequestStatus()) {
+			case SUCCESSFUL:
+			case ALREADY_ENTITLED:
+				PurchaseRESTHandler handler = new PurchaseRESTHandler();
+				Purchase purchase = handler.purchase(Constants.PURCHASE_TYPE, Utils.getUserID(Alice.this));
+				break;
+			case INVALID_SKU:
+				break;
+			case FAILED:
+				break;
+			}
 		 
 		}
 	}
