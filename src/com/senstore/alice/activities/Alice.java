@@ -1342,7 +1342,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	
 	public void upgrade() {
 		//currently does nothing, different versions do different things
-		PurchasingManager.initiatePurchaseRequest("DeveloperSKU-1234");
+		PurchasingManager.initiatePurchaseRequest(Constants.PURCHASE_TYPE);
 	}
 	
 	
