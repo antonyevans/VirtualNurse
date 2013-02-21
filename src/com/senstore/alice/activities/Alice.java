@@ -97,6 +97,10 @@ import com.senstore.alice.billing.ResponseHandler;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.GoogleAnalytics;
 import com.google.analytics.tracking.android.Tracker;
+import com.amazon.inapp.purchasing.BasePurchasingObserver;
+import com.amazon.inapp.purchasing.ItemDataResponse;
+import com.amazon.inapp.purchasing.PurchaseResponse;
+import com.amazon.inapp.purchasing.PurchasingManager;
 import com.flurry.android.FlurryAgent;
 
 public class Alice extends Activity implements AsyncTasksListener, LocationTasksListener,
@@ -1336,6 +1340,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	
 	public void upgrade() {
 		//currently does nothing, different versions do different things
+		PurchasingManager.initiatePurchaseRequest("DeveloperSKU-1234");
 	}
 	
 	
@@ -1804,6 +1809,9 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
     	FlurryAgent.setVersionName(app_ver);
     	FlurryAgent.setLogEnabled(true);
     	FlurryAgent.setLogEvents(true);
+    	
+    	//register amazon in-app payments
+    	PurchasingManager.registerObserver(new MyObserver());
     	
     }
     
@@ -2822,6 +2830,31 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		}
 	}
 
+	private class MyObserver extends BasePurchasingObserver {
+		 
+		public MyObserver() {
+		 
+		    super(Alice.this);
+		 
+		}
+		 
+		@Override
+		public void onItemDataResponse(ItemDataResponse itemDataResponse) {
+		 
+		    //Check itemDataResponse.getItemDataRequestStatus();
+		    //Use itemDataResponse to populate catalog data
+		 
+		}
+		 
+		@Override
+		public void onPurchaseResponse(PurchaseResponse purchaseResponse) {
+		 
+		    //Check purchaseResponse.getPurchaseRequestStatus();
+		    //If SUCCESSFUL, fulfill content;
+		 
+		}
+	}
+	
 	private void initAliceLocation() {
 		AliceLocation myLocation = new AliceLocation();
 		myLocation.getLocation(this, locationResult);
