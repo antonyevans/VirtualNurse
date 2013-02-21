@@ -92,6 +92,29 @@
 	                android:layout_marginRight="10dp"
 	                android:layout_marginTop="10dp"
 	                android:textStyle="bold"
+	                android:paddingBottom="10dp"
+	                android:paddingLeft="10dp"
+	                android:paddingRight="10dp"
+	                android:paddingTop="10dp"
+	                style="@style/ChatFontSize"
+	                android:text="@string/partner_money"
+	                android:textColor="@android:color/black" />
+                
+                <ImageView
+			        android:id="@+id/zocdoc_logo"
+			        android:layout_width="fill_parent"
+			        android:layout_height="50dp"
+			        android:layout_centerHorizontal="true"
+			        android:src="@drawable/zocdoc_logo" />
+                
+                <TextView
+	                android:layout_width="fill_parent"
+	                android:layout_height="wrap_content"
+	                android:layout_marginBottom="10dp"
+	                android:layout_marginLeft="10dp"
+	                android:layout_marginRight="10dp"
+	                android:layout_marginTop="10dp"
+	                android:textStyle="bold"
 	                android:paddingLeft="10dp"
 	                android:paddingRight="10dp"
 	                android:paddingTop="10dp"
