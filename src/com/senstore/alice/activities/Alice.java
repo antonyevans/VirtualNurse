@@ -2028,9 +2028,18 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		//track event
 		GAtracker.sendEvent("Find Doctor", "button_press", source, null);
 		
-		String countryCheck = country.replaceAll("\\s","").toLowerCase();
-		Log.i("Alice",countryCheck);
-		if (countryCheck.equals("unitedstates") || (country.equals(null) || country.equals(""))) {
+		Boolean countryCheck = false;
+		if (country == null) {
+			//do nothing
+			countryCheck = true;
+		} else {
+			String checkCountry = country.replaceAll("\\s","").toLowerCase();
+			if (checkCountry.equals("unitedstates") || country.equals("")) {
+				countryCheck = true;
+			}
+		}
+		
+		if (countryCheck) {
 			
 			//send to ZocDoc
 			Uri webpage = Uri.parse("http://zocdoc.com/link/40df9e6e-86dc-48d5-b73a-9f4cb13e5122");
