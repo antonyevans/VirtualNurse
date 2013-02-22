@@ -12,8 +12,8 @@ public class Constants {
 	public static Integer SHARE_IT = 7;
 	
 	public static String TAG = "Alice";
-	public static String APP_NAME = "Nook";
-	public static String PURCHASE_TYPE = "WomensSexualHealth";
+	public static String APP_NAME = "Tablet-trial";
+	public static String PURCHASE_TYPE = "TrialFullUpgrade";
 	public static String EAN = "2940043953810";
 	
 	public static String LOG_SERVICE_NAME = "AliceBackgroundLogService";
@@ -22,6 +22,7 @@ public class Constants {
 	public static String LOG_USER_ID = "user_id";
 	public static String LOG_USER_TEL = "user_telephone";
 	public static String LOG_FEEDBACK_MSG = "feedback_msg";
+	
 	
 	public static final String ACTION_RESP =
 		      "com.senstore.alice.utils.intent.action.MESSAGE_PROCESSED";

@@ -1,6 +1,8 @@
 This app includes premium medical content developed by Harvard Medical School which helps you answer the question: "Do I need to see a doctor?".  <br>
 <br>
-The content is broken down into guides which cover 98% of medical concerns people have.  Each guide will ask you a series of questions to establish if things are normal, if you should see the doctor of if it's an emergancy situation.<br>
+The content is broken down into guides which cover 98% of medical concerns people have.  Each guide will ask you a series of questions to establish if things are normal, if you should see the doctor of if it's an emergency situation.<br>
+<br>
+In the trial version you have full access to up to 2 guides for free and then you will need to upgrade the app. Trial guides will appear 'In your collection' accessed from the home screen.<br>
 <br>
 There are three ways to find the correct guide:<br>
 1. Press the microphone button, at the bottom of the screen, and describe your symptoms<br>

@@ -1407,12 +1407,12 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	public void askUpgrade() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("Please upgrade the app");
-		builder.setMessage("To access this content you need to update to the most recent version of the app.  Please press 'upload' to be taken to the Google Play store")
+		builder.setMessage("You have completed the free trial.  To access this content you need to purchase and upgrade the app, please press the 'purchase' button below.")
 		       .setCancelable(true)
-		       .setNegativeButton("Upgrade", new DialogInterface.OnClickListener() {
+		       .setNegativeButton("Purchase", new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) {
-		        	   FlurryAgent.logEvent("Upgrade app");
-		        	   rateIt();
+		        	   FlurryAgent.logEvent("Purchase app");
+		        	   upgrade();
 		           }
 		       })
 		       .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
@@ -1424,6 +1424,10 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		AlertDialog upgradeDialog = builder.create();
 		upgradeDialog.show(); 
 		
+	}
+	
+	public void upgrade() {
+		//currently does nothing, different versions do different things
 	}
 	
 	
