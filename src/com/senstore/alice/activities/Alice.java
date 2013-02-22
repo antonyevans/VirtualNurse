@@ -1342,7 +1342,8 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	
 	public void upgrade() {
 		//currently does nothing, different versions do different things
-		PurchasingManager.initiatePurchaseRequest(Constants.PURCHASE_TYPE);
+		
+		PurchasingManager.initiatePurchaseRequest(Constants.PURCHASE_SKU);
 	}
 	
 	
@@ -2859,10 +2860,15 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 			case ALREADY_ENTITLED:
 				PurchaseRESTHandler handler = new PurchaseRESTHandler();
 				Purchase purchase = handler.purchase(Constants.PURCHASE_TYPE, Utils.getUserID(Alice.this));
+				Toast.makeText(getApplicationContext(), "Purchase complete - you can now access all the guides", Toast.LENGTH_LONG).show();
+				FlurryAgent.logEvent("Purchase complete");	
 				break;
 			case INVALID_SKU:
+				FlurryAgent.logEvent("Purchase invalid");	
+				Toast.makeText(getApplicationContext(), "Purchase incomplete - please try again", Toast.LENGTH_SHORT).show();
 				break;
 			case FAILED:
+				FlurryAgent.logEvent("Purchase failed");
 				break;
 			}
 		 

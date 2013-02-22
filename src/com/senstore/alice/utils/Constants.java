@@ -14,6 +14,7 @@ public class Constants {
 	public static String TAG = "Alice";
 	public static String APP_NAME = "Amazon-trial";
 	public static String PURCHASE_TYPE = "TrialFullUpgrade";
+	public static String PURCHASE_SKU = "com.amazon.alice.trialfullupgrade";
 	
 	public static String LOG_SERVICE_NAME = "AliceBackgroundLogService";
 	public static String LOG_SERVICE_IN_MSG = "log_type";
