@@ -12,7 +12,7 @@ public class Constants {
 	public static Integer SHARE_IT = 7;
 	
 	public static String TAG = "Alice";
-	public static String APP_NAME = "Tablet-trial";
+	public static String APP_NAME = "Nook-trial";
 	public static String PURCHASE_TYPE = "TrialFullUpgrade";
 	public static String EAN = "2940043953810";
 	

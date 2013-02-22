@@ -1407,18 +1407,12 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	public void askUpgrade() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("Please upgrade the app");
-		builder.setMessage("You have completed the free trial.  To access this content you need to purchase and upgrade the app, please press the 'purchase' button below.")
+		builder.setMessage("You have completed the free trial.  To access this content you need to purchase the full version. To continue press the 'purchase' button below.")
 		       .setCancelable(true)
 		       .setNegativeButton("Purchase", new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) {
 		        	   FlurryAgent.logEvent("Purchase app");
 		        	   upgrade();
-		           }
-		       })
-		       .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
-		           public void onClick(DialogInterface dialog, int id) {
-		        	   FlurryAgent.logEvent("No, Don't Upgrade");
-		        	   dialog.cancel();
 		           }
 		       });
 		AlertDialog upgradeDialog = builder.create();
@@ -1427,7 +1421,11 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	}
 	
 	public void upgrade() {
-		//currently does nothing, different versions do different things
+		//take to shop to upgrade
+		Intent i = new Intent();
+		i.setAction( "com.bn.sdk.shop.details" );
+		i.putExtra( "product_details_ean" , Constants.EAN );
+		startActivity( i );
 	}
 	
 	
