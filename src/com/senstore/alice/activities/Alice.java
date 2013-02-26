@@ -111,6 +111,16 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	private GoogleAnalytics mGaInstance;
 	private Tracker GAtracker;
 	
+	//variables for instore
+	BroadcastReceiver wifiReceiver;
+	IntentFilter wifiIntent;
+	private boolean inStore = false;
+	
+	public static final String ACTION_BN_INSTORE_SESSION_STATE_CHANGE = "com.nook.intent.action.ACTION_BN_INSTORE_SESSION_STATE_CHANGE";
+    public static final String EXTRA_BN_READINSTORE_SESSION_STATE = "EXTRA_BN_INSTORE_SESSION_STATE";
+    public static final int SESSION_START =1; 
+    public static final int SESSION_STOP =0; 
+	
 	//Variables for licensing
 	//private LicenseCheckerCallback mLicenseCheckerCallback;
     //private LicenseChecker mChecker;
@@ -387,10 +397,44 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		} else if (rateLater && (usageCount % 2 == 0)) {
 			showDialog(RATE_IT_DIALOG);
 		}
-		
+		inStore = false;
+		setupBNAuthCheckIntentReceiver();
 
 	}
 
+	private void setupBNAuthCheckIntentReceiver() {
+    	wifiReceiver = new BroadcastReceiver() {
+    		
+			@Override
+			public void onReceive(Context context, Intent intent) {
+
+				String action = intent.getAction();
+				//tv.append("received action == " + action + "\n");
+				//Toast.makeText(getApplicationContext(), "Intent received", Toast.LENGTH_SHORT).show();
+				if ( action.equals(ACTION_BN_INSTORE_SESSION_STATE_CHANGE)) {
+					if (intent.getIntExtra(EXTRA_BN_READINSTORE_SESSION_STATE, SESSION_STOP) == SESSION_START) {
+						//tv.append(" *** Welcome to Barnes and Noble Store!" + "\n\n");
+						Toast.makeText(getApplicationContext(), "Welcome to Barnes and Noble Store! In store you can access all guides", Toast.LENGTH_LONG).show();
+						inStore = true;
+					} else if (intent.getIntExtra(EXTRA_BN_READINSTORE_SESSION_STATE, SESSION_STOP) == SESSION_STOP) {
+						//tv.append(" *** Goodbye Thank you for visiting Barnes and Noble Store!" + "\n\n");  						
+						Toast.makeText(getApplicationContext(), "Goodbye, thank you for visiting Barnes and Noble Store!", Toast.LENGTH_LONG).show();
+						inStore = false;
+					} else {
+						//tv.append(" *** Session never started, please power cycle your device and retry.  Did you remove the provision file?" + "\n\n");
+						inStore = false;
+					}
+				} else {
+					//tv.append("Should never get here, action does not match, if you do get here your intent filter isn't working.");
+				}
+			}	
+		};
+
+		wifiIntent = new IntentFilter(ACTION_BN_INSTORE_SESSION_STATE_CHANGE);
+        registerReceiver(wifiReceiver, wifiIntent);
+		//tv.append("I am registered to receive session state changes.\n");
+    }
+	
 	/*private void doLicenseCheck() {
         
         setProgressBarIndeterminateVisibility(true);
