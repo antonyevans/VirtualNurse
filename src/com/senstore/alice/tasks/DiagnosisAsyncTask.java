@@ -23,6 +23,7 @@ public class DiagnosisAsyncTask extends AsyncTask<Void, String, Diagnosis> {
 	//private boolean isVoice = false;
 	private String task_type = null;
 	private String user_id = null;
+	private Boolean inStore = false;
 	
 
 	public String getUser_id() {
@@ -97,12 +98,20 @@ public class DiagnosisAsyncTask extends AsyncTask<Void, String, Diagnosis> {
 			diagnosis = handler.getGuides(input_text, last_query, user_id);
 		} else if (getType()=="Voice") {
 			diagnosis = handler.voiceDiagnosis(health_guide, last_query,
-					input_text, user_id);
+					input_text, user_id, inStore);
 		} else if (getType()=="Touch") {
 			diagnosis = handler.touchDiagnosis(health_guide, last_query,
-					input_text, user_id);
+					input_text, user_id, inStore);
 		}
 		return diagnosis;
+	}
+
+	public Boolean getInStore() {
+		return inStore;
+	}
+
+	public void setInStore(Boolean inStore) {
+		this.inStore = inStore;
 	}
 
 }

@@ -114,7 +114,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 	//variables for instore
 	BroadcastReceiver wifiReceiver;
 	IntentFilter wifiIntent;
-	public boolean inStore = false;
+	private boolean inStore = false;
 	
 	public static final String ACTION_BN_INSTORE_SESSION_STATE_CHANGE = "com.nook.intent.action.ACTION_BN_INSTORE_SESSION_STATE_CHANGE";
     public static final String EXTRA_BN_READINSTORE_SESSION_STATE = "EXTRA_BN_INSTORE_SESSION_STATE";
@@ -1359,6 +1359,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		
 		diagnosisTask = new DiagnosisAsyncTask();
 		diagnosisTask.setType("Touch");
+		diagnosisTask.setInStore(inStore);
 		diagnosisTask.setListener(listener);
 		diagnosisTask.setLast_query(last_query);
 		diagnosisTask.setHealth_guide(health_guide);
@@ -1406,6 +1407,7 @@ public class Alice extends Activity implements AsyncTasksListener, LocationTasks
 		    	
 		diagnosisTask = new DiagnosisAsyncTask();
 		diagnosisTask.setType("Voice");
+		diagnosisTask.setInStore(inStore);
 		diagnosisTask.setListener(listener);
 		diagnosisTask.setLast_query(last_query);
 		diagnosisTask.setHealth_guide(health_guide);

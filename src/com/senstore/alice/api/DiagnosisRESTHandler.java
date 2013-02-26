@@ -6,6 +6,7 @@ package com.senstore.alice.api;
 import android.util.Log;
 
 import com.flurry.android.FlurryAgent;
+import com.senstore.alice.activities.Alice;
 import com.senstore.alice.http.RestClient;
 import com.senstore.alice.http.RestClient.RequestMethod;
 import com.senstore.alice.models.Diagnosis;
@@ -68,7 +69,7 @@ public class DiagnosisRESTHandler {
 	 * 
 	 * 
 	 */
-	public Diagnosis touchDiagnosis(String guide,String last_query, String input_text, String user_id) {
+	public Diagnosis touchDiagnosis(String guide,String last_query, String input_text, String user_id, Boolean inStore) {
 
 		Log.i(Constants.TAG, "last_query(touch) "+last_query);
 		
@@ -82,6 +83,12 @@ public class DiagnosisRESTHandler {
 		req.addParam("select_type", Constants.DIAGNOSIS_TOUCH);
 		req.addParam("security", Constants.SECURITY_HASH);
 		req.addParam("app_name", Constants.APP_NAME);
+		
+		if (inStore) {
+			req.addParam("BNinStore", "true");
+		} else {
+			req.addParam("BNinStore", "false");
+		}
 
 		try {
 			req.execute(RequestMethod.GET);
@@ -113,7 +120,7 @@ public class DiagnosisRESTHandler {
 	 * 
 	 * 
 	 */
-	public Diagnosis voiceDiagnosis(String guide,String last_query, String input_text, String user_id) {
+	public Diagnosis voiceDiagnosis(String guide,String last_query, String input_text, String user_id, Boolean inStore) {
 		
 		Log.i(Constants.TAG, "last_query(voice) "+last_query);
 
@@ -126,6 +133,11 @@ public class DiagnosisRESTHandler {
 		req.addParam("select_type", Constants.DIAGNOSIS_VOICE);
 		req.addParam("security", Constants.SECURITY_HASH);
 		req.addParam("app_name", Constants.APP_NAME);
+		if (inStore) {
+			req.addParam("BNinStore", "true");
+		} else {
+			req.addParam("BNinStore", "false");
+		}
 
 		try {
 			req.execute(RequestMethod.GET);
