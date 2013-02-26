@@ -5,6 +5,7 @@ package com.senstore.alice.utils;
 
 import java.util.UUID;
 
+import com.senstore.alice.activities.Alice;
 import com.senstore.alice.services.MyPrefsBackupAgent;
 
 import android.app.backup.BackupManager;
@@ -13,6 +14,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
 
 /**
@@ -33,7 +35,14 @@ public class Utils {
 	        		MyPrefsBackupAgent.PREFS, Context.MODE_PRIVATE);
 	        uniqueID = sharedPrefs.getString(PREF_UNIQUE_ID, null);
 	        if (uniqueID == null) {
-	            uniqueID = UUID.randomUUID().toString();
+	        	String android_id = Secure.getString(context.getContentResolver(),
+                        Secure.ANDROID_ID); 
+	        	if (android_id == null || android_id.equals("9774d56d682e549c")) {
+	        		uniqueID = UUID.randomUUID().toString();
+	        	} else {
+	        		uniqueID = android_id;
+	        	}
+	            
 	            Editor editor = sharedPrefs.edit();
 	            editor.putString(PREF_UNIQUE_ID, uniqueID);
 	            editor.commit();
